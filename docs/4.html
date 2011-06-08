@@ -1,64 +1,270 @@
-<!DOCTYPE html>  <html> <head>   <title>4.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="1.html">                 who.js               </a>                                           <a class="source" href="2.html">                 what.js               </a>                                           <a class="source" href="3.html">                 why.js               </a>                                           <a class="source" href="4.html">                 how.js               </a>                                           <a class="source" href="5.html">                 more.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               4.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p><strong>This example illustrates how to delegate the rendering of a Model to a dedicated View.</strong></p>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 
-<p><em>Working example: <a href="../4.html">4.html</a>.</em> <br />
-<em><a href="5.html">Go to Example 5</a></em></p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
-  <span class="kd">var</span> <span class="nx">Item</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+<html>
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for Linux/x86 (vers 11 February 2007), see www.w3.org">
+
+  <title>4.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=us-ascii">
+  <link rel="stylesheet" media="all" href="docco.css" type="text/css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="background"></div>
+
+    <div id="jump_to">
+      Jump To &hellip;
+
+      <div id="jump_wrapper">
+        <div id="jump_page">
+          <a class="source" href="1.html">who.js</a> <a class="source" href=
+          "2.html">what.js</a> <a class="source" href="3.html">why.js</a> <a class=
+          "source" href="4.html">how.js</a> <a class="source" href="5.html">more.js</a>
+        </div>
+      </div>
+    </div>
+
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+            <h1>4.js</h1>
+          </th>
+
+          <th class="code"></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr id="section-1">
+          <td class="docs">
+            <div class="pilwrap">
+              <a class="pilcrow" href="#section-1">&para;</a>
+            </div>
+
+            <p> <img style="width: 32px;" src="https://lh4.googleusercontent.com/_E7xVavf8wNg/TY3hbAQy0iI/AAAAAAAACQA/9i2R6fIoIN4/warning32.png" alt="" /><strong><div>
+
+<blockquote class="gmail_quote" style="border-left: 1px solid #cccccc; margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
+<div><span style="font-size: xx-large;"></span></div>
+<div><span style="font-size: xx-large;">Significant fraction of user segment [1]does <strong>not</strong> have&nbsp; access to high speed video streaming/downloading <span style="text-decoration: line-through;"><img style="width: 32px;" src="https://lh5.googleusercontent.com/_E7xVavf8wNg/TY3hRa8CQJI/AAAAAAAACK8/uGcnfaDzrcg/exchange32.png" alt="" /></span> /<img style="width: 22px;" src="https://lh4.googleusercontent.com/_E7xVavf8wNg/TY5Lv6L2kkI/AAAAAAAADRU/Ub5FBQSC2V8/176-ipad.png" alt="" /> in <span style="text-decoration: underline;">developing countries</span></div><div>
+
+<blockquote class="gmail_quote" style="border-left: 1px solid #cccccc; margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
+<div><span style="font-size: xx-large;">This causes a bad user <span class="rg_ctlv">&nbsp;</span>experience<img style="width: 91px;" src="https://lh6.googleusercontent.com/_E7xVavf8wNg/TasXWJ3-GPI/AAAAAAAADe0/YWPTJ0ElWM4/sg.jpg" alt="" /> in browsing high-quality academic content,which is <em><span style="text-decoration: underline;">poorly interlinked.</span></em><img style="width: 28px;" src="https://lh4.googleusercontent.com/_E7xVavf8wNg/TY5Lbpj7MII/AAAAAAAADIE/iODHGrEctNg/05-shuffle.png" alt="" /></span></div><div><span style="font-size: xx-large;">In this context PDF/PPT <img style="width: 32px;" src="https://lh3.googleusercontent.com/_E7xVavf8wNg/TY3hWASB5PI/AAAAAAAACNQ/J_OfwT057EM/paperminus32.png" alt="" />are not the most user friendly formats&nbsp;&nbsp;</span></div></strong></p>
+
+            <p><em>Working example: <a href="../4.html">4.html</a>.</em><br>
+            <em><a href="5.html">Go to Example 5</a></em></p>
+          </td>
+
+          <td class="code">
+            <div class="highlight"></div>
+          </td>
+        </tr>
+
+        <tr id="section-2">
+          <td class="docs">
+            <div class="pilwrap">
+              <a class="pilcrow" href="#section-2">&para;</a>
+            </div>
+          </td>
+
+          <td class="code">
+            <div class="highlight">
+              <pre>
+<span class="nx">$</span><span class="p">(</span><span class=
+"kd">function</span><span class="p">(){</span>
+  <span class="kd">var</span> <span class="nx">Item</span> <span class=
+"o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class=
+"nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class=
+"p">({</span>
     <span class="nx">defaults</span><span class="o">:</span> <span class="p">{</span>
-      <span class="nx">part1</span><span class="o">:</span> <span class="s1">&#39;hello&#39;</span><span class="p">,</span>
-      <span class="nx">part2</span><span class="o">:</span> <span class="s1">&#39;world&#39;</span>
+      <span class="nx">part1</span><span class="o">:</span> <span class=
+"s1">'hello'</span><span class="p">,</span>
+      <span class="nx">part2</span><span class="o">:</span> <span class=
+"s1">'world'</span>
     <span class="p">}</span>
   <span class="p">});</span>
   
-  <span class="kd">var</span> <span class="nx">List</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Collection</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="kd">var</span> <span class="nx">List</span> <span class=
+"o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class=
+"nx">Collection</span><span class="p">.</span><span class="nx">extend</span><span class=
+"p">({</span>
     <span class="nx">model</span><span class="o">:</span> <span class="nx">Item</span>
-  <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p><strong>ItemView class</strong>: Responsible for rendering each individual <code>Item</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">ItemView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-    <span class="nx">tagName</span><span class="o">:</span> <span class="s1">&#39;li&#39;</span><span class="p">,</span> <span class="c1">// name of (orphan) root tag in this.el</span>
-    <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
-      <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">);</span> <span class="c1">// every function that uses &#39;this&#39; as the current object should be in here</span>
+  <span class="p">});</span>
+</pre>
+            </div>
+          </td>
+        </tr>
+
+        <tr id="section-3">
+          <td class="docs">
+            <div class="pilwrap">
+              <a class="pilcrow" href="#section-3">&para;</a>
+            </div>
+
+            <p><strong>ItemView class</strong>: Responsible for rendering each individual
+            <code>Item</code>.</p>
+          </td>
+
+          <td class="code">
+            <div class="highlight">
+              <pre>
+  <span class="kd">var</span> <span class="nx">ItemView</span> <span class=
+"o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class=
+"nx">View</span><span class="p">.</span><span class="nx">extend</span><span class=
+"p">({</span>
+    <span class="nx">tagName</span><span class="o">:</span> <span class=
+"s1">'li'</span><span class="p">,</span> <span class=
+"c1">// name of (orphan) root tag in this.el</span>
+    <span class="nx">initialize</span><span class="o">:</span> <span class=
+"kd">function</span><span class="p">(){</span>
+      <span class="nx">_</span><span class="p">.</span><span class=
+"nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class=
+"p">,</span> <span class="s1">'render'</span><span class="p">);</span> <span class=
+"c1">// every function that uses 'this' as the current object should be in here</span>
     <span class="p">},</span>
-    <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
-      <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s1">&#39;&lt;span&gt;&#39;</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;part1&#39;</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; &#39;</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;part2&#39;</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;&lt;/span&gt;&#39;</span><span class="p">);</span>
-      <span class="k">return</span> <span class="k">this</span><span class="p">;</span> <span class="c1">// for chainable calls, like .render().el</span>
+    <span class="nx">render</span><span class="o">:</span> <span class=
+"kd">function</span><span class="p">(){</span>
+      <span class="nx">$</span><span class="p">(</span><span class=
+"k">this</span><span class="p">.</span><span class="nx">el</span><span class=
+"p">).</span><span class="nx">html</span><span class="p">(</span><span class=
+"s1">'&lt;span&gt;'</span><span class="o">+</span><span class="k">this</span><span class=
+"p">.</span><span class="nx">model</span><span class="p">.</span><span class=
+"nx">get</span><span class="p">(</span><span class="s1">'part1'</span><span class=
+"p">)</span><span class="o">+</span><span class="s1">' '</span><span class=
+"o">+</span><span class="k">this</span><span class="p">.</span><span class=
+"nx">model</span><span class="p">.</span><span class="nx">get</span><span class=
+"p">(</span><span class="s1">'part2'</span><span class="p">)</span><span class=
+"o">+</span><span class="s1">'&lt;/span&gt;'</span><span class="p">);</span>
+      <span class="k">return</span> <span class="k">this</span><span class=
+"p">;</span> <span class="c1">// for chainable calls, like .render().el</span>
     <span class="p">}</span>
   <span class="p">});</span>
   
-  <span class="kd">var</span> <span class="nx">ListView</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">View</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
-    <span class="nx">el</span><span class="o">:</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">),</span> <span class="c1">// el attaches to existing element</span>
+  <span class="kd">var</span> <span class="nx">ListView</span> <span class=
+"o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class=
+"nx">View</span><span class="p">.</span><span class="nx">extend</span><span class=
+"p">({</span>
+    <span class="nx">el</span><span class="o">:</span> <span class=
+"nx">$</span><span class="p">(</span><span class="s1">'body'</span><span class=
+"p">),</span> <span class="c1">// el attaches to existing element</span>
     <span class="nx">events</span><span class="o">:</span> <span class="p">{</span>
-      <span class="s1">&#39;click button#add&#39;</span><span class="o">:</span> <span class="s1">&#39;addItem&#39;</span>
+      <span class="s1">'click button#add'</span><span class="o">:</span> <span class=
+"s1">'addItem'</span>
     <span class="p">},</span>
-    <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
-      <span class="nx">_</span><span class="p">.</span><span class="nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;render&#39;</span><span class="p">,</span> <span class="s1">&#39;addItem&#39;</span><span class="p">,</span> <span class="s1">&#39;appendItem&#39;</span><span class="p">);</span> <span class="c1">// every function that uses &#39;this&#39; as the current object should be in here</span>
+    <span class="nx">initialize</span><span class="o">:</span> <span class=
+"kd">function</span><span class="p">(){</span>
+      <span class="nx">_</span><span class="p">.</span><span class=
+"nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class=
+"p">,</span> <span class="s1">'render'</span><span class="p">,</span> <span class=
+"s1">'addItem'</span><span class="p">,</span> <span class=
+"s1">'appendItem'</span><span class="p">);</span> <span class=
+"c1">// every function that uses 'this' as the current object should be in here</span>
       
-      <span class="k">this</span><span class="p">.</span><span class="nx">collection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">List</span><span class="p">();</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">appendItem</span><span class="p">);</span> <span class="c1">// collection event binder</span>
+      <span class="k">this</span><span class="p">.</span><span class=
+"nx">collection</span> <span class="o">=</span> <span class="k">new</span> <span class=
+"nx">List</span><span class="p">();</span>
+      <span class="k">this</span><span class="p">.</span><span class=
+"nx">collection</span><span class="p">.</span><span class="nx">bind</span><span class=
+"p">(</span><span class="s1">'add'</span><span class="p">,</span> <span class=
+"k">this</span><span class="p">.</span><span class="nx">appendItem</span><span class=
+"p">);</span> <span class="c1">// collection event binder</span>
 
-      <span class="k">this</span><span class="p">.</span><span class="nx">counter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">render</span><span class="p">();</span>
+      <span class="k">this</span><span class="p">.</span><span class=
+"nx">counter</span> <span class="o">=</span> <span class="mi">0</span><span class=
+"p">;</span>
+      <span class="k">this</span><span class="p">.</span><span class=
+"nx">render</span><span class="p">();</span>
     <span class="p">},</span>
-    <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
-      <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;&lt;button id=&#39;add&#39;&gt;Add list item&lt;/button&gt;&quot;</span><span class="p">);</span>
-      <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;&lt;ul&gt;&lt;/ul&gt;&quot;</span><span class="p">);</span>
-      <span class="nx">_</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">models</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span> <span class="c1">// in case collection is not empty</span>
-        <span class="nx">appendItem</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+    <span class="nx">render</span><span class="o">:</span> <span class=
+"kd">function</span><span class="p">(){</span>
+      <span class="nx">$</span><span class="p">(</span><span class=
+"k">this</span><span class="p">.</span><span class="nx">el</span><span class=
+"p">).</span><span class="nx">append</span><span class="p">(</span><span class=
+"s2">"&lt;button id='add'&gt;Add list item&lt;/button&gt;"</span><span class=
+"p">);</span>
+      <span class="nx">$</span><span class="p">(</span><span class=
+"k">this</span><span class="p">.</span><span class="nx">el</span><span class=
+"p">).</span><span class="nx">append</span><span class="p">(</span><span class=
+"s2">"&lt;ul&gt;&lt;/ul&gt;"</span><span class="p">);</span>
+      <span class="nx">_</span><span class="p">(</span><span class=
+"k">this</span><span class="p">.</span><span class="nx">collection</span><span class=
+"p">.</span><span class="nx">models</span><span class="p">).</span><span class=
+"nx">each</span><span class="p">(</span><span class="kd">function</span><span class=
+"p">(</span><span class="nx">item</span><span class="p">){</span> <span class=
+"c1">// in case collection is not empty</span>
+        <span class="nx">appendItem</span><span class="p">(</span><span class=
+"nx">item</span><span class="p">);</span>
       <span class="p">},</span> <span class="k">this</span><span class="p">);</span>
     <span class="p">},</span>
-    <span class="nx">addItem</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">counter</span><span class="o">++</span><span class="p">;</span>
-      <span class="kd">var</span> <span class="nx">item</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Item</span><span class="p">();</span>
-      <span class="nx">item</span><span class="p">.</span><span class="nx">set</span><span class="p">({</span>
-        <span class="nx">part2</span><span class="o">:</span> <span class="nx">item</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;part2&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">counter</span> <span class="c1">// modify item defaults</span>
+    <span class="nx">addItem</span><span class="o">:</span> <span class=
+"kd">function</span><span class="p">(){</span>
+      <span class="k">this</span><span class="p">.</span><span class=
+"nx">counter</span><span class="o">++</span><span class="p">;</span>
+      <span class="kd">var</span> <span class="nx">item</span> <span class=
+"o">=</span> <span class="k">new</span> <span class="nx">Item</span><span class=
+"p">();</span>
+      <span class="nx">item</span><span class="p">.</span><span class=
+"nx">set</span><span class="p">({</span>
+        <span class="nx">part2</span><span class="o">:</span> <span class=
+"nx">item</span><span class="p">.</span><span class="nx">get</span><span class=
+"p">(</span><span class="s1">'part2'</span><span class="p">)</span> <span class=
+"o">+</span> <span class="k">this</span><span class="p">.</span><span class=
+"nx">counter</span> <span class="c1">// modify item defaults</span>
       <span class="p">});</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
-    <span class="p">},</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p><code>appendItem()</code> is no longer responsible for rendering an individual <code>Item</code>. This is now delegated to the <code>render()</code> method of each <code>ItemView</code> instance.</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">appendItem</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">){</span>
-      <span class="kd">var</span> <span class="nx">itemView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ItemView</span><span class="p">({</span>
-        <span class="nx">model</span><span class="o">:</span> <span class="nx">item</span>
+      <span class="k">this</span><span class="p">.</span><span class=
+"nx">collection</span><span class="p">.</span><span class="nx">add</span><span class=
+"p">(</span><span class="nx">item</span><span class="p">);</span>
+    <span class="p">},</span>
+</pre>
+            </div>
+          </td>
+        </tr>
+
+        <tr id="section-4">
+          <td class="docs">
+            <div class="pilwrap">
+              <a class="pilcrow" href="#section-4">&para;</a>
+            </div>
+
+            <p><code>appendItem()</code> is no longer responsible for rendering an
+            individual <code>Item</code>. This is now delegated to the
+            <code>render()</code> method of each <code>ItemView</code> instance.</p>
+          </td>
+
+          <td class="code">
+            <div class="highlight">
+              <pre>
+    <span class="nx">appendItem</span><span class="o">:</span> <span class=
+"kd">function</span><span class="p">(</span><span class="nx">item</span><span class=
+"p">){</span>
+      <span class="kd">var</span> <span class="nx">itemView</span> <span class=
+"o">=</span> <span class="k">new</span> <span class="nx">ItemView</span><span class=
+"p">({</span>
+        <span class="nx">model</span><span class="o">:</span> <span class=
+"nx">item</span>
       <span class="p">});</span>
-      <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;ul&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">itemView</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span><span class="p">);</span>
+      <span class="nx">$</span><span class="p">(</span><span class=
+"s1">'ul'</span><span class="p">,</span> <span class="k">this</span><span class=
+"p">.</span><span class="nx">el</span><span class="p">).</span><span class=
+"nx">append</span><span class="p">(</span><span class="nx">itemView</span><span class=
+"p">.</span><span class="nx">render</span><span class="p">().</span><span class=
+"nx">el</span><span class="p">);</span>
     <span class="p">}</span>
   <span class="p">});</span>
 
-  <span class="kd">var</span> <span class="nx">listView</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ListView</span><span class="p">();</span>      
+  <span class="kd">var</span> <span class="nx">listView</span> <span class=
+"o">=</span> <span class="k">new</span> <span class="nx">ListView</span><span class=
+"p">();</span>      
 <span class="p">});</span>
 
-</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
+</pre>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
