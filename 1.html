@@ -1,19 +1,1498 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+
 <html>
-
 <head>
-  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-  <title>hello-backbonejs</title>
+  <meta name="generator" content=
+  "HTML Tidy for Linux/x86 (vers 11 February 2007), see www.w3.org">
+  <meta http-equiv="content-type" content="text/html; charset=us-ascii">
+  <script type="text/javascript">
+(function(){function a(c){this.t={};this.tick=function(c,e,b){b=b!=void 0?b:(new Date).getTime();this.t[c]=[b,e]};this.tick("start",null,c)}var d=new a;window.jstiming={Timer:a,load:d};try{var f=null;window.chrome&&window.chrome.csi&&(f=Math.floor(window.chrome.csi().pageT));f==null&&window.gtbExternal&&(f=window.gtbExternal.pageT());f==null&&window.external&&(f=window.external.pageT);f&&(window.jstiming.pt=f)}catch(g){};})();
+  </script>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
-  <script src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js" type="text/javascript" charset="utf-8"></script>
-  <script src="http://ajax.cdnjs.com/ajax/libs/underscore.js/1.1.6/underscore-min.js" type="text/javascript" charset="utf-8"></script>
-  <script src="http://ajax.cdnjs.com/ajax/libs/backbone.js/0.3.3/backbone-min.js" type="text/javascript" charset="utf-8"></script>
+  <title>p71-shirakawa.pdf - Powered by Google Docs</title>
+  <style type="text/css">
+  
+
     
-  <script src="1.js" type="text/javascript" charset="utf-8"></script>  
+    html>body .goog-inline-block {
+      display: -moz-inline-box; 
+      display: inline-block; 
+    }
+
+    
+    .goog-inline-block {
+      position: relative;
+      display: inline-block;
+    }
+
+    
+    * html .goog-inline-block {
+      display: inline;
+    }
+
+    
+    *:first-child+html .goog-inline-block {
+      display: inline;
+    }
+  </style>
+  <style type="text/css">
+  
+    .goog-custom-button {
+      background: #ddd url("/gview/images/button_bg.png") repeat-x scroll left top;
+      cursor: pointer;
+      
+      -moz-user-select: none;
+    }
+
+    .goog-custom-button-active {
+      background-color: #bbb !important;
+      background-position: left bottom !important;
+    }
+
+    .goog-custom-button-disabled {
+      cursor: default !important;
+      color: #888;
+    }
+
+    .goog-custom-button-outer-box, .goog-custom-button-inner-box {
+      border-color: #bbb;
+      border-style: solid;
+      vertical-align: top;
+    }
+
+    .goog-custom-button-outer-box {
+      border-width: 1px 0pt;
+      margin: 0pt;
+      padding: 0pt;
+    }
+
+    .goog-custom-button-inner-box {
+      border-width: 0pt 1px;
+      margin: 0pt -1px;
+    }
+
+    
+    * html .goog-custom-button-inner-box {
+      
+        left: -1px;
+      
+    }
+
+    
+    
+
+    
+    *:first-child+html .goog-custom-button-inner-box {
+      
+        left: -1px;
+      
+    }
+
+    
+    
+  </style>
+  <style type="text/css">
+  .controlbar-default-item {
+      margin: 10px 12px;
+      
+      font-size: 0;
+    }
+
+    .back-image, .forward-image, .minus-image, .plus-image, .one-up-image,
+    .two-up-image {
+      background-image:
+        url("/gview/images/icon_sprites_2.gif");
+      background-repeat: no-repeat;
+      background-color: transparent;
+    }
+
+    .back-image, .forward-image {
+      margin: 4px 18px;
+      height: 13px;
+      width: 12px;
+    }
+
+    
+    .goog-custom-button-active .forward-image,
+    .goog-custom-button-active .back-image {
+      margin: 5px 17px 3px 19px;
+    }
+
+    .back-image {
+      
+        background-position: -12px;
+      
+    }
+
+    .goog-custom-button-disabled .back-image {
+      
+        background-position: 0;
+      
+    }
+
+    .forward-image {
+      
+        background-position: -36px;
+      
+    }
+
+    .goog-custom-button-disabled .forward-image {
+      
+        background-position: -24px;
+      
+    }
+
+    .pager-page-number {
+      margin: 5px 10px 0 10px;
+      font-size: 10px;
+      color: #000;
+    }
+
+    .plus-image, .minus-image {
+      margin: 5px;
+      height: 11px;
+      width: 11px;
+    }
+
+    
+    .goog-custom-button-active .plus-image,
+    .goog-custom-button-active .minus-image {
+      margin: 6px 4px 4px 6px;
+    }
+
+    .plus-image {
+      background-position: -59px 0;
+    }
+
+    .goog-custom-button-disabled .plus-image {
+      background-position: -48px 0;
+    }
+
+    .minus-image {
+      background-position: -81px 0;
+    }
+
+    .goog-custom-button-disabled .minus-image {
+      background-position: -70px 0;
+    }
+
+    .one-up-image {
+      width: 10px;
+      height: 13px;
+      margin: 4px 5px 4px 6px;
+      background-position: -92px;
+    }
+
+    .two-up-image {
+      width: 11px;
+      height: 13px;
+      margin: 4px 5px 4px 5px;
+      background-position: -102px;
+    }
+
+    
+    .goog-custom-button-active .one-up-image,
+    .goog-custom-button-active .two-up-image {
+      margin-top: 5px;
+      margin-bottom: 3px;
+    }
+
+    
+    .goog-custom-button-disabled .one-up-image,
+    .goog-custom-button-disabled .two-up-image {
+      opacity: 0.25;
+      -moz-opacity: 0.25;
+      -khtml-opacity: 0.25;
+      filter: alpha(opacity=25);
+    }
+
+    .label-input-label {
+      color: #999;
+    }
+
+    .search-box {
+      border: 1px #bbb solid;
+      width: 174px;
+      margin: 0 -1px;
+    }
+
+    .search-button-holder {
+      margin-top: -1px;
+    }
+
+    .goog-useragent-ie .search-button-holder {
+      
+      margin-top: -2px;
+    }
+
+    .search-button {
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      margin: 5px;
+      position: relative;
+      
+      font-size: 0;
+      line-height: 0;
+    }
+
+    .goog-useragent-ie .search-button {
+      
+      border-left-color: red;
+      border-right-color: red;
+      filter: chroma(color=red);
+      
+      width: 0;
+    }
+
+    .goog-custom-button-disabled .search-button {
+      border-top-color: #91B5D4;
+      border-bottom-color: #91B5D4;
+    }
+
+    .down-arrow {
+      border-top: 10px solid #3078B6;
+    }
+
+    .goog-useragent-gecko .down-arrow,
+    .goog-useragent-ie .down-arrow {
+      
+      margin-right: 6px;
+    }
+
+    .goog-custom-button-active .down-arrow {
+      top: 1px;
+      left: 1px;
+    }
+
+    .up-arrow {
+      border-bottom: 10px solid #3078B6;
+      
+      top: -1px;
+    }
+
+    .goog-useragent-ie .up-arrow {
+      
+      border-bottom-width: 11px;
+      top: -2px;
+      border-right-width: 6px;
+      margin-bottom: 4px;
+      margin-left: 4px;
+    }
+
+    .goog-custom-button-active .up-arrow {
+      top: 0;
+      left: 1px;
+    }
+
+    .goog-useragent-ie .goog-custom-button-active .up-arrow {
+      top: -1px;
+    }
+
+    .search-message {
+      font-size: 12px;
+      margin-top: 5px;
+      color: #000;
+    }
+
+    .search-matches-highlight {
+      background-color: #ff6;
+    }
+
+    .search-nomatches {
+      color: #f00;
+    }
+  </style>
+  <style type="text/css">
+  .docs-titlebar-buttons-inner {
+      
+      padding-top: 1px;
+    }
+
+    .docs-titlebar-buttons-inner .goog-custom-button-inner-box {
+      
+      padding: 3px 5px 2px;
+    }
+
+    
+    #docs-titlebar-share-action {
+      
+        margin-left: 12px;
+      
+    }
+  </style>
+  <style type="text/css">
+  .thumb-pane {
+      border: 0;
+      
+        border-right: 1px #bbb solid;
+      
+      background-color: #f3f3f3;
+      color: #666;
+      position: absolute;
+    }
+
+    
+    .thumb-pane-upper-item {
+      
+      font-size: 0;
+    }
+
+    .thumb-pane-lower, .thumb-pane-nnav {
+      overflow: auto;
+      border-top: 1px #bbb solid;
+    }
+
+    .goog-useragent-ie .thumb-pane-lower {
+      
+      position: relative;
+    }
+
+    .thumb-element {
+      
+      padding-bottom: 16px;
+    }
+
+    .thumb-first-element {
+      
+      padding-top: 14px;
+    }
+
+    .thumb-highlight {
+      cursor: pointer !important;
+      opacity: 0.50;
+      -moz-opacity: 0.50;
+      -khtml-opacity: 0.50;
+      filter: alpha(opacity=50);
+      background-color: #FF6;
+      padding: 3px;
+    }
+
+    .thumb-image {
+      border: 1px #666 solid;
+      margin: 2px;
+      cursor: pointer;
+    }
+
+    .thumb-image-emphasized {
+      border: 3px #00f solid;
+      cursor: pointer;
+    }
+
+    .page-number {
+      color: #000;
+      font-weight: bold;
+      
+      
+        float: left;
+        padding-left: 12px;
+        padding-right: 6px;
+      
+      vertical-align: top;
+    }
+
+    .confidential {
+      color: #c00;
+      font-weight: bold;
+      font-size: 9px;
+    }
+
+    
+    .n-ui-wrapper {
+      border: 1px solid #c44;
+      font-size: 12px;
+      padding: 4px;
+    }
+  </style>
+  <style type="text/css">
+  .view {
+      width: 100%;
+      height: 100%;
+    }
+
+    #content-pane {
+      border: 0;
+      background-color: #f3f3f3;
+      outline: none;
+      overflow: auto;
+      position: absolute;
+      
+      text-align: center;
+    }
+
+    #page-pane {
+      color: #666;
+      
+      
+        padding: 7px 0;
+      
+    }
+
+    .page-element {
+      
+      padding: 8px 0;
+      
+      
+    }
+
+    .highlight {
+      position: absolute;
+      font-size: 0;
+      line-height: 0;
+      cursor: text;
+      border-style: none;
+    }
+
+    .selection-highlight {
+      opacity: 0.20;
+      -moz-opacity: 0.20;
+      -khtml-opacity: 0.20;
+      filter: alpha(opacity=20);
+      background-color: #28F;
+    }
+
+    .search-highlight {
+      opacity: 0.50;
+      -moz-opacity: 0.50;
+      -khtml-opacity: 0.50;
+      filter: alpha(opacity=50);
+      background-color: #FF6;
+    }
+
+    .selected-highlight {
+      background-color: #FF9632 !important;
+    }
+
+    .corner-tl, .corner-br {
+      width: 0;
+      border-style: solid solid none !important;
+    }
+
+    .corner-tr, .corner-bl {
+      width: 0;
+      border-style: solid none none solid !important;
+    }
+
+    .corner-bg {
+      z-index: 4;
+    }
+
+    .corner-tl-fg, .corner-tr-fg {
+      border-color: #f3f3f3 transparent;
+      z-index: 5;
+    }
+
+    .corner-br-fg, .corner-bl-fg {
+      border-color: transparent #f3f3f3;
+      z-index: 5;
+    }
+
+    .transparent-highlight {
+      display: none;
+    }
+
+    .document-link {
+      position: absolute;
+      font-size: 0;
+      z-index: 10;
+    }
+
+    
+    .goog-useragent-ie .document-link {
+      background-color: #000;
+      opacity: 0.00;
+      -moz-opacity: 0.00;
+      -khtml-opacity: 0.00;
+      filter: alpha(opacity=0);
+    }
+
+    .highlight-pane {
+      position: relative;
+    }
+
+    .goog-useragent-ie .highlight-pane {
+      
+        position: absolute;
+      
+      zoom: 1;
+    }
+
+    .rubberband {
+      border: 1px dashed green;
+      width: 0;
+      height: 0;
+      position: absolute;
+      z-index: 5;
+    }
+
+    #selection-content {
+      position: absolute;
+      left: 0;
+      top: -48px;
+      width: 32px;
+      height: 32px;
+    }
+
+    table.gaialinks span {
+      white-space: nowrap;
+    }
+
+    
+    .noselect .page-image, .noselect .highlight {
+      cursor: auto;
+    }
+
+    .page-image {
+      border: 1px #666 solid;
+      cursor: text;
+      margin: 0 8px;
+    }
+
+    .error-message-strong {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .error-message {
+      line-height: 2em;
+      text-align: center;
+      color: #000;
+      margin-top: 50px;
+    }
+
+    .goog-inline-follow {
+      
+      vertical-align: top;
+    }
+
+    
+    .goog-inline-follow-pad {
+      vertical-align: top;
+      
+        margin-left: 12px;
+      
+    }
+
+    #loading {
+      text-align: left;
+      margin: 50px auto 100px;
+      width: 30%;
+    }
+
+    .goog-custom-button-disabled .goog-menu-button-dropdown,
+    .goog-custom-button-disabled .apps-share-sprite {
+      opacity: 0.40;
+      -moz-opacity: 0.40;
+      -khtml-opacity: 0.40;
+      filter: alpha(opacity=40);
+    }
+
+    .progress-bar-horizontal {
+      border: 1px #888 solid;
+      padding: 1px;
+      width: 100%;
+    }
+
+    .progress-bar-thumb {
+      background-color: #37c;
+      height: 10px;
+      width: 20%;
+    }
+
+    
+
+    #gview-butter {
+      position: absolute;
+      top: 0;
+      z-index: 1000;
+    }
+
+    #gview-document-butterbar {
+      z-index: 1000;
+    }
+
+    .docs-butter-gview {
+      background: #fff1a8;
+      color: #000;
+      
+      border-top-left-radius: 0px !important;
+      border-top-right-radius: 0px !important;
+      -moz-border-radius-topleft: 0px !important;
+      -moz-border-radius-topright: 0px !important;
+      padding: 4px 7px !important;
+    }
+
+    #password-div {
+      background: white;
+      border: 1px solid black;
+      width: 350px;
+      padding: 1em;
+      margin: 0px auto;
+    }
+  </style>
+  <style type="text/css">
+  html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: arial, sans-serif;
+      font-size: 12px;
+      color: #000;
+      height: 100%;
+      
+      
+        
+        overflow: hidden;
+      
+    }
+  </style>
+  <style type="text/css">
+#gbar,#guser{font-size:13px;padding-right:8px;padding-top:4px !important}#gbar{padding-left:8px;float:left;height:22px}#guser{padding-bottom:7px !important;text-align:right}.gbh,.gbd{border-top:1px solid #c9d7f1;font-size:1px}.gbh{height:0;position:absolute;top:24px;width:100%}#gbs,.gbm{background:#fff;left:0;position:absolute;text-align:left;visibility:hidden;z-index:1000}.gbm{border:1px solid;border-color:#c9d7f1 #36c #36c #a2bae7;z-index:1001}.gb1{margin-right:.5em}.gb1,.gb3{zoom:1}.gb2{display:block;padding:.2em .5em}.gb2,.gb3{text-decoration:none !important;border-bottom:none}a.gb1,a.gb4{text-decoration:underline !important}a.gb1,a.gb2,a.gb3,a.gb4{color:#00c !important}.gbi .gb3,.gbi .gb2,.gbi .gb4{color:#dd8e27 !important}.gbf .gb3,.gbf .gb2,.gbf .gb4{color:#900 !important}a.gb2:hover{background:#36c;color:#fff !important}
+  </style>
+  <style type="text/css">
+/* Copyright 2011 Google Inc. All Rights Reserved. */
+  body{background-color:white;color:black;font-family:Arial,sans-serif,sans;font-size:13px;margin:0}#docs-titlebar{clear:both;font-size:13px;height:44px;margin-top:-1px;width:100%}.docs-exp{-moz-border-radius:6px;-webkit-border-radius:6px;border:1px solid #800;color:#800;font-size:11px;margin-right:8px;padding:0 5px;text-align:center;white-space:nowrap}.docs-exp-link{color:#800}#docs-logo{height:30px;margin:6px 8px 0;vertical-align:middle}.docs-butter{text-align:center}.docs-butter-inner{border-radius:3px;font-size:13px;font-weight:bold;margin:0 auto 5px;padding:5px 7px;-webkit-border-radius:3px;-moz-border-radius:3px}.docs-butter-info{background:#f6bc5d;color:#222}.docs-butter-info-link{color:#0658b5}.docs-butter-warning{background:#c00;color:#fff}.docs-butter-warning-link{color:#c3d9ff}.docs-doc-icon-img{border:0;padding-right:5px}.docs-titlebar-mid-td{overflow:hidden;vertical-align:top;width:100%}.docs-titlebar-mid{font-size:100%;height:44px;margin-right:-9999px;width:100%}.docs-title-td{padding-top:9px;vertical-align:top;width:100%}.docs-title-outer{margin-right:-9999px;overflow:hidden;position:relative;white-space:nowrap;width:100%}.docs-title{display:block;display:inline-block;max-width:70%;outline:none;_position:relative}.docs-title-inner{border:1px solid #fff;cursor:default;font:15px/21px Arial,sans-serif;padding:1px 4px 1px 3px;overflow:hidden;_width:160px}.docs-title-focused .docs-title-inner,.docs-title-hover .docs-title-inner{background-color:#ffffd6;cursor:pointer}.docs-title-untitled .docs-title-inner,.docs-title-focused .docs-title-inner,.docs-title-hover .docs-title-inner{border-color:#ccc;border-top-color:#aaa;}.docs-title-untitled .docs-title-fade,.docs-title-hover .docs-title-fade,.docs-title-focused .docs-title-fade{visibility:hidden}.docs-title-fade{position:absolute;right:30%;top:1px;width:15px;margin-right:-16px}* html .docs-title-fade{right:0}.docs-title-fade1,.docs-title-fade2,.docs-title-fade3{background:#fff;float:right;height:22px;position:relative;width:5px}.docs-title-fade1{opacity:0.82;filter:alpha(opacity=82)}.docs-title-fade2{opacity:0.62;filter:alpha(opacity=62)}.docs-title-fade3{opacity:0.4;filter:alpha(opacity=40)}.docs-title-strut{margin-bottom:-20px;width:90px}.docs-title-pill{display:none;display:inline-block;margin-left:8px;margin-top:5px;position:relative;vertical-align:top}.docs-notice-td{color:#999;line-height:18px;padding-bottom:13px;padding-left:8px;text-align:right;vertical-align:bottom;white-space:nowrap}.docs-titlebar-buttons{padding:0 7px;text-align:right;vertical-align:middle;white-space:nowrap}*:first-child+html .docs-titlebar-buttons-inner{overflow:hidden;position:relative}#docs-titlebar-start-presentation,#docs-titlebar-save,#docs-titlebar-save-close,#docs-docos-discussionbutton{margin-right:8px!important}#docs-titlebar-save{text-align:center}#docs-titlebar-share-action,#docs-titlebar-share{font-weight:bold}.docs-titlebar-share-label .goog-imageless-button-content{padding-right:6px}.docs-titlebar-share-label .goog-custom-button-inner-box{padding-left:10px;padding-right:6px}.docs-titlebar-buttons .goog-menu-button-dropdown{position:relative;top:2px;vertical-align:baseline}.docs-star-container{width:16px;height:16px;vertical-align:top;margin-top:4px}#docs-star{outline:none}#docs-star.goog-control-checked .docs-icon-img{left:-816px}#docs-star.goog-control-hover{cursor:pointer}#docs-star .docs-icon{vertical-align:baseline}.docs-menubar{background:#e3e9ff;border-top:2px solid #bcf;cursor:default;font:13px Arial,sans-serif;outline:none;position:relative;white-space:nowrap;width:100%;}.docs-menubar .goog-control{padding:5px 8px;outline:none}.docs-menubar .goog-control-hover,.docs-menubar .goog-control-open{background:#68e;border:1px solid #68e;color:#fff;padding:4px 7px}.docs-menubar .goog-control-disabled{color:#ccc}#docs-toolbar{border-top:1px solid #fff;border-bottom:1px solid #ccc}.docs-gaia-disabled{color:#999;cursor:text}.docs-hide-label{line-height:1em;margin-bottom:-1em;visibility:hidden}.docs-rename-dialog,.docs-edit-description-dialog{width:340px}.docs-rename-dialog .modal-dialog-userInput,.docs-edit-description-dialog .modal-dialog-userInput{width:300px;margin:4px}.docs-faux-link{color:#20c;cursor:pointer;text-decoration:underline}.modal-dialog-bg{z-index:1000}.modal-dialog{z-index:1001}.goog-menu{z-index:1001}.goog-inline-block{position:relative;display:-moz-inline-box;display:inline-block}* html .goog-inline-block{display:inline}*:first-child+html .goog-inline-block{display:inline}.goog-imageless-button{background:#e3e3e3;border-color:#bbb;border-style:solid;border-width:1px 0;color:#222;cursor:default;font-family:Arial,sans-serif;line-height:0;list-style:none;margin:2px;outline:none;padding:0;text-decoration:none;vertical-align:middle}.goog-imageless-button-outer-box{border-color:#bbb;border-style:solid;border-width:0 1px;left:-1px;margin-right:-2px}.goog-imageless-button-top-shadow{background:#f9f9f9;border-bottom:3px solid #eee;line-height:9px;margin-bottom:-12px}.goog-imageless-button-content{line-height:1.5em;padding:0 4px;text-align:center}.goog-imageless-button-collapse-right{border-right-width:1px;margin-right:-2px;}.goog-imageless-button-collapse-left .goog-imageless-button-outer-box{border-left-color:#eee;left:0;margin-right:-1px;}.goog-imageless-button-disabled,.goog-imageless-button-disabled .goog-imageless-button-outer-box{background:#eee;border-color:#ccc;color:#666;}.goog-imageless-button-disabled .goog-imageless-button-top-shadow{visibility:hidden}.goog-imageless-button-active,.goog-imageless-button-checked{background:#f9f9f9}.goog-imageless-button-active .goog-imageless-button-top-shadow,.goog-imageless-button-checked .goog-imageless-button-top-shadow{background:#e3e3e3}.goog-imageless-button-active{color:#000}.goog-imageless-button-hover,.goog-imageless-button-hover .goog-imageless-button-outer-box,.goog-imageless-button-focused,.goog-imageless-button-focused .goog-imageless-button-outer-box{border-color:#000}* html .goog-imageless-button-inner-box{display:inline;position:static;zoom:1}* html .goog-imageless-button-outer-box{right:0}.goog-menu-button{background:#ddd url(https://ssl.gstatic.com/editor/button-bg.png) repeat-x top left;border:0;color:#000;cursor:pointer;list-style:none;margin:2px;outline:none;padding:0;text-decoration:none;vertical-align:middle}.goog-menu-button-outer-box,.goog-menu-button-inner-box{border-style:solid;border-color:#aaa;vertical-align:top}.goog-menu-button-outer-box{margin:0;border-width:1px 0;padding:0}.goog-menu-button-inner-box{margin:0 -1px;border-width:0 1px;padding:3px 4px}* html .goog-menu-button-inner-box{left:-1px}* html .goog-menu-button-rtl .goog-menu-button-outer-box{left:-1px;right:auto}* html .goog-menu-button-rtl .goog-menu-button-inner-box{right:auto}*:first-child+html .goog-menu-button-inner-box{left:-1px}*:first-child+html .goog-menu-button-rtl .goog-menu-button-inner-box{left:1px;right:auto}::root .goog-menu-button,::root .goog-menu-button-outer-box,::root .goog-menu-button-inner-box{line-height:0}::root .goog-menu-button-caption,::root .goog-menu-button-dropdown{line-height:normal}.goog-menu-button-disabled{background-image:none!important;opacity:0.3;-moz-opacity:0.3;filter:alpha(opacity=30)}.goog-menu-button-disabled .goog-menu-button-outer-box,.goog-menu-button-disabled .goog-menu-button-inner-box,.goog-menu-button-disabled .goog-menu-button-caption,.goog-menu-button-disabled .goog-menu-button-dropdown{color:#333!important;border-color:#999!important}* html .goog-menu-button-disabled{margin:2px 1px!important;padding:0 1px!important}*:first-child+html .goog-menu-button-disabled{margin:2px 1px!important;padding:0 1px!important}.goog-menu-button-hover .goog-menu-button-outer-box,.goog-menu-button-hover .goog-menu-button-inner-box{border-color:#9cf #69e #69e #7af!important;}.goog-menu-button-active,.goog-menu-button-open{background-color:#bbb;background-position:bottom left}.goog-menu-button-focused .goog-menu-button-outer-box,.goog-menu-button-focused .goog-menu-button-inner-box{border-color:orange}.goog-menu-button-caption{padding:0 4px 0 0;vertical-align:top}.goog-menu-button-dropdown{height:15px;width:7px;background:url(https://ssl.gstatic.com/editor/editortoolbar.png) no-repeat -388px 0;vertical-align:top}.goog-menu-button-collapse-right,.goog-menu-button-collapse-right .goog-menu-button-outer-box,.goog-menu-button-collapse-right .goog-menu-button-inner-box{margin-right:0}.goog-menu-button-collapse-left,.goog-menu-button-collapse-left .goog-menu-button-outer-box,.goog-menu-button-collapse-left .goog-menu-button-inner-box{margin-left:0}.goog-menu-button-collapse-left .goog-menu-button-inner-box{border-left:1px solid #fff}.goog-menu-button-collapse-left.goog-menu-button-checked .goog-menu-button-inner-box{border-left:1px solid #ddd}.apps-promo{position:absolute;z-index:10000;font-size:11px}.apps-promo-arrow-container{position:relative}.apps-promo-arrow{position:absolute;background:transparent url(//ssl.gstatic.com/docs/common/promo_arrows-0.png) no-repeat}.apps-promo-close{position:relative;top:-5px;width:16px;height:16px;float:right;cursor:pointer;background:transparent url(//ssl.gstatic.com/docs/common/promo_close-0.png) no-repeat}.apps-promo-popup{background:#fff;box-shadow:0 7px 7px #666;-moz-box-shadow:0 7px 7px #666;-webkit-box-shadow:0 7px 7px #666;border:1px solid #ccc;width:275px;padding:15px;padding-right:10px}.apps-promo-header-content{font-weight:bold;font-size:14px}.apps-promo-content{padding-top:15px;font-size:13px}.apps-promo-buttons{padding-top:15px;padding-left:4px}.apps-promo-buttons a{font-size:13px;vertical-align:middle;margin-left:15px}.apps-promo-buttons-inner{display:inline}.apps-promo-buttons-inner .goog-imageless-button-content{white-space:nowrap}.goog-tooltip{background:#ffe;border:1px solid #999;border-width:1px 2px 2px 1px;padding:6px;z-index:30000}.share-pill{color:#364583;cursor:pointer;font-size:11px;vertical-align:bottom}.share-pill-container-hover .share-pill-text{text-decoration:underline}.share-pill-tooltip{font-size:13px;padding:8px;width:300px;cursor:default}.share-pill-tooltip-description{color:#666}.share-pill-public-icon,.share-pill-unlisted-icon,.share-pill-domain-public-icon,.share-pill-domain-unlisted-icon,.share-pill-private-icon{width:16px;height:16px;background-repeat:no-repeat;margin-right:4px;vertical-align:bottom}.share-pill-public-icon{background-position:-304px 0}.share-pill-unlisted-icon{background-position:-320px 0}.share-pill-domain-public-icon{background-position:-336px 0}.share-pill-domain-unlisted-icon{background-position:-352px 0}.share-pill-private-icon{background-position:-368px 0}.share-pill-icon-hover{background:infobackground;border:1px solid infotext;color:infotext;font:menu;padding:1px;z-index:30000}.share-client-promo{font-size:13px}.share-client-promo-heading{font-weight:bold}.share-client-promo-desc{color:#666}.share-client-promo-section{padding-bottom:10px}.share-client-promo-subsection{padding-bottom:8px}.share-client-promo .apps-promo-arrow{background:url(//ssl.gstatic.com/docs/common/promo_arrows-0.png) no-repeat}.share-client-promo .apps-promo-close{background:url(//ssl.gstatic.com/docs/common/promo_close-0.png) no-repeat}.share-client-promo .apps-promo-popup{width:300px}.share-client-promo .apps-promo-buttons{padding:0}.share-sharebutton-people-icon{width:16px;height:16px;background-repeat:no-repeat;background-position:0 0;vertical-align:text-bottom;margin-right:0}.share-client-dialog{max-height:100%;overflow:auto;width:auto}* html .share-client-dialog{max-height:none!important;overflow:visible!important}*:first-child+html .share-client-dialog{max-height:none!important;overflow:visible!important}.share-client-dialog .modal-dialog-content{padding:0}.share-client-dialog iframe,.inline-share-ui-share-client iframe{height:100%;width:100%;border:none}.share-client-dialog .modal-dialog-buttons{display:none}.share-client-error-dialog{width:400px}.share-client-error-dialog .modal-dialog-title{display:none}.share-client-error-dialog .modal-dialog-content{padding:8px}.share-client-loading-contents{height:99px;text-align:center;width:454px}.share-client-spinner{background-image:url(//ssl.gstatic.com/docs/documents/share/images/spinner-1.gif);margin-top:41px;width:16px;height:16px}.inline-share-ui-status{font-size:12pt;font-weight:bold;height:19px;padding:5px 10px;background-color:#f1f4ff}.share-client-panel-dialog-share{height:100%;width:100%}.share-client-panel-dialog-overlay{position:absolute;z-index:150}.apps-share-sprite{background-image:url(//ssl.gstatic.com/docs/documents/share/images/icons-4.png)}.share-menu-invite-icon{background-position:0 0}.share-menu-view-icon{background-position:-16px 0}.share-menu-domain-icon{background-position:-48px 0}.share-menu-link-icon{background-position:-288px 0}.share-menu-hint{color:#888}.modal-dialog{background:#c1d9ff;border:1px solid #3a5774;color:#000;padding:4px;position:absolute}.modal-dialog a,.modal-dialog a:link,.modal-dialog a:visited{color:#06c;cursor:pointer}.modal-dialog-bg{background:#666;left:0;position:absolute;top:0}.modal-dialog-title{background:#e0edfe;color:#000;cursor:pointer;font-size:120%;font-weight:bold;padding:8px 31px 8px 8px;position:relative;_zoom:1;}.modal-dialog-title-close{background:#e0edfe url(https://ssl.gstatic.com/editor/editortoolbar.png) no-repeat -528px 0;cursor:default;height:15px;position:absolute;right:10px;top:8px;width:15px;vertical-align:middle}.modal-dialog-buttons,.modal-dialog-content{background-color:#fff;padding:8px}.goog-buttonset-default{font-weight:bold}.goog-menu{background:#fff;border-color:#ccc #666 #666 #ccc;border-style:solid;border-width:1px;cursor:default;font:normal 13px Arial,sans-serif;margin:0;outline:none;padding:4px 0;position:absolute;z-index:20000;}.goog-menuitem{color:#000;font:normal 13px Arial,sans-serif;list-style:none;margin:0;padding:4px 7em 4px 28px;white-space:nowrap}.goog-menu-nocheckbox .goog-menuitem,.goog-menu-noicon .goog-menuitem{padding-left:12px}.goog-menu-noaccel .goog-menuitem{padding-right:20px}.goog-menuitem-content{color:#000;font:normal 13px Arial,sans-serif}.goog-menuitem-disabled .goog-menuitem-accel,.goog-menuitem-disabled .goog-menuitem-content{color:#ccc!important}.goog-menuitem-disabled .goog-menuitem-icon{opacity:0.3;-moz-opacity:0.3;filter:alpha(opacity=30)}.goog-menuitem-highlight,.goog-menuitem-hover{background-color:#d6e9f8;border-color:#d6e9f8;border-style:dotted;border-width:1px 0;padding-bottom:3px;padding-top:3px}.goog-menuitem-checkbox,.goog-menuitem-icon{background-repeat:no-repeat;height:16px;left:6px;position:absolute;right:auto;vertical-align:middle;width:16px}.goog-option-selected .goog-menuitem-checkbox,.goog-option-selected .goog-menuitem-icon{background:url(https://ssl.gstatic.com/editor/editortoolbar.png) no-repeat -512px 0}.goog-menuitem-accel{color:#999;direction:ltr;left:auto;padding:0 6px;position:absolute;right:0;text-align:right}.goog-menuseparator{border-top:1px solid #ccc;margin:4px 0;padding:0}
+  </style>
+  <style type="text/css">
+div.c24 {position: absolute; display: none;}
+  div.c23 {-moz-user-select: none; visibility: visible; left: 37px; top: 100px; display: none;}
+  div.c22 {display: none; -moz-user-select: none;}
+  div.c21 {-moz-user-select: none; display: none;}
+  div.c20 {left: 209px; top: 100px; width: 1231px; height: 606px;}
+  div.c19 {width: 90%;}
+  div.c18 {text-align: center}
+  img.c17 {display: none; width: 1196px; height: 1689px;}
+  img.c16 {width: 1196px; height: 1689px;}
+  img.c15 {width: 588px; height: 831px; display: none;}
+  div.c14 {width: 1216px;}
+  img.c13 {width: 1196px;}
+  img.c12 {width: 800px; height: 1131px; display: none;}
+  div.c11 {top: 100px; width: 208px; height: 606px; left: 0pt;}
+  div.c10 {height: 479px;}
+  img.c9 {width: 138px; height: 195px;}
+  img.c8 {width: 138px;}
+  div.c7 {-moz-user-select: none;}
+  div.c6 {display: none;}
+  span.c5 {-moz-user-select: none;}
+  div.c4 {clear: both;}
+  div.c3 {right: 0pt;}
+  div.c2 {left: 0pt;}
+  div.c1 {display: none; left: 608px;}
+  </style>
 </head>
 
-<body>
-</body>
+<body class="goog-useragent-gecko">
+  <noscript><br>
+  <br>
+  Your browser must support javascript.</noscript>
 
+  <div id="gview-butter" class="c1"></div>
+
+  <div id="ogb">
+    <div id="gbar">
+      <a target="_blank" href="http://www.orkut.com/Main?tab=o0#Home" class=
+      "gb1">Orkut</a>&nbsp;<a target="_blank" href="https://mail.google.com/mail/?tab=om"
+      class="gb1">Gmail</a>&nbsp;<a target="_blank" href=
+      "https://www.google.com/calendar?tab=oc" class="gb1">Calendar</a>&nbsp;<b class=
+      "gb1">Documents</b>&nbsp;<a target="_blank" href=
+      "http://picasaweb.google.co.in/home?tab=oq" class="gb1">Photos</a>&nbsp;<a target=
+      "_blank" href="http://www.google.co.in/webhp?tab=ow" class=
+      "gb1">Web</a>&nbsp;<a href="http://www.google.co.in/intl/en/options/" onclick=
+      "this.blur();gbar.tg(event);return !1" aria-haspopup="true" class=
+      "gb3"><u>more</u>&nbsp;<small>&#226;&#8211;&#188;</small></a>
+
+      <div class="gbm" id="gbi">
+        <a target="_blank" href="http://www.google.co.in/reader/?tab=oy" class=
+        "gb2">Reader</a>&nbsp;<a target="_blank" href="https://sites.google.com/?tab=o3"
+        class="gb2">Sites</a>&nbsp;<a target="_blank" href=
+        "http://groups.google.co.in/grphp?tab=og" class="gb2">Groups</a>&nbsp;<a target=
+        "_blank" href="http://www.youtube.com/?tab=o1&amp;gl=IN" class="gb2">YouTube</a>
+
+        <div class="gb2 gbd"></div><a target="_blank" href=
+        "http://www.google.co.in/imghp?tab=oi" class="gb2">Images</a>&nbsp;<a target=
+        "_blank" href="http://maps.google.co.in/maps?tab=ol" class=
+        "gb2">Maps</a>&nbsp;<a target="_blank" href=
+        "http://news.google.co.in/nwshp?tab=on" class="gb2">News</a>&nbsp;<a target=
+        "_blank" href="http://translate.google.co.in/?tab=oT" class=
+        "gb2">Translate</a>&nbsp;<a target="_blank" href=
+        "http://books.google.co.in/bkshp?tab=op" class="gb2">Books</a>&nbsp;<a target=
+        "_blank" href="http://scholar.google.co.in/schhp?tab=os" class=
+        "gb2">Scholar</a>&nbsp;<a target="_blank" href=
+        "http://blogsearch.google.co.in/?tab=ob" class="gb2">Blogs</a>&nbsp;<a target=
+        "_blank" href="http://www.google.co.in/realtime?tab=oY" class="gb2">Realtime</a>
+
+        <div class="gb2 gbd"></div><a target="_blank" href=
+        "http://www.google.co.in/intl/en/options/" class=
+        "gb2">even&nbsp;more&nbsp;&#194;&#187;</a>
+      </div>
+    </div>
+
+    <div id="guser" width="100%">
+      <span id="gbn" class="gbi"></span><span id="gbf" class="gbf"></span><b><a href=
+      "https://docs.google.com/viewer?a=v&amp;pid=explorer&amp;chrome=true&amp;srcid=1b-ZVnEfxReVAlMHZO88mYgY6ENxg0wf-TEsApi48HXCl1aSwNOkRyZ3yah-i&amp;hl=en_US&amp;authuser=0"
+      onclick="this.blur();gbar.tg(event);return !1" aria-haspopup="true" aria-owns="gb2"
+      class=
+      "gb3"><u>jasitis@gmail.com</u>&nbsp;<small>&#226;&#8211;&#188;</small></a></b>&nbsp;|&nbsp;<span id="gbe">
+      </span><a href="https://docs.google.com/settings" onclick=
+      "this.blur();gbar.tg(event);return !1" aria-haspopup="true" aria-owns="gbg" class=
+      "gb3"><u>Settings</u>&nbsp;<small>&#226;&#8211;&#188;</small></a>&nbsp;|&nbsp;<a id="gb_71"
+      href="https://docs.google.com/logout" class="gb4">Sign&nbsp;out</a>
+
+      <div class="gbm" id="gbg">
+        <a target="_blank" href="https://docs.google.com/settings" class=
+        "gb2">Documents&nbsp;settings</a>&nbsp;<a target="_blank" href=
+        "https://www.google.com/accounts/b/0/ManageAccount?hl=en_US" class=
+        "gb2">Google&nbsp;Account&nbsp;settings</a>
+      </div>
+
+      <div class="gbm" id="gb2">
+        <div class="gb2">
+          <b>jasitis@gmail.com</b>
+        </div>
+
+        <div class="gb2 gbd"></div><a target="_blank" href=
+        "https://www.google.com/accounts/AddSession?service=writely&amp;continue=https://docs.google.com/viewer?a%3Dv%26pid%3Dexplorer%26chrome%3Dtrue%26srcid%3D1b-ZVnEfxReVAlMHZO88mYgY6ENxg0wf-TEsApi48HXCl1aSwNOkRyZ3yah-i%26hl%3Den_US&amp;hl=en_US"
+        class="gb2">Sign&nbsp;in&nbsp;to&nbsp;another&nbsp;account&#226;&#8364;&#166;</a>
+      </div>
+    </div>
+
+    <div class="gbh c2"></div>
+
+    <div class="gbh c3"></div>
+
+    <div class="c4"></div>
+  </div>
+
+  <table title="" id="docs-titlebar" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td><a title="Back to Google Docs" href=
+        "https://docs.google.com/?authuser=0"><img id="docs-logo" src=
+        "viewer_files/docs_logo_sm.gif" alt="Google Docs logo" width="122" border=
+        "0"></a></td>
+
+        <td id="docs-doc-icon"></td>
+
+        <td class="docs-titlebar-mid-td">
+          <table class="docs-titlebar-mid" cellpadding="0" cellspacing="0">
+            <tbody>
+              <tr>
+                <td class="docs-title-td">
+                  <div class="docs-title-outer">
+                    <div class="docs-star-container goog-inline-block">
+                    </div><span aria-disabled="true" class=
+                    "docs-title docs-title-disabled c5" id="docs-title" role=
+                    "button"></span>
+
+                    <div dir="ltr" class="docs-title-inner">
+                      <span aria-disabled="true" class=
+                      "docs-title docs-title-disabled c5" id="docs-title" role=
+                      "button">p71-shirakawa.pdf - Powered by Google Docs</span>
+                    </div>
+
+                    <div class="docs-title-fade">
+                      <span aria-disabled="true" class=
+                      "docs-title docs-title-disabled c5" id="docs-title" role=
+                      "button"></span>
+
+                      <div class="docs-title-fade1">
+                        <span aria-disabled="true" class=
+                        "docs-title docs-title-disabled c5" id="docs-title" role=
+                        "button"></span>
+                      </div>
+
+                      <div class="docs-title-fade2">
+                        <span aria-disabled="true" class=
+                        "docs-title docs-title-disabled c5" id="docs-title" role=
+                        "button"></span>
+                      </div>
+
+                      <div class="docs-title-fade3">
+                        <span aria-disabled="true" class=
+                        "docs-title docs-title-disabled c5" id="docs-title" role=
+                        "button"></span>
+                      </div>
+                    </div><span tabindex="0" role="link" class=
+                    "docs-title-pill share-pill-container c5" id=
+                    "docs-title-pill"><span class=
+                    "share-pill share-pill-public"><span class=
+                    "goog-inline-block apps-share-sprite share-pill-public-icon" vhsh=
+                    "true" vsjson=
+                    "{&quot;visibilityState&quot;:&quot;public&quot;,&quot;summary&quot;:&quot;Public on the web&quot;,&quot;role&quot;:20,&quot;restrictedToDomain&quot;:false,&quot;visibilityEntries&quot;:[{&quot;visibilityState&quot;:&quot;public&quot;,&quot;summary&quot;:&quot;Public on the web&quot;,&quot;role&quot;:20,&quot;restrictedToDomain&quot;:false,&quot;details&quot;:&quot;Anyone on the Internet can find and access. No sign-in required.&quot;}]}">&nbsp;</span><span class="share-pill-text">Public
+                    on the web</span></span></span>
+                  </div>
+
+                  <div class="docs-title-strut"></div>
+                </td>
+
+                <td class="docs-notice-td">
+                  <div id="docs-notice">
+                    &nbsp;
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+
+        <td class="docs-titlebar-buttons">
+          <div class="docs-titlebar-buttons-inner">
+            <div title="Save in Google Docs" class=
+            "goog-custom-button goog-inline-block goog-inline-follow goog-custom-button-disabled goog-custom-button-outer-box goog-inline-block goog-custom-button-inner-box goog-inline-block">
+            Save in Google Docs
+            </div>
+
+            <div title="Edit online" class=
+            "goog-custom-button goog-inline-block goog-inline-follow-pad goog-custom-button-disabled goog-custom-button-outer-box goog-inline-block goog-custom-button-inner-box goog-inline-block c6">
+            Edit
+            </div>
+
+            <div tabindex="0" aria-disabled="false" role="button" id=
+            "docs-titlebar-share-action" class=
+            "docs-titlebar-share-label goog-imageless-button-collapse-right goog-inline-block goog-imageless-button goog-inline-block goog-imageless-button-outer-box goog-imageless-button-inner-box goog-imageless-button-pos-box c7">
+            <div class="goog-imageless-button-top-shadow">
+                &nbsp;
+              </div>
+
+              <div class="goog-imageless-button-content">
+                <div class=
+                "apps-share-sprite goog-inline-block share-sharebutton-people-icon">
+                </div>Share
+              </div>
+            </div>
+
+            <div aria-disabled="false" aria-activedescendant="" aria-haspopup="true"
+            role="button" id="docs-titlebar-share" class=
+            "goog-imageless-button-collapse-left goog-inline-block goog-imageless-button goog-inline-block goog-imageless-button-outer-box goog-imageless-button-inner-box goog-imageless-button-pos-box c7"
+            tabindex="0">
+              <div class="goog-imageless-button-top-shadow">
+                &nbsp;
+              </div>
+
+              <div class="goog-imageless-button-content">
+                &#239;&#187;&#191;
+
+                <div class="goog-menu-button-dropdown goog-inline-block">
+                  &nbsp;
+                </div>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div id="gview-menu">
+    <div aria-activedescendant="" id="docs-menubar" role="menubar" class=
+    "docs-menubar goog-container goog-container-horizontal c7" tabindex="0">
+      <div aria-activedescendant="" aria-disabled="false" aria-haspopup="true" id=
+      "docs-file-menu" role="menuitem" class=
+      "menu-button goog-control goog-inline-block c7">
+        File
+      </div>
+
+      <div aria-activedescendant="" aria-expanded="false" aria-pressed="false"
+      aria-disabled="false" aria-haspopup="true" id="docs-view-menu" role="menuitem"
+      class="menu-button goog-control goog-inline-block c7">
+        View
+      </div>
+    </div>
+  </div>
+
+  <div id="gview">
+    <div class="view" id="view">
+      <textarea id="selection-content" cols="1" rows="1" readonly="readonly">
+</textarea>
+
+      <div class="thumb-pane c11" id="thumb-pane">
+        <div class="thumb-pane-upper" id="thumb-pane-upper">
+          <div class="controlbar controlbar-default" id="controlbar">
+            <div class="controlbar-default-item">
+              <div title="Back" class=
+              "goog-custom-button goog-inline-block goog-custom-button-disabled goog-custom-button-outer-box goog-inline-block goog-custom-button-inner-box goog-inline-block back-image"
+              id="controlbarBackButton"></div>
+
+              <div class="goog-inline-block goog-inline-follow pager-page-number" id=
+              "controlbarPageNumber">
+                1 / 9
+              </div>
+
+              <div title="Forward" class=
+              "goog-custom-button goog-inline-block goog-custom-button-outer-box goog-inline-block goog-custom-button-inner-box goog-inline-block forward-image"
+              id="controlbarForwardButton"></div>
+            </div>
+
+            <div class="controlbar-default-item">
+              <div title="Zoom out" class=
+              "goog-custom-button goog-inline-block goog-custom-button-outer-box goog-inline-block goog-custom-button-inner-box goog-inline-block minus-image"
+              id="controlbarZoomOutButton"></div>
+
+              <div title="Fit page to screen" class=
+              "goog-custom-button goog-inline-block goog-inline-follow-pad goog-custom-button-active goog-custom-button-outer-box goog-inline-block goog-custom-button-inner-box goog-inline-block one-up-image"
+              id="controlbarOneUpButton"></div>
+
+              <div title="Fit two pages to screen" class=
+              "goog-custom-button goog-inline-block goog-inline-follow goog-custom-button-outer-box goog-inline-block goog-custom-button-inner-box goog-inline-block two-up-image"
+              id="controlbarTwoUpButton"></div>
+
+              <div title="Zoom in" class=
+              "goog-custom-button goog-inline-block goog-inline-follow-pad goog-custom-button-outer-box goog-inline-block goog-custom-button-inner-box goog-inline-block plus-image"
+              id="controlbarZoomInButton"></div>
+            </div>
+
+            <div class="controlbar-default-item">
+              <input class="search-box label-input-label" autocomplete="off" value=
+              "Search the document." type="text">
+
+              <div class="search-button-holder">
+                <div title="Find previous" class=
+                "goog-custom-button goog-inline-block goog-custom-button-disabled goog-inline-follow goog-custom-button-outer-box goog-inline-block goog-custom-button-inner-box goog-inline-block search-button up-arrow"
+                id="controlbarFindPreviousButton"></div>
+
+                <div title="Find next" class=
+                "goog-custom-button goog-inline-block goog-custom-button-disabled goog-inline-follow goog-custom-button-outer-box goog-inline-block goog-custom-button-inner-box goog-inline-block search-button down-arrow"
+                id="controlbarFindNextButton"></div>
+
+                <div class="search-message goog-inline-block goog-inline-follow-pad c6"
+                id="controlbarSearchMessage"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="thumb-pane-nnav c6" id="thumb-pane-nnav"></div>
+        </div>
+
+        <div class="thumb-pane-lower c10" id="thumb-pane-lower">
+          <div class="thumb-element thumb-first-element">
+            <span class="page-number">1</span>
+
+            <div id=":i.thumb.0">
+            <div class="highlight-pane"></div>
+
+            <div class="highlight-pane"></div>
+
+            <div class="highlight-pane"></div><img src="viewer_files/viewer_005.png"
+            class="thumb-image-emphasized c8"></div>
+          </div>
+
+          <div class="thumb-element">
+            <span class="page-number">2</span>
+
+            <div id=":i.thumb.1">
+            <div class="highlight-pane"></div>
+
+            <div class="highlight-pane"></div>
+
+            <div class="highlight-pane"></div><img src="viewer_files/viewer_008.png"
+            class="thumb-image c8"></div>
+          </div>
+
+          <div class="thumb-element">
+            <span class="page-number">3</span>
+
+            <div id=":i.thumb.2">
+            <div class="highlight-pane"></div>
+
+            <div class="highlight-pane"></div>
+
+            <div class="highlight-pane"></div><img src="viewer_files/viewer_011.png"
+            class="thumb-image c8"></div>
+          </div>
+
+          <div class="thumb-element">
+            <span class="page-number">4</span>
+
+            <div id=":i.thumb.3">
+            <div class="highlight-pane"></div>
+
+            <div class="highlight-pane"></div>
+
+            <div class="highlight-pane"></div><img src="viewer_files/viewer.png" class=
+            "thumb-image c8"></div>
+          </div>
+
+          <div class="thumb-element">
+            <span class="page-number">5</span>
+
+            <div id=":i.thumb.4">
+            <div class="highlight-pane"></div>
+
+            <div class="highlight-pane"></div>
+
+            <div class="highlight-pane"></div><img src="viewer_files/viewer_003.png"
+            class="thumb-image c8"></div>
+          </div>
+
+          <div class="thumb-element">
+            <span class="page-number">6</span>
+
+            <div id=":i.thumb.5">
+            <div class="highlight-pane"></div>
+
+            <div class="highlight-pane"></div>
+
+            <div class="highlight-pane"></div><img src="viewer_files/viewer_006.png"
+            class="thumb-image c8"></div>
+          </div>
+
+          <div class="thumb-element">
+            <span class="page-number">7</span>
+
+            <div id=":i.thumb.6">
+            <div class="highlight-pane"></div>
+
+            <div class="highlight-pane"></div>
+
+            <div class="highlight-pane"></div><img src="viewer_files/viewer_009.png"
+            class="thumb-image c8"></div>
+          </div>
+
+          <div class="thumb-element">
+            <span class="page-number">8</span>
+
+            <div id=":i.thumb.7">
+            <div class="highlight-pane"></div>
+
+            <div class="highlight-pane"></div>
+
+            <div class="highlight-pane"></div><img src="viewer_files/viewer_004.png"
+            class="thumb-image c8"></div>
+          </div>
+
+          <div class="thumb-element">
+            <span class="page-number">9</span>
+
+            <div id=":i.thumb.8">
+            <div class="highlight-pane"></div>
+
+            <div class="highlight-pane"></div>
+
+            <div class="highlight-pane"></div><img class="thumb-image c9"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="c20" id="content-pane">
+        <div id="gview-document-butterbar" class="c1"></div>
+
+        <div id="page-pane" class="c18">
+          <div id=":i.page.0" class="page-element goog-inline-block c14">
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div><img src="viewer_files/viewer_005.png" class=
+          "page-image c12"><img src="viewer_files/viewer_002.png" class=
+          "page-image c13"></div>
+
+          <div id=":i.page.1" class="page-element goog-inline-block c14">
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div><img src="viewer_files/viewer_008.png" class=
+          "page-image c12"><img src="viewer_files/viewer_010.png" class=
+          "page-image c13"></div>
+
+          <div id=":i.page.2" class="page-element goog-inline-block c14">
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div><img src="viewer_files/viewer_011.png" class=
+          "page-image c15"><img src="viewer_files/viewer_007.png" class=
+          "page-image c13"></div>
+
+          <div id=":i.page.3" class="page-element goog-inline-block c14">
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div><img src="viewer_files/viewer.png" class=
+          "page-image c16"><img class="page-image c17"></div>
+
+          <div id=":i.page.4" class="page-element goog-inline-block c14">
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div><img src="viewer_files/viewer_003.png" class=
+          "page-image c16"><img class="page-image c17"></div>
+
+          <div id=":i.page.5" class="page-element goog-inline-block c14">
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div><img src="viewer_files/viewer_006.png" class=
+          "page-image c16"><img class="page-image c17"></div>
+
+          <div id=":i.page.6" class="page-element goog-inline-block c14">
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div><img src="viewer_files/viewer_009.png" class=
+          "page-image c16"><img class="page-image c17"></div>
+
+          <div id=":i.page.7" class="page-element goog-inline-block c14">
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div><img src="viewer_files/viewer_004.png" class=
+          "page-image c16"><img class="page-image c17"></div>
+
+          <div id=":i.page.8" class="page-element goog-inline-block c14">
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div>
+
+          <div class="highlight-pane"></div><img class="page-image c16"><img class=
+          "page-image c17"></div>
+        </div>
+
+        <div class="c6" id="loading">
+          Loading...
+
+          <div aria-valuenow="90" aria-live="polite" role="progressbar" class=
+          "progress-bar-horizontal progress-bar-thumb c19" id="progress-bar-thumb"></div>
+        </div>
+      </div>
+    </div><script type="text/javascript">
+function GVIEW_getViewportSize() {
+      
+        var win = window
+        var doc = win.document;
+        var el = doc.body;
+        return {width: el.clientWidth, height: el.clientHeight};
+      
+    }
+
+    function GVIEW_initialResize() {
+      var viewEl = document.getElementById('view');
+
+      
+      var viewportSize = GVIEW_getViewportSize();
+      var left = viewEl.offsetLeft;
+      var top = viewEl.offsetTop;
+      var divW = viewportSize.width;
+      var divH = viewportSize.height;
+
+      var thumbW = 0;
+      var thumbL = divW;
+
+      
+      
+        var thumbsPaneEl = document.getElementById('thumb-pane');
+        var thumbsPaneUpperEl = document.getElementById('thumb-pane-upper');
+        var thumbsPaneLowerEl = document.getElementById('thumb-pane-lower');
+
+        var thumbW = 2 * 12;
+        
+
+        
+        var defaultThumbWidth = 138;
+        thumbW += defaultThumbWidth;
+        var upperWidth = thumbsPaneUpperEl.offsetWidth + 13;
+        if (upperWidth > thumbW) {
+          thumbW = upperWidth;
+        }
+        
+
+        thumbsPaneEl.style.top = top;
+        
+        thumbsPaneEl.style.width = Math.max(0, thumbW - 1);
+        thumbsPaneEl.style.height = divH;
+
+        
+        thumbsPaneLowerEl.style.height =
+          Math.max(0, divH - thumbsPaneUpperEl.offsetHeight - 21);
+
+        
+        thumbL = divW - thumbW;
+        
+          thumbsPaneEl.style.left = left;
+        
+
+      
+
+      
+      var thumbL = divW - thumbW;
+      
+      var pageW = thumbL - left;
+
+      var contentPaneEl = document.getElementById('content-pane');
+
+      
+        contentPaneEl.style.left = left + thumbW;
+      
+
+      var controlbarH = 0;
+      
+
+      contentPaneEl.style.top = top + controlbarH;
+      contentPaneEl.style.width = Math.max(0, pageW);
+      contentPaneEl.style.height = Math.max(0, divH - controlbarH);
+    }
+
+    GVIEW_initialResize();
+    window.onresize = GVIEW_initialResize;
+    </script>
+  </div><script type="text/javascript" src=
+  "viewer_files/3007941234-gview_local_gview_base_mod.js">
+</script><script type="text/javascript">
+      var gviewElement = document.getElementById('gview');
+        var config = {
+          
+          'api': false,
+
+          'csi': true,
+          'ddUrl': null,
+          'element': gviewElement,
+          'embedded': false,
+          'mobile': false,
+          'initialQuery': "",
+          'oivUrl': "https://docs.google.com/viewer?a\x3dv\x26pid\x3dexplorer\x26chrome\x3dtrue\x26srcid\x3d1b-ZVnEfxReVAlMHZO88mYgY6ENxg0wf-TEsApi48HXCl1aSwNOkRyZ3yah-i\x26hl\x3den_US",
+          'sdm': 200,
+          'sh': true,
+          
+          'userAuthenticated': true,
+          'sessId': "0",
+          'domain': null
+        };
+        var gviewApp = _createGView(config);
+        gviewApp.setProgress(50);
+        
+          
+          
+            window.jstiming.load.name = 'view';
+          
+          
+          window.jstiming.load.tick('_dt');
+        
+
+        function insertContent(node) {
+          var contentPaneEl = document.getElementById('content-pane');
+          var loadingEl = document.getElementById('loading');
+          contentPaneEl.insertBefore(node, loadingEl);
+        };
+  </script>
+
+  <div aria-haspopup="true" role="menu" class=
+  "goog-menu goog-menu-vertical goog-menu-noicon c22">
+    <div id=":2" role="menuitem" class="goog-menuitem goog-menuitem-content c7">
+      <span class="goog-menuitem-accel">Ctrl+F</span>Search the document
+    </div>
+
+    <div id=":3" role="menuitem" class=
+    "goog-menuitem goog-menuitem-disabled goog-menuitem-content c7">
+      <span class="goog-menuitem-accel">F3</span>Find next
+    </div>
+
+    <div id=":4" role="menuitem" class=
+    "goog-menuitem goog-menuitem-disabled goog-menuitem-content c7">
+      <span class="goog-menuitem-accel">Shift+F3</span>Find previous
+    </div>
+
+    <div id=":5" role="separator" class="goog-menuseparator c7"></div>
+
+    <div id=":6" role="menuitem" class=
+    "goog-menuitem goog-menuitem-disabled goog-menuitem-content c21">
+      Edit online
+    </div>
+
+    <div aria-disabled="false" id=":7" role="menuitem" class=
+    "goog-menuitem goog-menuitem-content c7">
+      <span class="goog-menuitem-accel">Ctrl+S</span>Download original
+    </div>
+
+    <div id=":8" role="menuitem" class=
+    "goog-menuitem goog-menuitem-disabled goog-menuitem-content c7">
+      Save in Google Docs
+    </div>
+
+    <div aria-disabled="false" id=":9" role="menuitem" class=
+    "goog-menuitem goog-menuitem-content c7">
+      <span class="goog-menuitem-accel">Ctrl+P</span>Print (PDF)
+    </div>
+  </div>
+
+  <div aria-activedescendant="" aria-haspopup="true" role="menu" class=
+  "goog-menu goog-menu-vertical c23">
+    <div id=":a" role="menuitem" class="goog-menuitem goog-menuitem-content c7">
+      Zoom in
+    </div>
+
+    <div id=":b" role="menuitem" class="goog-menuitem goog-menuitem-content c7">
+      Zoom out
+    </div>
+
+    <div aria-checked="true" aria-pressed="false" id=":c" role="menuitem" class=
+    "goog-menuitem goog-option goog-option-selected goog-menuitem-content c7">
+      <div class="goog-menuitem-checkbox"></div>Fit page to screen
+    </div>
+
+    <div aria-checked="false" aria-pressed="false" aria-disabled="false" id=":d" role=
+    "menuitem" class="goog-menuitem goog-option goog-menuitem-content c7">
+      <div class="goog-menuitem-checkbox"></div>Fit two pages to screen
+    </div>
+
+    <div id=":e" role="separator" class="goog-menuseparator c7"></div>
+
+    <div id=":f" role="menuitem" class="goog-menuitem goog-menuitem-content c7">
+      <span class="goog-menuitem-accel">Shift+Ctrl+F</span>Compact controls
+    </div>
+
+    <div id=":g" role="separator" class="goog-menuseparator c21"></div>
+
+    <div id=":h" role="menuitem" class=
+    "goog-menuitem goog-menuitem-disabled goog-menuitem-content c21">
+      Plain HTML
+    </div>
+  </div><script type="text/javascript">
+      gviewApp.setFileData(
+            {sizeKb:687,expId:'PDF-EXPLORER',filename:'p71-shirakawa.pdf'});
+        
+        
+          window.jstiming.load.tick('dt', '_dt');
+        
+        gviewApp.setProgress(80);
+        
+        window.onresize = window.onorientationchange = handleResize;
+
+        document.body.onunload = dispose;
+
+        function handleResize(e) {
+          resizeApp(false);
+        };
+
+        
+        var redirectTimeout;
+
+        
+        function handleKeyUp(e) {
+          if (e.keyCode == 27) {
+            document.onkeyup = undefined;
+            window.clearTimeout(redirectTimeout)
+            alert('auto-redirect cancelled');
+          }
+        };
+
+        function resizeApp(force) {
+          if (gviewApp) {
+            var viewportSize = getViewportSize();
+            viewportSize.height = Math.max(
+                viewportSize.height - gviewElement.offsetTop, 0);
+            gviewApp.resize(viewportSize, force);
+          }
+        };
+
+        function dispose() {
+          window.onresize = null;
+          if (gviewApp) {
+            gviewApp.dispose();
+            gviewApp = null;
+          }
+        };
+
+        function redirect(url) {
+          window.location.href = url;
+        };
+
+        
+          
+          window.jstiming.load.tick('_ct');
+        
+  </script><script type="text/javascript">
+            window.jstiming.load.tick('ct', '_ct');
+  </script><script type="text/javascript">
+          
+            function finalizeApp() {
+              if (!gviewApp) {
+                return;
+              }
+
+              
+              gviewApp.setDisplayData(
+                {biUrl:'?pid\75explorer\46srcid\0751b-ZVnEfxReVAlMHZO88mYgY6ENxg0wf-TEsApi48HXCl1aSwNOkRyZ3yah-i\46docid\758e38519e625d509baf8135f310fef163%7Ca4ff71e8dddc86685902b0aefd6c23ea\46chan\75EgAAAFTkappy2ErSbbnM7jfpgy0Y/1ct2oKYc4ed0zC8148f\46a\75bi',chanId:'EgAAAFTkappy2ErSbbnM7jfpgy0Y/1ct2oKYc4ed0zC8148f',gpUrl:'https://doc-0k-30-docsviewer.googleusercontent.com/viewer/securedownload/0shk8791k6bvttumn2udfu0u031j7ic3/56bm8afm9baoecnts4gvs2n4vfuksvaj/1307631600000/ZXhwbG9yZXI\75/AGZ5hq_RQxvQWxjzMn-KS7Q6ohKJ/MWItWlZuRWZ4UmVWQWxNSFpPODhtWWdZNkVOeGcwd2YtVEVzQXBpNDhIWENsMWFTd05Pa1J5WjN5YWgtaQ\75\75?a\75gp\46filename\75p71-shirakawa.pdf\46chan\75EgAAAFTkappy2ErSbbnM7jfpgy0Y/1ct2oKYc4ed0zC8148f\46docid\758e38519e625d509baf8135f310fef163%7Ca4ff71e8dddc86685902b0aefd6c23ea\46sec\75AHSqidY8TDaM21TNtRROglAXMyaon2_xUjOw5p9c91MYsX78h-e4jCUcE9IuI4TvMmV388pyPcYY5igpeIDIp9O1B9d6qWO3H18miFdlryADsF-TB4TfKHllAhTo0dseZD7MJL-MSiKFdAtFhRcB_PlySrushzlK25hEiLxzZLfIRLdM3M-enjn3HQPtSZRamlrakOc7QrwN4BPt_unrx64-0mj6JZbDfb-dJ5cqw2zbvzKEk7LDTHjVH_Lrq53Huecgv4tTuj-Y752AG5KrNA9jQ6neEKL8TQr06roXM256kV0udU0Su5pR_uXsMdJhAuoP6C000Z61o341rRxQ_b9uDQD0H81pqBxouocQjWzDPgz7Kpbal2Tosr9Z8b3RWk4eUkU6cn_XdRutxYORZMVBRi6aU7wBAA',docId:'8e38519e625d509baf8135f310fef163|a4ff71e8dddc86685902b0aefd6c23ea',numPages:9,gtUrl:'?pid\75explorer\46srcid\0751b-ZVnEfxReVAlMHZO88mYgY6ENxg0wf-TEsApi48HXCl1aSwNOkRyZ3yah-i\46docid\758e38519e625d509baf8135f310fef163%7Ca4ff71e8dddc86685902b0aefd6c23ea\46chan\75EgAAAFTkappy2ErSbbnM7jfpgy0Y/1ct2oKYc4ed0zC8148f\46a\75gt',thWidth:138,dlUrl:'https://doc-0k-30-docsviewer.googleusercontent.com/viewer/securedownload/0shk8791k6bvttumn2udfu0u031j7ic3/56bm8afm9baoecnts4gvs2n4vfuksvaj/1307631600000/ZXhwbG9yZXI\75/AGZ5hq_RQxvQWxjzMn-KS7Q6ohKJ/MWItWlZuRWZ4UmVWQWxNSFpPODhtWWdZNkVOeGcwd2YtVEVzQXBpNDhIWENsMWFTd05Pa1J5WjN5YWgtaQ\75\75?a\75dl\46filename\75p71-shirakawa.pdf\46sec\75AHSqidYn97C3sR4yT6XlkwsNLff8vTq7vpzHElGpNJym2eCfUFklIU-9YRtfB2pWG8dkmXk_rVgj8p_aumLk9UxXY2CjDB1PO-CBur0Cpy1yiYUEA0-ZzlkF-bTE6FGZubTP30TC7Kj70XPDFhICuU0a4_4x6umBRXl4PWGUJLNCWy3NX4tpor4DkLoHZ4M589OmSBrly88RPhgORBjEKXzTR19030KzLA_DoOkUhTD2TI-hHZDNZo_hya2SBp7FZTSLwMsR4tbJlz6pswH5lCpWmw5mOHc3n2hP9E7fDcN6oChMMnnKvPjtOWTlawWpsIjvLO6R1j_Kyrij9620tHazWKdIHy8LqjDLd-LHFaL-ZBfmm8SwERscxiDdMtpnm3DQfdg3Kc1G36MU4zJ-mywSqqVVA8exTg',thHeight:195});
+              gviewApp.finalizeApp();
+
+              
+              gviewApp.loadLateDeps();
+            }
+            gviewApp.setProgress(90);
+            finalizeApp();
+            
+              window.jstiming.load.tick('prt');
+            
+  </script><script type="text/javascript">
+        (function(){try{var e=false;function l(a,b,c){var d="on"+b;if(a.addEventListener)a.addEventListener(b,c,e);else if(a.attachEvent)a.attachEvent(d,c);else{var h=a[d];a[d]=function(){var g=h.apply(this,arguments),f=c.apply(this,arguments);return g==undefined?f:f==undefined?g:f&&g}}};var m,n,o,p=window.gbar=window.gbar||{};function _tvn(a,b){var c=parseInt(a,10);return isNaN(c)?b:c}function _tvf(a,b){var c=parseFloat(a);return isNaN(c)?b:c}function _tvb(a,b){return a=="true"?true:a=="false"?e:b}function _tvv(a){return!!a}function q(a,b,c){(c||p)[a]=b}p.bv={n:_tvn("2",0),r:"",m:_tvn("0",1)};var r=function(){return p.bv.m==1};q("sb",r);var s,t,u;
+  function v(a,b,c,d,h,g){var f=document.getElementById(a);if(f){var i=f.style;i.left=d?"auto":b+"px";i.right=d?b+"px":"auto";i.top=c+"px";i.visibility=t?"hidden":"visible";if(h&&g){i.width=h+"px";i.height=g+"px"}else{v(s,b,c,d,f.offsetWidth,f.offsetHeight);t=t?"":a}}}
+  var w=[],x=function(a,b){w.push(b)},A=function(a){a=a||window.event;var b=a.target||a.srcElement;a.cancelBubble=true;if(s==null){a=document.createElement(Array.every||window.createPopup?"iframe":"div");a.frameBorder="0";s=a.id="gbs";a.src="javascript:''";b.parentNode.appendChild(a);l(document,"click",y)}var c=b;b=0;if(c.className!="gb3")c=c.parentNode;a=c.getAttribute("aria-owns")||"gbi";var d=c.offsetWidth,h=c.offsetTop>20?46:24;if(document.getElementById("tphdr"))h-=3;var g=e;do b+=c.offsetLeft||
+  0;while(c=c.offsetParent);c=(document.documentElement.clientWidth||document.body.clientWidth)-b-d;var f;d=document.body;var i=document.defaultView;if(i&&i.getComputedStyle){if(d=i.getComputedStyle(d,""))f=d.direction}else f=d.currentStyle?d.currentStyle.direction:d.style.direction;f=f=="rtl";if(a=="gbi"){for(d=0;i=w[d++];)i();z(null,window.navExtra);if(f){b=c;g=true}}else if(!f){b=c;g=true}t!=a&&y();v(a,b,h,g)},y=function(){t&&v(t,0,0)},z=function(a,b){var c,d=document.getElementById("gbi"),h=a;if(!h)h=
+  d.firstChild;for(;b&&(c=b.pop());){var g=d,f=c,i=h;u||(u="gb2");g.insertBefore(f,i).className=u}},B=function(a,b,c){if((b=document.getElementById(b))&&a){a.className="gb4";var d=document.createElement("span");d.appendChild(a);d.appendChild(document.createTextNode(" | "));d.id=c;b.appendChild(d)}},aa=function(){return document.getElementById("gb_70")};q("qs",o);q("setContinueCb",n);q("pc",m);q("tg",A);q("close",y);q("addLink",B);q("almm",z);q("si",aa);q("adh",x);
+  var C=function(){},D=function(){},G=function(a){var b=new Image,c=E;b.onerror=b.onload=b.onabort=function(){try{delete F[c]}catch(d){}};F[c]=b;b.src=a;E=c+1},F=[],E=0;q("logger",{il:D,ml:C});
+  var H=window.gbar.logger,I={},ba={},J=[],ca=function(a,b){J.push([a,b])},da=function(a,b){I[a]=b},ea=function(a){return a in I},K={},L=function(a,b){K[a]||(K[a]=[]);K[a].push(b)},M=function(a){var b=document.createElement("script");b.src=a;(document.getElementById("xjsc")||document.body).appendChild(b)},P=function(a){for(var b=0,c;c=J[b];++b)if(c[0]==a)break;if(c&&!c[1].l){N(2,a);M(c[1].url)}},Q=function(a){L("gc",a)},R=null,fa=function(a){R=a},N=function(a,b,c){if(R){a={t:a,b:b};if(c)for(var d in c)a[d]=
+  c[d];try{R(a)}catch(h){}}};q("mdc",I);q("mdi",ba);q("bnc",J);q("qGC",Q);q("qd",K);q("lb",P);q("mcf",da);q("bcf",ca);q("aq",L);q("mdd","");q("has",ea);q("trh",fa);q("tev",N);var S=_tvf("0.0001",1.0E-4),T=0;
+  function _mlToken(a,b){try{if(T<1){T++;var c,d=a,h=b||{},g=encodeURIComponent,f=["//www.google.com/gen_204?atyp=i&zx=",(new Date).getTime(),"&jexpid=",g("17483"),"&srcpg=",g("prop=25"),"&jsr=",Math.round(1/S),"&ogv=",g("1306536165.0")];if(h._sn)h._sn="og."+h._sn;for(var i in h){f.push("&");f.push(g(i));f.push("=");f.push(g(h[i]))}f.push("&emsg=");f.push(g(d.name+":"+d.message));var k=f.join("");if(U(k))k=k.substr(0,2E3);c=k;var j=window.gbar.logger._aem(a,
+  c);G(j)}}catch(O){}}var U=function(a){return a.length>=2E3},ga=function(a,b){return b};function V(a){C=a;q("_itl",U,H);q("_aem",ga,H);q("ml",C,H);a={};I.er=a}if(_tvv(""))V(function(a){throw a;});else Math.random()<S&&V(_mlToken);
+  if(_tvv("1")){var ha=_tvb("false",e);J.push(["gc",{auto:ha,url:"https://ssl.gstatic.com/gb/js/gcm_26687fe8dd3f9bb1ee70c81eba4c0ca4.js"}]);var ia={version:"gcm_26687fe8dd3f9bb1ee70c81eba4c0ca4.js",index:"0",lang:"en"};I.gc=ia;var W=function(a){if(window.googleapis)a&&a();else{a&&Q(a);P("gc")}};q("lGC",W);_tvv("1")&&q("lPWF",W)}window.__PVT="APfa0boyETI3koQHyt08aUR8fWqyf2DKCi4zUuiwDQzo7LG8ZhHeXHtcAommqTMXHvCbgL1HfVFEzXQZoqPVtgi6o8liyuREZQ==";
+  if(_tvv("1")&&_tvv("1")){var X=function(a){W(function(){L("pw",a);P("pw")})};q("lPW",X);J.push(["pw",{url:"//ssl.gstatic.com/gb/js/pwm_8b165cfe9ef9cb149c1f8c4cfac3acb3.js"}]);var Y=[],ja=function(a){Y[0]=a},ka={signed:Y,elog:C,base:"https://profiles.google.com/u/0",loadTime:(new Date).getTime()};I.pw=ka;var Z=function(a,b){for(var c=b.split("."),d=function(){var i=arguments;a(function(){for(var k=p,j=0,O=c.length-1;j<O;++j)k=k[c[j]];k[c[j]].apply(k,i)})},h=p,g=0,f=c.length-1;g<f;++g)h=h[c[g]]=h[c[g]]||
+  {};return h[c[g]]=d};Z(X,"pw.clk");Z(X,"pw.hvr");q("su",ja,p.pw)}
+  function la(){function a(){for(var j;j=g[f++];)if(j[0]=="m"||j[1].auto)break;if(j){N(2,j[0]);M(j[1].url)}f<g.length&&setTimeout(a,0)}function b(){h-- >0?setTimeout(b,0):a()}var c=_tvb("true",true),d=_tvb("false",e),h=3,g=J,f=0,i=window.gbarOnReady;if(i)try{i()}catch(k){C(k)}if(d)q("ldb",a);else if(c)window.addEventListener?window.addEventListener("load",b,e):window.attachEvent("onload",b);else b()}q("rdl",la);
+  var $=_tvf("0.0001",1.0E-4);function ma(a,b){var c=encodeURIComponent,d=["//www.google.com/gen_204?atyp=i&zx=",(new Date).getTime(),"&oge=",a,"&ogex=",c("17483"),"&ogp=",c("25"),"&ogsr=",Math.round(1/$),"&ogv=",c("1306536165.0")];if(b){d.push("&ogad=");d.push(c(na(b)))}G(d.join(""))}function na(a){var b=[],c;for(c in a){b.length!=0&&b.push(",");b.push(c);b.push(".");b.push(a[c])}return b.join("")}
+  if(Math.random()<$){D=ma;q("il",D,H);var oa={};I.il=oa}setTimeout(function(){D(8)},0);}catch(e){window.gbar&&gbar.logger&&gbar.logger.ml(e);}})();
+  (function(){try{window.gbar.rdl();}catch(e){window.gbar&&gbar.logger&&gbar.logger.ml(e);}})();
+
+  </script>
+
+  <div class="share-pill-tooltip c24">
+    <span class="share-pill-tooltip-title">Public on the web</span><br>
+    <span class="share-pill-tooltip-description">Anyone on the Internet can find and
+    access. No sign-in required.</span>
+  </div>
+</body>
 </html>
