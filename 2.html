@@ -14,6 +14,2415 @@
 </head>
 
 <body>
+Concept vectors extraction
+[portal.acm.org/citation.cfm?id=1516255 .Source]
+ABSTRACT
+
+The availability of machine readable taxonomy has been
+
+demonstrated by various applications such as document clas-
+
+sication and information retrieval.
+
+One of the main top-
+
+ics of automated taxonomy extraction research is Web min-
+
+ing based statistical NLP and a signicant number of re-
+
+searches have been conducted. However, existing works on
+
+automatic dictionary building have accuracy problems due
+
+to the technical limitation of statistical NLP (Natural Lan-
+
+guage Processing) and noise data on the WWW. To solve
+
+these problems, in this work, we focus on mining Wikipedia,
+
+a large scale Web encyclopedia. Wikipedia has high-quality
+
+and huge-scale articles and a category system because many
+
+users in the world have edited and rened these articles and
+
+category system daily.
+
+Using Wikipedia, the decrease of
+
+accuracy deriving from NLP can be avoided. However, af-
+
+liation relations cannot be extracted by simply descending
+
+the category system automatically since the category system
+
+in Wikipedia is not in a tree structure but a network struc-
+
+ture. We propose concept vectorization methods which are
+
+applicable to the category network structured in Wikipedia.
+
+nishio@ist.osaka-u.ac.jp
+
+General Terms
+
+ALGORITHMS, EXPERIMENTATION
+
+Keywords
+
+Wikipedia, Web mining, categorization, concept vector
+
+1. INTRODUCTION
+
+In the research area of linguistics and taxonomy, it is an
+
+important task to sort out concepts in the world.
+
+Actually, a large number of dictionaries have been built by man-
+
+power to encourages learning such as bilingual dictionary
+
+and encyclopedia. Especially, constructing a machine read-
+
+able dictionary has been needed as a fundamental technology
+ for Semantic Web, which considers and processes the
+
+meanings of texts in contrast to the traditional Web. Tax-
+
+onomy, one of (machine readable) hierarchical dictionaries,
+
+describes the information about to what categories each con-
+
+cept belongs as a tree structure or DAG (Directed Acyclic
+
+Graph) structure. There are a considerable number of auto-
+
+matic methods to build taxonomy, which recently use Web
+
+text data with statistical NLP (Natural Language Process-
+
+ing). However these methods have an accuracy problem due
+
+to the technical limitation of statistical NLP and noise data
+
+of Web text data. To improve the accuracy, the coverage is
+
+sacriced.
+
+In order to resolve the accuracy problem deriving from
+
+NLP, we focus on Wikipedia.
+
+Wikipedia is a collabora-
+
+Categories and Subject Descriptors
+
+H.3.6 [Information Storage and Retrieval]: Library Automa-
+
+tion; M.7 [Knowledge Retrieval]
+
+Permission to make digital or hard copies of all or part of this work for
+
+personal or classroom use is granted without fee provided that copies are
+
+not made or distributed for profi or commercial advantage and that copies
+
+bear this notice and the full citation on the firs page. To copy otherwise, to
+
+republish, to post on servers or to redistribute to lists, requires prior specifi
+
+permission and/or a fee.
+
+ICUIMC-09, January 15-16, 2009, Suwon, S. Korea
+
+Copyright 2009 ACM 978-1-60558-405-8...$5.00.
+
+tive Wiki[8]-based encyclopedia. Since Wikipedia is based
+
+on Wiki, anyone can edit and rene the articles using Web
+
+browser, that makes Wikipedia high quality and huge scale.
+
+As for high quality, according to the statistics of Nature[6],
+
+Wikipedia is about as accurate in covering scientic topics as
+
+the Encyclopedia Britannica. As for huge scale, Wikipedia
+
+contains not only general terms but also a large amount of
+
+-71-
+
+\\
+
+domain specic concepts and named entities belonging to
+
+various kinds of categories such as culture, history, math-
+
+ematics, science, society, and technology. The English ver-
+
+sion, as of June 2007, contains more than 1.8 million articles,
+
+which are almost 30 times as 65,000 articles from the Ency-
+
+clopedia Britannica.
+
+Not only that, Wikipedia also has a well-structured cate-
+
+gory system. Almost all concepts belong to more than one
+
+category and almost all categories belong to categories each
+
+other to compose the category network.
+
+As a corpus for
+
+knowledge extraction, the availability usefulness of articles
+
+and category system in Wikipedia has been demonstrated by
+
+previous works ([13], [5], [11], [14], [12]). Using Wikipedia,
+
+the accuracy problem deriving from NLP can be avoided.
+
+With that in this paper, we aim at building a high accuracy
+
+taxonomy mainly using the category system of Wikipedia.
+
+Since the category system in Wikipedia is not in a tree
+
+structure but a network structure, it is impossible to simply
+
+determine all concepts belonging to a particular category.
+
+That is, a network structure has the possibility of getting
+
+a vast amount of concepts if we recursively get all concepts
+
+belonging to a certain category by traversing the network
+
+structure.
+
+In this paper, we propose a concept vectorization method,
+
+BVG (Basic Vector Generation) method. In the BVG method,
+
+the degree of belonging a certain category is dened accord-
+
+ing to the number of paths and the length of each path from
+
+article to the category, which is described as a category-
+
+based vector.
+
+To further improve accuracy, we also pro-
+
+pose three expansion methods, SPI (Single Parent Integra-
+
+tion), SCE (Sub-Category Expansion) and VVG (Variance-
+
+based Vector Generation) methods. In the SPI method, tak-
+
+ing into account that well-dened domain specic categories
+
+partially form nearly a tree structure, the path lengths in
+
+the tree are shortened to improve the accuracy of feature
+
+extraction. In the SCE method, to solve the problem that
+
+the features of concepts disperses as the path lengths get
+
+longer, sub-categories are introduced to shorten the path
+
+lengths.
+
+In the VVG method, the semantic relatedness of
+
+each category link is considered by the number of parent
+
+categories.
+
+NLP and Web mining. Since these methods depend on a sta-
+
+tistical analysis and noise data are inevitable in Web mining,
+
+the accuracy decreases compared with manually constructed
+
+dictionaries.
+
+Brewster[2] presented ve criteria for automatic taxonomy
+
+dictionary building; coherence, multiplicity, ease of compu-
+
+tation, single label and, data source. He also analyzed char-
+
+acteristics of conventional approaches for automatic taxon-
+
+omy dictionary building. As a result, he noticed that there
+
+are no methods fullling the ve criteria and asserted the
+
+need of combining methods to shore up the weakness. This
+
+implies that there are no outstanding methods for automatic
+
+taxonomy building.
+
+Figure 1: An example of WordNet
+
+2.2
+
+Wikipedia Mining
+
+Recently, Wikipedia Mining, researches try to extract use-
+
+ful knowledge from a huge scale encyclopedia Wikipedia,
+
+has become one of the promising approaches in AI research
+
+area. Our research focuses on and intends to automatically
+
+build an accurate taxonomy.
+
+Wikipedia mining is one of new research areas, being pop-
+
+ular since 2006. Strube et al.[13], Gabrilovich et al.[5] and
+
+Nakayama et al.[11] extracted semantic relatedness among
+
+concepts in Wikipedia.
+
+Völkel et al.[14] added meanings
+
+to links in Wikipedia as an expansion architecture in order
+
+to build an ontology on Wikipedia. Ruiz-Casado et al.[12]
+
+mapped two concepts in Wikipedia and WordNet by means
+
+of calculating these relatedness and expanded a general dic-
+
+tionary of WordNet by Wikipedia articles, which results in
+
+a dictionary enhancing their strengths.
+
+These researches have proved that Wikipedia is superior
+
+to the traditional Web pages as a source of Web mining and
+
+that Wikipedia is an attractive Web corpus for knowledge
+
+extraction because of its features. In next chapter, we de-
+
+scribe several important features of Wikipedia.
+
+2. RELATED WORK
+
+2.1 Taxonomy Building
+
+A taxonomy denes categoric relations among concepts
+
+that represent which concept belongs to what categories. It
+
+forms a category system such as a tree structure and DAG
+
+(Directed Acyclic Graph) structure. Figure 1 shows a noun
+
+category system of an English dictionary, WordNet[10]. The
+
+word dog belongs to two words canine and domestic an-
+
+imal, and indirectly to the words carnivore, placental,
+
+mammal and so on. Not only WordNet, other well-known
+
+taxonomies like Goi-Taikei[7] and MeSH
+
+­
+
+were almost built
+
+by a massive amount of human eort. However, building a
+
+taxonomy by manually has many problems as high mainte-
+
+nance cost and low coverage of concepts. Therefore, many
+
+researchers have tried to build a taxonomy dictionary auto-
+
+matically.
+
+Brown et al.[3], McMahon et al.[9] and Cutting et al.[4]
+
+proposed automatic dictionary building methods based on
+
+­
+
+3. FEATURES OF WIKIPEDIA
+
+In this section, we describe several important features of
+
+http://www.nlm.nih.gov/mesh/
+
+-72-
+
+\\
+
+Figure 3: An example of a concept vector
+
+Figure 2:
+
+Wikipedia
+
+An example of a network category system in
+
+In the category system in Wikipedia, a page can have
+
+several parent categories, which often forms loops of links.
+
+Therefore, the category system in Wikipedia is in a network
+
+structure as shown in Figure 2, not in a perfect tree struc-
+
+ture. The English version of Wikipedia, as of Sept. 2006,
+
+contains 0.8 million category links, which is more than 8
+
+times as a‑liation relationships in WordNet[10]. The cate-
+
+gory system is edited and maintained by Wikipedia users as
+
+well as articles.
+
+The category system in Wikipedia plays the role of a tax-
+
+onomy and oers the function to search articles by narrowing
+
+down categories. Wikipedia oers a category search system
+
+named CategoryTree [15], which enables users to search
+
+categories and browse the category system in Wikipedia.
+
+However, since it is not a tree structure, it is impossible
+
+to simply determine all concepts belonging to a particular
+
+category by traversing the network structure in Wikipedia.
+
+Wikipedia which are deeply related to our research.
+
+3.1 Dense Link Structure
+
+The English version of Wikipedia, as of Sept. 2006, con-
+
+tains 1.68 million pages and 49.98 million inter links (ex-
+
+cluding redirect links and inter language links). Namely, one
+
+page has 29.62 links on average. This means that Wikipedia
+
+has a dense link structure which only connects closed vocab-
+
+ularies. Consequently Wikipedia has the potential to extract
+
+benecial information by means of analyzing the link struc-
+
+ture.
+
+3.2 Wide Coverage of Concepts
+
+Building a dictionary typically starts from registering gen-
+
+eral terms by a top-down approach and domain specic con-
+
+cepts are often late for registration or not registered.
+
+In
+
+contrast, since Wikipedia is based on Wiki, articles are reg-
+
+istered and uploaded and links are built in real time through
+
+the Internet, thus, it covers concepts of wide and new do-
+
+mains.
+
+4. CONCEPT VECTOR EXTRACTION
+
+As mentioned above, since the category system in Wikipedia
+
+is in a complex network structure, it is not able to catego-
+
+rize concepts by existing methods generally applied to a tree
+
+structure.
+
+Therefore, we propose a concept vectorization
+
+method specialized for the category system in Wikipedia,
+
+with three additional expansion methods.
+
+3.3 Concept Identiﬁcation by URL
+
+One of the most important features is that concepts are
+
+identical by URL. In an electronic dictionary, one page is
+
+generally assigned to each direction word in which some
+
+meanings (concepts) of the word are described. On the other
+
+hand, in Wikipedia, a URL (page) is assigned to each con-
+
+cept, thus the ambiguity is eliminated by URL.
+
+4.1
+
+Concept Vector
+
+As described in subsection 3.3, a URL (page) is assigned
+
+to each concept in Wikipedia, and each page (either a con-
+
+cept or a category) can belong to several categories. With
+
+that, the information on what categories each concept be-
+
+longs to can be obtained by searching categories or browsing
+
+the category system.
+
+However, since the category system
+
+in Wikipedia is in a complex network structure, some con-
+
+cepts which are not correlated with each other are reachable
+
+(connected) by traversing the category system. For exam-
+
+ple, starting from category Animals, we can arrive cat-
+
+egories Mammals, Human, Society, and Law which
+
+are scarcely correlated with Animals. This means that the
+
+relatedness between categories gets lower as the number of
+
+traversed pages, i.e., hopcount, increases.
+
+In conventional works on document classication[1], the
+
+characteristics of a document are expressed as a document
+
+vector based on meanings or categories. These works have
+
+proved the usefulness of using vectors for extracting the
+
+characteristics of documents. We adopted this idea for con-
+
+cepts. That is, we express a‑liation relations among con-
+
+cepts as category-based concept vectors. Each element (di-
+
+mension) of a concept vector represents not only binary a‑l-
+
+iation information (whether the concept belongs to a certain
+
+category or not), but also the degree of a‑liation. Figure
+
+3 shows an example of a concept vector, in which concept
+
+3.4 Multiple Link Structure
+
+In Wikipedia, there are not only links connecting a page
+
+to another, but also several particular links such as cate-
+
+gory links, redirect links, and inter language links. Redirect
+
+links connect dierent pages corresponding to a same con-
+
+cept in order not to disperse a concept to many pages. Inter
+
+language links oer the bridge between dierent language
+
+versions of Wikipedia, connecting two pages of the same
+
+concept.
+
+As for category links, we describe the detail in
+
+next subsection.
+
+3.5 Category System
+
+In Wikipedia, the relationship of a‑liation between an
+
+article (or a concept) and a category is expressed by a link.
+
+This link is called a category link, expressing which concept
+
+belongs to what categories. Categories have their own URLs
+
+(pages) similar to articles, and category links also express
+
+which category belongs to what categories. Category links
+
+have the direction, therefore we call them belonging links or
+
+belonged links according to their direction.
+
+-73-
+
+\\
+
+Table 1: 11 major categories in Wikipedia
+
+Major category
+
+Art and culture
+
+Geography and places
+
+Health and tness
+
+History and events
+
+Mathematics and logic
+
+Natural sciences and nature
+
+People and self
+
+Philosophy and thinking
+
+Religion and belief systems
+
+Social sciences and society
+
+Figure 4: An example of executing the Basic Vector Gener-
+
+ation (BVG) method
+
+Technology and applied sciences
+
+Abbreviated name
+
+Cul.
+
+Geo.
+
+Heal.
+
+Hist.
+
+Logic
+
+Nat.
+
+Peo.
+
+Phi.
+
+Rel.
+
+Soc.
+
+Tech.
+
+Jazz belongs to category Arts strongly, and concept The
+
+Beatles strongly belongs to category Arts and Human.
+
+In this way, many-to-many relationships between concepts
+
+and categories are expressed with belonging degrees. In next
+
+section, we propose how to extract concept vectors from
+
+Wikipedia.
+
+4.3
+
+Preliminary Experiment on the BVG Method
+
+The experimental conditions
+
+The 11
+
+We have conducted a simple preliminary experiment to
+
+evaluate the BVG method.
+
+are as follows. The bases (elements) of concept vector are
+
+set as 11 major categories as shown in Table 1.
+
+major categories (base categories) are dened by Wikipedia
+
+users as covering all concepts in the world. The increasing
+
+tfunction d is given as 3 l and the maximum hopcount n
+
+is set as 4. The maximum hopcount
+
+function
+
+4.2 Basic Vector Generation (BVG) Method
+
+BVG (Basic Vector Generation method) generates con-
+
+cept vectors by tracking back parent categories in the cat-
+
+egory system and calculating the belonging degree to each
+
+category.
+
+In Wikipedia, each concept belongs to multiple
+
+categories and each category belongs to other categories to
+
+form a network structure. Let us denote W as a set of con-
+
+cepts, V as a set of categories, and E as a set of belonging
+
+links. Then, the category system in Wikipedia is expressed
+
+as a directed graph
+
+n
+
+and the increasing
+
+d
+
+had been chosen as appropriate values by our
+
+advance experiments.
+
+Table 2 shows some examples of concept vectors generated
+
+by the BVG method.
+
+The result demonstrates that con-
+
+cepts are accurately vectorized in most cases, i.e., the BVG
+
+method works well for extracting characteristics of concepts.
+
+However, some problems also become clear. First, the BVG
+
+method could not extract the belonging degree (the value is
+
+0) from some concepts to some major categories even if we
+
+can easily imagine that the concepts belong to these cate-
+
+gories. For example, although concept Lion should belong
+
+to category Nature in general, the belonging degree was
+
+G = {W, V, E},
+
+wi
+
+where W and V are
+
+node sets and E is an edge set. Here, we consider that the
+
+belonging degree from concept
+
+the following two factors.
+
+1. the number of paths from concept
+
+to category
+
+vj
+
+depends on
+
+wi
+
+to category
+
+vj
+
+to
+
+0.
+
+This is because the hopcount from concept Lion to
+
+category Nature becomes very large due to the excessive
+
+2. the length (hopcount) of each path from concept
+
+category
+
+wi
+
+segmentalization of the domain specic area Animals in
+
+Nature (ex. Lions, Panthera, Pantherinae, Felines,
+
+Carnivores and so on). As a simple solution against this
+
+vj
+
+wi
+
+to category
+
+Namely, the more paths from concept
+
+egory
+
+vj
+
+exist
+
+problem, we can enlarge the maximum hopcount. However,
+
+we conrmed that this solution is ineective because the
+
+dispersion of characteristics grows larger as the maximum
+
+hopcount gets larger, i.e., the number of category links from
+
+a concept becomes very large in tracking back parent cat-
+
+egories, which is the second problem.
+
+Third, in Table 2,
+
+belonging degrees to category Society tend to be large.
+
+and the shorter these paths are, concept
+
+wi
+
+belongs to cat-
+
+belonging
+
+is dened
+
+vj
+
+all paths
+
+degree
+
+P = {p1 , p2 , ..., pn } from wi to vj , the
+
+I(wi , vj ) from concept wi to category vj
+
+X
+
+p∈Pij
+
+more strongly. Hence, in the BVG method, given
+
+by the following equation.
+
+I(wi , vj ) =
+
+Here,
+
+1
+
+d(tl )
+
+wi
+
+to
+
+(1)
+
+This is because category Society has a massive number of
+
+descendent categories, i.e., the number of paths to category
+
+Society is larger than other categories.
+
+This means that
+
+the BVG method cannot fairly extract belonging degrees
+
+for the major categories, which results in skewed values in
+
+elements of concept vectors.
+
+In summary, the problems in the BVG method are as
+
+follows.
+
+Pij
+
+denotes a set of paths from
+
+vj
+
+whose hop-
+
+count is equal to or less than
+
+denotes the hopcount of path
+
+n
+
+(maximum hopcount),
+
+tl
+
+pl , d
+
+denotes a monotonically
+
+increasing function on the hopcount of path
+
+pl .
+
+Figure 4 shows an example of executing the BVG method,
+
+where the belonging degree from category The Beatles to
+
+tcategory Arts is calculated (d is given as 2 l , n is given as
+
+4).
+
+As the path length of
+
+1. The BVG method cannot extract the characteristics
+
+in domain specic areas in which categories are exces-
+
+sively segmentalized.
+
+p1
+
+is 3 and that of
+
+p2
+
+is 2, the
+
+belonging degree
+
+I
+
+is calculated as 0.375.
+
+-74-
+
+\\
+
+Table 2: Result of preliminary experiment on the BVG method
+
+Concept
+
+Adam Smith
+
+AIDS
+
+Albert Einstein
+
+Anarchism
+
+Arctic
+
+Buddhism
+
+Cat
+
+Computer
+
+Edo period
+
+Fish
+
+French Revolution
+
+Hospital
+
+Island
+
+Japan
+
+Jazz
+
+Kabaddi
+
+Kyoto
+
+Linear algebra
+
+Lion
+
+Mountain
+
+Neural network
+
+Qin Shi Huang
+
+Shinto
+
+Syllogism
+
+Television
+
+World War II
+
+Cul.
+
+0.01
+
+0
+
+0.01
+
+0.01
+
+0
+
+0.09
+
+0.01
+
+0
+
+0
+
+0.01
+
+0
+
+0
+
+0
+
+0
+
+0.12
+
+0.01
+
+0.01
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0.01
+
+0
+
+0.10
+
+0
+
+Geo.
+
+0
+
+0
+
+0
+
+0
+
+0.04
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0.01
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0.03
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+Heal.
+
+0
+
+0.20
+
+0
+
+0.01
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0.01
+
+0
+
+0.40
+
+0
+
+0
+
+0
+
+0.01
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+Hist.
+
+0
+
+0
+
+0.07
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0.12
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0.01
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0.01
+
+Logic
+
+0
+
+0
+
+0
+
+0.05
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0.01
+
+0
+
+0
+
+0.06
+
+0
+
+0
+
+0.12
+
+0.01
+
+0
+
+Nat.
+
+0.04
+
+0.06
+
+0.07
+
+0.09
+
+0
+
+0.01
+
+0.01
+
+0.04
+
+0
+
+0.62
+
+0
+
+0.12
+
+0.17
+
+0.01
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0.27
+
+0.22
+
+0
+
+0
+
+0.07
+
+0
+
+0
+
+Peo.
+
+0.14
+
+0.06
+
+0.53
+
+0
+
+0
+
+0
+
+0.10
+
+0
+
+0
+
+0.01
+
+0
+
+0.10
+
+0
+
+0
+
+0.01
+
+0.01
+
+0
+
+0
+
+0
+
+0
+
+0.04
+
+0
+
+0
+
+0
+
+0.05
+
+0
+
+Phi.
+
+0.03
+
+0
+
+0.06
+
+0.28
+
+0
+
+0.01
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0.03
+
+0
+
+0
+
+0.07
+
+0
+
+0
+
+Rel.
+
+0.09
+
+0
+
+0.01
+
+0.05
+
+0
+
+0.22
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0.01
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0.05
+
+0.01
+
+0
+
+0
+
+Soc.
+
+0.31
+
+0.07
+
+0.38
+
+0.58
+
+0.02
+
+0.31
+
+0.03
+
+0.11
+
+0
+
+0
+
+0.11
+
+0.20
+
+0
+
+0.03
+
+0
+
+0
+
+0.01
+
+0
+
+0
+
+0.03
+
+0.33
+
+0
+
+0.05
+
+0.06
+
+0.10
+
+0
+
+Tech.
+
+0
+
+0
+
+0.06
+
+0.01
+
+0
+
+0.01
+
+0.06
+
+0.12
+
+0
+
+0
+
+0
+
+0.06
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0.11
+
+0
+
+0
+
+0
+
+0.02
+
+0
+
+categories are excessively segmentalized, the BVG method
+
+cannot extract accurately concept vectors due to the in-
+
+crease in hopcount. To solve this problem, we propose the
+
+Single Parent Integration (SPI) method. Here, we conrmed
+
+from our experiences that a part in the category system
+
+which corresponds to (excessively segmentalized) categories
+
+for a domain specic area forms almost a tree structure.
+
+Based on this fact, when a concept or a category has only one
+
+(onehop/multihop) belonging link, the SPI method shortens
+
+the belonging link. This is based on the idea that the char-
+
+acteristic is not dispersed even when parent categories are
+
+tracked back if the concept or category has only one (onehop
+
+or multihop) belonging link.
+
+system in Wikipedia as a directed graph
+
+Similar to the BVG method, we represent the category
+
+Figure 5: An example of executing the Single Parent Inte-
+
+gration (SPI) method
+
+2. The dispersion of characteristics grows larger as the
+
+number of category links from a concept becomes larger
+
+in tracking back parent categories.
+
+3. The values of elements in concept vectors extracted by
+
+the BVG method are skewed (not fair).
+
+To solve these problems, we propose three expansion meth-
+
+ods as described in the following subsections.
+
+G = {W, V, E}. In
+
+ek from
+
+node vi (or wi ) to v ∈ V , the path length of ek is accounted
+
+′
+
+as 0, which result in reformation of E to E , and then the
+
+′′BVG method is applied to G = {W, V, E }.
+
+the SPI method, if there is only one belonging link
+
+egory Nature is calculated. Since category Dog has a sin-
+
+gle parent category Canid, the belonging link from Dog
+
+Figure 5 shows an example of executing the SPI method,
+
+where the belonging degree from concept Shiba Dog to cat-
+
+to Canid can be removed. In the same way, belonging links
+
+from category Canid to category Mammals, from cate-
+
+gory Mammals to category Animals and from category
+
+Animals to category Living things can be removed. As
+
+a result, the lengths of both paths
+
+4.4 Single Parent Integration (SPI) Method
+
+As mentioned above, for domain specic areas in which
+
+p1
+
+and
+
+p2
+
+from concept
+
+Shiba Dog to category Nature become 3, which makes
+
+the belonging degree larger than that by the BVG method.
+
+-75-
+
+\\
+
+Figure 6: An example of executing the Variance-based Vec-
+
+tor Generation (VVG) method
+
+Figure 7: An example of executing the Sub-Category Ex-
+
+pansion (SCE) method
+
+4.5 Variance-based Vector Generation (VVG)
+
+Method
+
+As mentioned in subsection 4.3, the values of elements in
+
+concept vectors extracted by the BVG method are skewed
+
+(not fair).
+
+This is because the strength of the a‑liation
+
+represented by each belonging link (the importance of the
+
+belonging link) is uniform and the belonging degree is sim-
+
+ply calculated based on the number of paths and the length
+
+of each path. To solve this problem, we propose the VVG
+
+(Variance-based Vector Generation) method, which consid-
+
+ers the weight of each category link. The VVG method is
+
+based on the idea that the belonging degree from a cer-
+
+tain category (concept) to parent categories depends on the
+
+number of parent categories, thus the weight of each cate-
+
+gory link is determined so that it is inversely proportional to
+
+the number of parent categories. The weight of a category
+
+link becomes 1 if the category has only one parent category,
+
+therefore, the VVG method contains the same feature as the
+
+SPI method.
+
+In this method, we also represent the category system in
+
+Wikipedia as a directed graph
+
+longing degree from concept
+
+according to the weights.
+
+category Illness is calculated. Since the weight of each of
+
+two belonging links forming path
+
+degree
+
+p1
+
+is 1/2, the belonging
+
+I
+
+becomes 0.25.
+
+4.6
+
+Sub-Category Expansion (SCE) Method
+
+To solve this
+
+In the BVG method, the dispersion of characteristics grows
+
+larger as the number of category links from a concept gets
+
+larger in tracking back parent categories.
+
+problem, we propose the SCE (Sub-Category Expansion)
+
+method. In the SCE method, sub-categories are set to each
+
+base (major) category in concept vectors, and these sub-
+
+categories are regarded as a base category. This results in
+
+the decrease of the number of category links in tracking back
+
+parent categories, therefore the dispersion of characteristics
+
+is expected to be alleviated. Sub-categories can be selected
+
+freely from categories in Wikipedia: e.g., selecting important
+
+child categories subjectively, or applying a concept vector-
+
+ization method for automatically selects sub-categories. We
+
+describe how to select sub-categories later.
+
+Given the category system in Wikipedia as directed graph
+
+G = {W, V, E}.
+
+to category
+
+In the VVG
+
+is calculated
+
+method, weights are set to all belonging links, and the be-
+
+wi
+
+vj
+
+links from node vi (or wi ) to category v ∈ V is n, weight,
+
+b(ek ), of each of the belonging links, ek , is dened as follows.
+
+When the number of belonging
+
+1
+
+(2)
+
+n
+
+Then, given all paths P = {p1 , p2 , ..., pn } from wi to vj ,
+
+belonging degree I(wi , vj ) from concept wi to category vj is
+
+b(ek ) =
+
+dened as follows.
+
+G = {W, V, E}, the SCE method provides a set of sub-
+
+categories Uj = {u1 , u2 , ..., um } belonging to the base cat-
+
+egory vj . Then, by means of a vectorization method such
+
+as BVG, SPI and VVG methods, belonging degree I(wi , vj )
+
+from concept wi to category vj is calculated for all given
+
+paths P = {p1 , p2 , ..., pn } from wi to v ∈ vj ∪ Uj .
+
+It is important to select sub-categories properly in order
+
+to get an accurate result in the SCE method. Figure 7 shows
+
+an example of executing the SCE method, where categories
+
+Economics and Politics are selected as sub-categories be-
+
+longing to base category Society while category Culture
+
+I(wi , vj ) =
+
+c(pl )
+
+is the weight of path
+
+X
+
+p∈P
+
+c(pl )
+
+(3)
+
+is not selected, to distinguish the meanings between Soci-
+
+ety and Culture. Here, a category can be a sub-category
+
+belonging to multiple dierent base categories. For example,
+
+since category Science has several dierent aspects such as
+
+natural sciences and social sciences, it can be a sub-category
+
+for categories Nature and Society.
+
+As a strategy of selecting sub-categories automatically, a
+
+concept vectorization method can be applied (Figure 8, 9,
+
+10). In such a case, not concepts but categories are vector-
+
+ized and only categories whose belonging degree to a base
+
+category is larger than the threshold are selected as sub-
+
+categories for the base category. For example, let us assume
+
+equation.
+
+belonging
+
+link.
+
+pl , calculated by the following
+
+Here, El = {e1 , e2 , ..., em } denotes a set of all
+
+links forming path pl and eh denotes a belonging
+
+Y
+
+eh ∈El
+
+c(pl ) =
+
+b(eh )
+
+(4)
+
+Figure 6 shows an example of executing the VVG method,
+
+where the belonging degree from concept Peptic ulcer to
+
+-76-
+
+\\
+
+Figure 8:
+
+An example of selecting sub-categories by the
+
+Figure 10:
+
+An example of selecting sub-categories by the
+
+BVG method
+
+VVG method
+
+Figure 11: An example of calculating cosine metric
+
+Figure 9: An example of selecting sub-categories by the SPI
+
+method
+
+2. The examinee suggests concept B belonging to cate-
+
+the BVG method is applied for automatic sub-categories se-
+
+gory A.
+
+3. The examinee judges whether concept B belongs to
+
+each of other base categories by specifying a score (0:
+
+belongs, 1: neutral, 2: not belong).
+
+4. The answer vector is created from the result of the
+
+judgment.
+
+Here, each base category is presented once to gain an as-
+
+sociated concept and its answer vector, which results in 11
+
+answer vectors per examinee.
+
+Totally, 220 answer vectors
+
+are gained from the 20 examinees.
+
+After that, 220 concept vectors were extracted by the pro-
+
+posed concept vectorization methods (BVG, SPI, VVG, and
+
+SCE methods) for comparison with the answer vectors. To
+
+measure the similarity between a manually-made concept
+
+vector and an automatically-generated concept vector, we
+
+adopt cosine metric.
+
+In particular, cosine metric
+
+V , a set of belonging links
+
+G = {V, E}, sub-categories of cat-
+
+egory vj are selected as follows. As for all nodes vi ∈ V ,
+
+given all paths P = {p1 , p2 , ..., pn } from vi to vj , belonging
+
+degree I(vi , vj ) from category vi to category vj is calculated
+
+by the BVG method. Then, each category vi whose belong-
+
+ing degree I(vi , vj ) is larger than the threshold is selected
+
+as a sub-category uk , where a set of all sub-categories of vj
+
+is denoted by Uj = {u1 , u2 , ..., um }.
+
+lection. Given a set of categories
+
+E
+
+and a directed graph
+
+Figures 8, 9, and 10 shows examples of selecting sub-
+
+categories by the BVG, SPI, and VVG methods, respec-
+
+tively, where the threshold is set as 0.5, and the monotonic
+
+tincreasing function d is given as 2 l .
+
+5. EVALUATION
+
+In this section, we present the result of an experiment to
+
+evaluate our proposed concept vectorization methods.
+
+cos(r, s)
+
+for each of the 220 concept vector extracted by our method,
+
+5.1 Environment
+
+The performance experiment consists of two phases: the
+
+acquisition of answer vectors, and the comparison between
+
+answer vectors and the vectors extracted by each method.
+
+First, to acquire answer vectors, we performed a ques-
+
+tionary survey (subjective evaluation) to 20 examinees (20's
+
+men and women). The procedure of the survey is as follows.
+
+1. Base category A is presented to the examinee.
+
+r,
+
+and the corresponding answer vector,
+
+s,
+
+was calculated
+
+by the following equation. Figure 11 represents an example
+
+of calculating cosine metric.
+
+ri si
+
+r·si=1vcos(r, s) == v
+
+umum∥r∥∥s∥
+
+uX uX
+
+2tt
+
+rs2
+
+i
+
+i
+
+i=1
+
+i=1
+
+mX
+
+(5)
+
+-77-
+
+\\
+
+tion
+
+In the BVG and SPI methods, monotonic increasing func-
+
+d is given as 3tl (tl is the hopcount), and maximum
+
+hopcount is set as 4. In the VVG method,
+
+portant facts as follows. The SCE method shows the best
+
+performance because it shortens paths in order to make be-
+
+longing degrees more denitive. The SPI and VVG meth-
+
+ods are eective for extracting the characteristics in domain
+
+specic areas but sometimes ineective because of excessive
+
+extraction.
+
+The VVG method is also eective to extract
+
+correct relationships in Wikipedia because it considers the
+
+importance of belonging links, which makes it more stable
+
+than the SPI method. We think that the VVG method is
+
+useful both as a concept vectorization method and as a se-
+
+lection strategy of sub-categories.
+
+Concept vectors extracted by our proposed methods can
+
+be used for various applications such as document classica-
+
+tion and information retrieval. As part of our future work,
+
+we plan to apply these concept vectors to some applications
+
+to verify their eectiveness and utility.
+
+c(pl ),
+
+the weight
+
+of path
+
+pl ,
+
+is valid only if
+
+c(pl )
+
+is larger than 0.1. When uti-
+
+In
+
+lizing the SCE method, the BVG, SPI and VVG methods
+
+were applied for automatic selection of sub-categories.
+
+than 0.1 are selected as sub-categories.
+
+categories.
+
+these strategies, categories whose belonging degree is larger
+
+In addition, the
+
+list in Wikipedia was used as a manual selection of sub-
+
+This list describes important descendent cate-
+
+gories for 11 major categories, which have been carefully
+
+selected by many users of Wikipedia.
+
+5.2 Result and discussion
+
+Table 3 shows averages and variances of cosine metric for
+
+all the evaluated cases. First, the SCE method shows good
+
+performance as a whole.
+
+In particular, the averages are
+
+higher and the variances are lower than other cases not us-
+
+ing the SCE method. The SCE method indirectly shortens
+
+paths by calculating belonging degrees, which makes belong-
+
+ing degrees more denitive. The best performance is shown
+
+when using the sub-category list in Wikipedia for selection
+
+of sub-categories.
+
+As mentioned above, this list describes
+
+important descendent categories for 11 major categories.
+
+Therefore, human judgments are eective for selection of
+
+sub-categories. As for automatic selection of sub-categories,
+
+the VVG method performs better than the BVG and SPI
+
+methods. This is because the importance of belonging links
+
+can be considered, resulting in more accurate extraction of
+
+belonging degrees in Wikipedia.
+
+Second, the BVG, SPI and VVG methods have both mer-
+
+its and demerits as a concept vectorization method.
+
+The
+
+BVG method cannot extract belonging degrees in a case
+
+that categories in domain specic areas are excessively seg-
+
+mentalized. The SPI and VVG methods can extract belong-
+
+ing degrees accurately in such case because these methods
+
+shorten belonging links which connect a category to a sin-
+
+gle parent category forming redundant paths. On the other
+
+hand, the SPI and VVG methods excessively extract belong-
+
+ing degrees when sub-categories are set in the SCE method.
+
+This is because these methods shorten all belonging links
+
+regardless of the real relationship. The BVG method does
+
+not cause such problem.
+
+Furthermore, the VVG method
+
+gives more stable performance than the SPI method. This
+
+is because the VVG method can avoid excessive extraction
+
+by considering the strength of relationship.
+
+However, this
+
+also causes insu‑cient extraction when the number of parent
+
+categories is very large (ex. a certain concept can be clas-
+
+sied from many aspects such as region, domination, and
+
+shape).
+
+In summary, the SCE method is eective as an extension
+
+method.
+
+In addition, we think that the VVG method is
+
+useful both as a concept vectorization method and as a se-
+
+lection strategy of sub-categories. This is because the VVG
+
+method is more stable than the SPI method and can extract
+
+belonging degrees even in a case that categories in domain
+
+specic areas are excessively segmentalized.
+
+
+6. CONCLUSIONS
+
+In this paper we proposed concept vectorization methods
+
+that express what concept belongs to what categories with
+
+how much degree using the category system in Wikipedia.
+
+The result of the performance evaluation shows several im-
+
+-78-
+
+\\
+
+Table 3: Averages and variances of cosine metric
+
+Selection of sub-categories in SCE method
+
+(No sub-category)
+
+(No sub-category)
+
+(No sub-category)
+
+BVG method
+
+BVG method
+
+BVG method
+
+SPI method
+
+SPI method
+
+SPI method
+
+VVG method
+
+VVG method
+
+VVG method
+
+List in Wikipedia
+
+List in Wikipedia
+
+List in Wikipedia
+
+Concept vectorization method
+
+BVG method
+
+SPI method
+
+VVG method
+
+BVG method
+
+SPI method
+
+VVG method
+
+BVG method
+
+SPI method
+
+VVG method
+
+BVG method
+
+SPI method
+
+VVG method
+
+BVG method
+
+SPI method
+
+VVG method
+
+Average
+
+0.554
+
+0.595
+
+0.583
+
+0.624
+
+0.604
+
+0.588
+
+0.623
+
+0.602
+
+0.616
+
+0.635
+
+0.614
+
+0.625
+
+0.664
+
+0.661
+
+0.633
+
+Variance
+
+0.0746
+
+0.0502
+
+0.0660
+
+0.0413
+
+0.0398
+
+0.0452
+
+0.0380
+
+0.0364
+
+0.0352
+
+0.0387
+
+0.0370
+
+0.0365
+
+0.0434
+
+0.0384
+
+0.0496
+
+English. Communications of the ACM (CACM),
+
+38(11):3941, Nov. 1995.
+
+[11] K. Nakayama, T. Hara, and S. Nishio. Wikipedia
+
+mining to construct a thesaurus(information
+
+retrieval). Transactions of Information Processing
+
+Society of Japan, 47(10):29172928, Oct. 2006.
+
+[12] M. Ruiz-Casado, E. Alfonseca, and P. Castells.
+
+Automatic assignment of Wikipedia encyclopedic
+
+entries to WordNet synsets. In Proc. of International
+
+Atlantic Web Intelligence Conference (AWIC), pages
+
+380386, June 2005.
+
+[13] M. Strube and S. Ponzetto. WikiRelate! computing
+
+semantic relatedness using Wikipedia. In Proc. of
+
+National Conference on Articial Intelligence (AAAI),
+
+pages 14191424, July 2006.
+
+[14] M. Völkel, M. Krötzsch, D. Vrandecic, H. Haller, and
+
+R. Studer. Semantic Wikipedia. In Proc. of
+
+International World Wide Web Conference (WWW),
+
+pages 585594, May 2006.
+
+[15] Wikimedia Foundation. Categorytree.
+
+http://en.wikipedia.org/wiki/Special:CategoryTree.
+
+-79-
 </body>
 
 </html>
