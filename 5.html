@@ -64,26 +64,333 @@
 </ul>
 <p class='c2'><a href='docs/index.html' class='c1'>Deck</a> .</p>
 <p>Once in , use the navigation menu in the top-right corner .</p>
-   <p>jQuery's document-ready function</p>
-          </td>
+<p><HTML>
 
-          <td class="code">
-            <div class="highlight">
-              <pre>
-<span class="nx">$</span><span class="p">(</span><span class=
-"kd">function</span><span class="p">(){</span>
-</pre>
-            </div>
-          </td>
-        </tr>
+<HEAD>
 
-        <tr id="section-3">
-          <td class="docs">
-            <div class="pilwrap">
-              <a class="pilcrow" href="#section-3">&para;</a>
-            </div>
+<TITLE>HTML Link Tags Examples</TITLE>
 
-            <p><strong>ListView class</strong>: Our main app view.</p>
+<META NAME="keyword" content="html, tag, text, webpage,  homepage, tutorial, basic, browser, reference, anchor, list, font, header, separator">
+
+<SCRIPT LANGUAGE="JavaScript">
+
+<!--
+
+function PracticeWindow() {
+
+window.open("try.htm","MainWindow","status,scrolling=yes,resizable,height=540,width=460")
+
+}
+
+//-->
+
+</SCRIPT>
+
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#cc3299" ALINK="#FFFF00">
+
+<BASEFONT="3">
+
+<CENTER>
+
+<B>
+
+<A NAME="TOC"><H1>HTML Link Tags Examples</H1></A>
+
+</B>
+
+<HR SIZE=3>
+
+<P>
+
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0">
+
+<TR>
+
+<TH ALIGN=LEFT VALIGN=TOP NOWRAP>
+
+<UL>
+
+<LI><A HREF="#anchor">Anchors - Internal</A>
+
+<LI><A HREF="#local">Anchors - Local</A>
+
+<LI><A HREF="#target">Anchors - Target</A>
+
+<LI><A HREF="#alert">JavaScript Alerts</A>
+
+</UL>
+
+</TH>
+
+<TH ALIGN="LEFT" VALIGN="TOP" NOWRAP>
+
+<UL>
+
+<LI><A HREF="#back">JavaScript Back Link</A>
+
+<LI><A HREF="#redirect">Meta Refresh (Redirect)</A>
+
+<LI><A HREF="#mouseover">OnMouseOver</A>
+
+<LI><A HREF="#mouseout">OnMouseOver & OnMouseOut</A>
+
+</UL>
+
+</TH>
+
+</TR>
+
+</TABLE></B>
+
+<A NAME="anchor"><HR SIZE=3></A>
+
+</CENTER>
+
+<CENTER><FONT SIZE="5"><B>ANCHORS - INTERNAL </B></FONT></CENTER>
+
+<HR SIZE=3>
+
+<UL>
+
+<LI><B>To name an internal anchor:</B>
+
+<P>
+
+&lt;A NAME="redirect"&gt;Meta Refresh Tag&lt;/A&gt;
+
+<P>
+
+<LI><B>To link to an internal anchor:</B>
+
+<P>
+
+<B>Example code:</B><BR>
+
+&lt;A HREF="#redirect"&gt;Meta Refresh Tag&lt;/A&gt; 
+
+<P>
+
+<B>Result of example code:</B><BR><A HREF="#redirect">Meta Refresh Tag</A>
+
+<P>
+
+<B>Try it out: Clicking on the above will take you to the Meta Refresh Tag section of this page.</B>
+
+</UL>
+
+<B><I><A HREF="#TOC">To the Table of Contents</A></I>
+
+<A NAME="local"><HR SIZE=3></A>
+
+<CENTER><FONT SIZE="5">ANCHORS - LOCAL</B></FONT></CENTER>
+
+<HR SIZE=3>
+
+<P>
+
+<B>Example code:</B><BR>
+
+&lt;A HREF="file:///C:/"&gt;Your harddrive.&lt;/A&gt; 
+
+<P>
+
+<B>Result of example code:</B><BR><A HREF="file:///C:/">Your harddrive.</A>
+
+<P>
+
+<B>Try it out: Clicking on the above will, for PC's, show you the contents of your C drive.</B>
+
+<P>
+
+<B><I><A HREF="#TOC">To the Table of Contents</A></I></B>
+
+<A NAME="target"><HR SIZE=3></A>
+
+<CENTER><FONT SIZE="5"><B>ANCHORS - TARGET</FONT><BR><FONT SIZE=2>To open a second page in a second browser window</B></FONT></CENTER>
+
+<HR SIZE=3>
+
+<P>
+
+<B>Example code:</B><BR>
+
+&lt;A HREF="index.htm" TARGET="main"&gt;HTML Tags Live Examples Title Page.&lt;/A&gt; 
+
+<P>
+
+<B>Result of example code:</B><BR><A HREF="index.htm" TARGET="main">HTML Tags Live Examples Title Page.</A>
+
+<P>
+
+<B>Try it out: Clicking on the above will open a new second browser window and load in the HTML Tags Live Examples title page leaving this page open in this browser window.</B>
+
+<P>
+
+<B><I><A HREF="#TOC">To the Table of Contents</A></I></B>
+
+<A NAME="alert"><HR SIZE=3></A>
+
+<CENTER><FONT SIZE="5"><B>JAVASCRIPT ALERTS</B></FONT></CENTER>
+
+<HR SIZE=3>
+
+<P>
+
+<UL>
+
+<LI><B>Example code:</B><BR>
+
+&lt;A HREF="#TOC" onClick="(alert('this will take you to the top!'))"&gt;To the Table of Contents&lt;/A&gt; 
+
+<P>
+
+<B>Result of example code:</B><BR><A HREF="#TOC" onClick="(alert('this will take you to the top!'))">To the Table of Contents</A>
+
+<P>
+
+<LI><B>Example code:</B><BR>
+
+&lt;A HREF="#TOC" onClick="(confirm('this will take you to the top!'))"&gt;To the Table of Contents&lt;/A&gt; 
+
+<P>
+
+<B>Result of example code:</B><BR><A HREF="#TOC" onClick="(confirm('this will take you to the top!'))">To the Table of Contents</A>
+
+<P>
+
+<LI><B>Example code:</B><BR>
+
+&lt;A HREF="#TOC" onClick="(x=prompt('please enter your name: ', 'Default Text'))"&gt;To the Table of Contents&lt;/A&gt; 
+
+<P>
+
+<B>Result of example code:</B><BR><A HREF="#TOC" onClick="(x=prompt('please enter your name: ', 'Default Text'))">To the Table of Contents</A>
+
+</UL>
+
+<P>
+
+<A NAME="back"><HR SIZE=3></A>
+
+<CENTER><FONT SIZE="5"><B>JAVASCRIPT BACK LINK</B></FONT></CENTER>
+
+<HR SIZE=3>
+
+<P>
+
+<B>Example code:</B><BR>
+
+&lt;A HREF="javascript:history.back()"&gt;Back&lt;/A&gt; 
+
+<P>
+
+<B>Result of example code:</B><BR><A HREF="javascript:history.back()">Back</A>
+
+<P>
+
+<B>Try it out.  <I>Note:</I> If you got to this section via the table of contents above, clicking back will take you back to the table of contents.  Click the back button on the browser, then scroll down to this section.  Clicking on the link then will send you (unless you have "clicked around" several times on this page first) to the previous page.</B>
+
+<P>
+
+<B><I><A HREF="#TOC">To the Table of Contents</A></I></B>
+
+<A NAME="redirect"><HR SIZE=3></A>
+
+<CENTER><FONT SIZE="5"><B>META REFRESH (REDIRECT)</B></FONT></CENTER>
+
+<HR SIZE=3>
+
+<P>
+
+<B>Example code:</B><BR>
+
+&lt;META HTTP-EQUIV="refresh" CONTENT="7; url=http://funnelweb.utcc.utk.edu/~dmdragon/merchant/links.htm#redirect"&gt;
+
+<P>
+
+<B>Result of example code.  The page the following link goes to has the above code within it's head tags.  If your browser supports refresh, you will be returned automatically to this page.</B><BR><A HREF="refresh.htm">Meta refresh text page</A>.
+
+<P>
+
+<B><I><A HREF="#TOC">To the Table of Contents</A></I></B>
+
+<A NAME="mouseover"><HR SIZE=3></A>
+
+<CENTER><FONT SIZE="5"><B>ONMOUSEOVER</B></FONT></CENTER>
+
+<HR SIZE=3>
+
+<P>
+
+<B>Example code:</B><BR>
+
+&lt;A HREF="#TOC" onMouseOver="window.status='this will take you to the top!'; return true"&gt;To the Table of Contents&lt;/A&gt; 
+
+<P>
+
+<B>Result of example code:</B><BR><A HREF="#TOC" onMouseOver="window.status='this will take you to the top!'; return true">To the Table of Contents</A>
+
+<P>
+
+<B>Try it out (text should print out in status bar).</B>
+
+<A NAME="mouseout"><HR SIZE=3></A>
+
+<CENTER><FONT SIZE="5"><B>ONMOUSEOVER & ONMOUSEOUT</B></FONT></CENTER>
+
+<HR SIZE=3>
+
+<P>
+
+<B>Example code:</B><BR>
+
+&lt;A HREF="#TOC" onMouseOver="window.status='this will take you to the top!'; return true" onMouseOut="window.status=' Welcome to the Links Tag Examples Page'; return true"&gt;To the Table of Contents&lt;/A&gt; 
+
+<P>
+
+<B>Result of example code:</B><BR><A HREF="#TOC" onMouseOver="window.status='this will take you to the top!'; return true" onMouseOut="window.status=' Welcome to the Links Tag Examples Page'; return true">To the Table of Contents</A>
+
+<P>
+
+<B>Try it out (text should print out in status bar).</B>
+
+<CENTER>
+
+<B>
+
+<HR SIZE=3>
+
+<P>
+
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=1><TR><TH>|<A HREF="index.htm">Title Page</A>| |<A HREF="template.htm">Basic Template</A>|</TH></TR><TR><TH NOWRAP>|<A HREF="colors.htm">Color</A>| |Dynamic HTML/Layers| |<A HREF="forms.htm">Form Tags</A>| |<A HREF="frames.htm">Frame Tags</A>| |<A HREF="iso.htm">HTML Entities / ISO Characters</A>|</TH></TR><TR><TH>|<A HREF="images.htm">Image Tags</A>| |<A HREF="links.htm">Link Tags</A>| |<A HREF="lists.htm">List Tags</A>| |<A HREF="space.htm">Other Spacing / Layout Tags</A>| |<A HREF="rule.htm">Rule Tags</A>| |<A HREF="sound.htm">Sound Tags</A>|</TH></TR><TR><TH>|<A HREF="css.htm">Style Sheets</A>| |<A HREF="tables.htm">Table Tags I</A>| |<A HREF="tables2.htm">Table Tags II</A>| |<A HREF="text.htm">Text Tags</A>| |<A HREF="bib.htm">Bibliography / Resources</A>| |<A HREF="indx.htm">Index</A>|</TH></TR></TABLE>
+
+<P>
+
+<FORM>
+
+<INPUT TYPE="button"  VALUE="Practice Window" NAME="Practice Window" ONCLICK="PracticeWindow()">
+
+</FORM> 
+
+<P>
+
+<HR SIZE=3>
+
+<P>
+
+<FONT SIZE="2">&copy; <A HREF="http://www.mountaindragon.com/merchant/">David Merchant</A> 1997-2001.</FONT><BR>
+
+<FONT SIZE="2"><</font></A></FONT>
+
+</CENTER>
+
+</B>
+
+</BODY>
+
+</HTML><p>
 <script src="https://gist.github.com/1018655.js"> </script>
 
  <iframe src="http://checkvist.com/checklists/71479-docs-short-form" scrolling="auto"
