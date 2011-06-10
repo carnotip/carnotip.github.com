@@ -81,13 +81,8 @@ usemap="#mymap"> <map name="mymap" id="mymap">
           <td class="code">
             <div class="highlight">
               <pre>
-  <span class="kd">var</span> <span class="nx">ListView</span> <span class=
-"o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class=
-"nx">View</span><span class="p">.</span><span class="nx">extend</span><span class=
-"p">({</span>    
-    <span class="nx">el</span><span class="o">:</span> <span class=
-"nx">$</span><span class="p">(</span><span class="s1">'body'</span><span class=
-"p">),</span> <span class="c1">// attaches `this.el` to an existing element.</span>
+    
+   
 </pre>
             </div>
           </td>
@@ -107,17 +102,7 @@ usemap="#mymap"> <map name="mymap" id="mymap">
           <td class="code">
             <div class="highlight">
               <pre>
-    <span class="nx">initialize</span><span class="o">:</span> <span class=
-"kd">function</span><span class="p">(){</span>
-      <span class="nx">_</span><span class="p">.</span><span class=
-"nx">bindAll</span><span class="p">(</span><span class="k">this</span><span class=
-"p">,</span> <span class="s1">'render'</span><span class="p">);</span> <span class=
-"c1">// fixes loss of context for 'this' within methods</span>
-       
-       <span class="k">this</span><span class="p">.</span><span class=
-"nx">render</span><span class="p">();</span> <span class=
-"c1">// not all views are self-rendering. This one is.</span>
-    <span class="p">},</span>
+    
 </pre>
             </div>
           </td>
@@ -129,22 +114,13 @@ usemap="#mymap"> <map name="mymap" id="mymap">
               <a class="pilcrow" href="#section-5">&para;</a>
             </div>
 
-            <p><code>render()</code>: Function in charge of rendering the entire view in
-            <code>this.el</code>. Needs to be manually called by the user.</p>
+            
           </td>
 
           <td class="code">
             <div class="highlight">
               <pre>
-    <span class="nx">render</span><span class="o">:</span> <span class=
-"kd">function</span><span class="p">(){</span>
-      <span class="nx">$</span><span class="p">(</span><span class=
-"k">this</span><span class="p">.</span><span class="nx">el</span><span class=
-"p">).</span><span class="nx">append</span><span class="p">(</span><span class=
-"s2">"&lt;ul&gt; &lt;li&gt;hello world&lt;/li&gt; &lt;/ul&gt;"</span><span class=
-"p">);</span>
-    <span class="p">}</span>
-  <span class="p">});</span>
+    
 </pre>
             </div>
           </td>
@@ -156,7 +132,7 @@ usemap="#mymap"> <map name="mymap" id="mymap">
               <a class="pilcrow" href="#section-6">&para;</a>
             </div>
 
-            <p><strong>listView instance</strong>: Instantiate main app view.</p>
+           
           </td>
 
           <td class="code">
