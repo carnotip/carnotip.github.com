@@ -1,172 +1,1059 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN"
-    "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
-      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-      xmlns:dc="http://purl.org/dc/elements/1.1/"
-      xmlns:foaf="http://xmlns.com/foaf/0.1/">
-  
-  <head>
-    
-    
-      
-        <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
-      
-      
-      <title>
-        Markdoc Documentation » 
-        Index
-      </title>
-      
-      
-        <!-- YUI CSS reset, fonts, base -->
-        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?3.0.0/build/cssreset/reset-min.css&amp;3.0.0/build/cssfonts/fonts-min.css&amp;3.0.0/build/cssbase/base-min.css" media="screen, projection" />
-        
-        <link rel="stylesheet" type="text/css" href="media/css/style.css" media="screen, projection" />
-        <link rel="stylesheet" type="text/css" href="media/css/pygments.css" media="screen, projection" />
-      
-      
-      
-      
-      
-        
-          <!-- Google Analytics -->
-          <script type="text/javascript">
-            var _gaq = _gaq || [];
-            _gaq.push(['_setAccount', 'UA-9915287-4']);
-            _gaq.push(['_trackPageview']);
-            (function() {
-              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
-            })();
-          </script>
-        
-      
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <link rel="P3Pv1" href="/w3c/p3p.xml" />
+        <script type="text/javascript">
+            //<![CDATA[
+            var mashery_info = {
+                        };
+
+            // iframe'd detection, to pop out if in an iframe
+            if (window.location !== parent.window.location && !(/(page|docs|blog)\/preview/.test(window.location.pathname))) {
+                parent.window.location = window.location;
+            }
+            //]]>
+        </script>
+            <title>Etsy Developer Community - The Etsy API</title>
+    <link rel="alternate" type="application/rss+xml" href="http://developer.etsy.com/docs/feed-comments/Home" />
+    <link rel="stylesheet"  type="text/css" media="screen" href="/public/Mashery/styles-min/Mashery-base.css" />
+    <link rel="stylesheet"  type="text/css" media="screen" href="http://developer.etsy.com/files/base_v2.css" />
+    <link rel="stylesheet"  media="print" type="text/css" href="http://developer.etsy.com/files/print.css" />
+<style type="text/css" media="screen">
+<!--
+div#nav ul li#login_member_tab_masherysecure a {
+
+            display: none;
+
+        }
+-->
+</style>
+    <script src="/public/Mashery/scripts/Mashery/Mashery-base.js" type="text/javascript"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.1/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+jQuery.noConflict();
+//]]>
+</script>
+        <!-- add syntax highlighter -->
+        <script type="text/javascript">
+            if(window.SyntaxHighlighter != undefined) { // check for syntax highlighter load before using
+                SyntaxHighlighter.config.clipboardSwf = '/public/Mashery/scripts/SyntaxHighlighter/scripts/clipboard.swf';
+                SyntaxHighlighter.all();
+            }
+        </script>
+        <!-- end syntax highlighter -->
+        <script type="text/javascript">
+            //<![CDATA[
+            // for callback from login overlay
+            function setTopMasheryLocation(url)
+            {
+                document.location = url;
+            }
+            //]]>
+        </script>
+        <!--[if lt IE 7.]>
+            <link href="/public/Mashery/styles/IE6.css" type="text/css" media="screen" rel="stylesheet" />
+        <![endif]-->
+        <!--[if IE 7]>
+            <link href="/public/Mashery/styles/IE7.css" type="text/css" media="screen" rel="stylesheet" />
+        <![endif]-->
+        <!--[if gte IE 8]>
+            <link href="/public/Mashery/styles/IE8.css" type="text/css" media="screen" rel="stylesheet" />
+        <![endif]-->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
   <script src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js" type="text/javascript" charset="utf-8"></script>
   <script src="http://ajax.cdnjs.com/ajax/libs/underscore.js/1.1.6/underscore-min.js" type="text/javascript" charset="utf-8"></script>
-  <script src="http://ajax.cdnjs.com/ajax/libs/backbone.js/0.3.3/backbone-min.js" type="text/javascript" charset="utf-8"></script>    
-  </head>
-  
-  <body >
-    
-      
-      
-        
-          
-  
-    <ol id="breadcrumbs">
-      
-        <li class="crumb-0 last">
-          
-            index
-          
-        </li>
-      
-    </ol> <!-- ol#breadcrumbs -->
-  
+  <script src="http://ajax.cdnjs.com/ajax/libs/backbone.js/0.3.3/backbone-min.js" type="text/javascript" charset="utf-8"></script>   
+    </head>
+    <body id="page-docs" class="page-docs read en_US">
+        <!-- PAGE -->
+        <div id="page" class="page read">
 
-        
-      
-      
-      <div id="content">
-        
-        
-        
-        <!-- title: Index -->
+            <!-- HEADER -->
+            <div id="header" class="header">
+                <div id="branding" class="branding">
+                    <div id="branding-logo" class="branding-logo">
+                        Etsy Developer Community                    </div><!-- /branding-logo -->
+                    <div id="branding-tagline">
+                    </div><!-- /branding-tagline -->
+                    <div id="branding-mashery">
+                    </div><!-- /branding-mashery -->
+                </div><!-- /branding -->
+                            </div>
+            <!-- /HEADER -->
 
-<h1 id="markdoc">Markdoc</h1>
-<p>Markdoc is a lightweight Markdown-based wiki system. It’s been designed to allow
-you to create and manage wikis as quickly and easily as possible.</p>
-<h2 id="what_is_it_good_for">What is it good for?</h2>
-<p>Potential use cases for Markdoc include, but aren’t limited to:</p>
-<dl>
-<dt>Technical Documentation/Manuals</dt>
-<dd>Markdoc can be used to write and render hand-written guides and manuals for
-software. Such documentation will normally be separate from
-automatically-generated API documentation, and might give a higher-level
-view than API docs alone. It might be used for client documentation for
-web/desktop applications, or even developer documentation for frameworks.</dd>
-<dt>Internal Project Wikis</dt>
-<dd>Markdoc wikis consist of a single plain-text file per page. By combining a
-wiki with a DVCS (such as <a href="http://mercurial.selenic.com/">Mercurial</a> or <a href="http://git-scm.com/">Git</a>), you can collaborate
-with several other people. Use the DVCS to track, share and merge changes
-with one another, and view the wiki’s history.</dd>
-<dt>Static Site Generation</dt>
-<dd>Markdoc converts wikis into raw HTML files and media. This allows you to
-manage a blog, personal website or a collection of pages in a Markdoc wiki,
-perhaps with custom CSS styles, and publish the rendered HTML to a website.
-Markdoc need not be installed on the hosting site, since the resultant HTML
-is completely independent.</dd>
-</dl>
-<h2 id="cool_features">Cool Features</h2>
+            <div id="user" class="user">
+                <div id="user-auth" class="user-auth">
+                </div><!-- /user-auth -->
+                <div id="user-main" class="user-main">
+                </div><!-- /user-main -->
+                <div id="user-nav" class="user-nav">
+                    <ul>
+                                        <li class="first sign-in">
+            <a href="http://developer.etsy.com/login/mashery-id?r=http%3A%2F%2Fdeveloper.etsy.com%2Fdocs&amp;h=05d346e6e30b464583e639cdadd7f189">Sign In</a>        </li>
+                            <li class="register">
+                <a href="http://developer.etsy.com/member/register">Register</a>            </li>
+                                </ul>
+                </div><!-- /user-nav -->
+                <div id="user-menu">
+    </div>
+            </div><!-- /user -->
+
+            <div id="info" class="info" style="display: none;">
+            </div><!-- /info -->
+
+            <!-- CONTENT -->
+            <div id="content" class="content">
+
+                
+                <div id="main" class="main">
+                    
+<h1 class="first">The Etsy API</h1>
+
+    <div class="section">
+        <div class="section-body">
+<body class="page-docs">
+<div class="toc">
+<h2>Contents</h2>
+<ol>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#api_basics">API Basics</a></li>
+    <ol>
+    <li><a href="#entry_points">Entry Points</a></li>
+    <li><a href="#authentication">Authentication</a></li>
+    <li><a href="#rate_limiting">Rate Limiting</a></li>
+    <li><a href="#api_requests">API Requests</a></li>
+        <ol>
+        <li><a href="#request_urls">Request URLs</a></li>
+        <li><a href="#output_formats">Output Formats</a></li>
+        <li><a href="#http_methods">HTTP Methods</a></li>
+        <li><a href="#parameter_types">Parameter Types</a></li>
+        <li><a href="#standard_parameters">Standard Parameters</a></li>
+        </ol>
+    <li><a href="#api_responses">API Responses</a></li>
+        <ol>
+        <li><a href="#json_data">JSON Data</a></li>
+        <li><a href="#standard_response_format">Standard Response Format</a></li>
+        <li><a href="#pagination">Pagination</a></li>
+        <li><a href="#standard_response_codes">Standard Response Codes</a></li>
+        </ol>
+    </ol>
+<li><a href="#developer_sandbox">Developer Sandbox</a></li>
+    <ol>
+    <li><a href="#sandbox_keys">Sandbox Keys and OAuth Verification</a></li>
+    <li><a href="#sandbox_refresh">Sandbox Refresh Scheduled Maintenance</a></li>
+    <li><a href="#sandbox_caveats">Sandbox Caveats</a></li>
+    </ol>
+<li><a href="#how_to_make_a_request">How to Make A Request And Process The Response</a></li>
+    <ol>
+    <li><a href="#sample_request_from_php">Sample Request from PHP</a></li>
+    <li><a href="#sample_response">Sample Response</a></li>
+    <li><a href="#sample_response_in_php">Sample Response in PHP</a></li>
+    </ol>
+<li><a href="#oauth_authentication">OAuth Authentication</a></li>
+    <ol>
+    <li><a href="#obtaining_a_request_token">Obtaining a Request Token</a></li>
+    <li><a href="#authorizing_the_request">Authorizing the Request</a></li>
+    <li><a href="#obtaining_an_access_token">Obtaining an Access Token</a></li>
+    <li><a href="#making_and_authorized_request">Making an Authorized Request to the API</a></li>
+    </ol>
+<li><a href="#working_with_resources">Working with Resources</a></li>
+    <ol>
+    <li><a href="#fields">Fields</a></li>
+    <li><a href="#associations">Associations</a></li>
+    <li><a href="#scopes">Scopes</a></li>
+    <li><a href="#association_syntax">Association Syntax</a></li>
+    </ol>
+<li><a href="#using_the_jsonp_interface">Using the JSONP interface with JavaScript</a></li>
+</ol>
+</div>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>The Etsy API provides a simple <a href="http://en.wikipedia.org/wiki/Representational_State_Transfer">RESTful</a> interface with lightweight <a href="http://en.wikipedia.org/wiki/JSON">JSON</a>-formatted responses to use many of Etsy's website features, including public profiles, shops, listings, tags, favorites, and sales data, using <a href="#oauth_authentication">OAuth</a> to allow both read and write access to users' public and private data.  This document provides information to developers on how to integrate with the Etsy API.</p>
+
+<h2 id="api_basics">API Basics</h2>
+
+<h3 id="entry_points">Entry Points</h3>
+
+<p>The Etsy API V2 has two separate entry points:</p>
 <ul>
-<li>
-<p>Set up <a href="ref/configuration#metadata">Google Analytics</a> tracking in one line of configuration.</p>
+<li><strong><code>/v2/public</code></strong> is a read-only entry point for public data.  It uses the standard parameter <code>api_key</code> for authentication.  All fields and associations listed below as "private" will be <strong>unavailable</strong> at this entry point.</li>
+<li><strong><code>/v2/private</code></strong> is a read-write entry point.  It uses OAuth for authentication (<a href="#oauth_authentication">see below</a>) as provides all public and private data.</li>
+</ul>
+
+<p>In general, an application needs to only use one of the above entry points.  Applications that don't need access to private data can rely solely on <code>/v2/public</code>.  Applications that need private data can use <code>/v2/private</code> to access both private and public methods.</p>
+
+<p>In addition, The Etsy API provides a developer sandbox, where write methods can be tested against non-production data:</p>
+<ul>
+<li><strong><code>/v2/sandbox/public</code></strong> is the read-only entry point for public sandbox data.<br></li>
+<li><strong><code>/v2/sandbox/private</code></strong> is the read-write entry point for private and public sandbox data.</li>
+</ul>
+
+<p>Developers will need to authenticate their OAuth-based apps separately against the sandbox API.  OAuth tokens obtained from the sandbox API will not work with the production API.</p>
+
+<h3 id="authentication">Authentication</h3>
+
+<p>The Etsy API requires an application key that is provided during <a href="/member/register" title="registration">registration</a>.  The key identifies your application to the Etsy web service, and is used to track overall call usage.  It's passed using the standard <code>api_key</code> parameter.</p>
+
+<p>For write access and for accessing private user data, an <a href="#oauth_authentication">OAuth</a> access token is required.  Your application key is required to start the OAuth authentication process.</p>
+
+<p>New users register an application and receive a sandbox API key upon signup.  These keys allow immediate access to the sandbox entry points.  Developers can request a production API key once their application is ready for testing against production data.  Applications are reviewed for production keys against the following criteria:
+    
+    <ul>
+        <li>Applications and their home pages should comply with our <a href="http://developer.etsy.com/Api_terms_of_use">API Terms of Use</a></li>
+        <li>Applications should not sidestep the API to retrieve Etsy data.  Screen-scraping is not allowed.</li>
+        <li>The application's name and artwork, including icons and home pages, should follow our <a href="http://www.etsy.com/trademark_guidelines.php">Trademark Guidelines.</a></li>
+    </ul>
+    
+<p>To request a production API key please <a href="/production_keys">follow the instructions here</a>.</p>
+
+<h3 id="rate_limiting">Rate Limiting</h3>
+
+<p><strong>For the Public entry points:</strong> Clients are allowed 10,000 requests per 24-hour period, with a limit of 10 queries per second.  You will receive an automated email when you approach your daily limit.  If your application needs more than the allotted amount of calls, contact us at <a href="mailto:devsupport@etsy.com" title="devsupport@etsy.com">devsupport@etsy.com</a> with a description of the application and an estimate on needed call usage.  (You might also want to investigate the use of <a href="http://www.danga.com/memcached/" title="caching" target="_blank">caching</a> to keep the number of calls to a minimum, and make your application more responsive.)</p>
+
+<p><strong>For the Private entry points:</strong> Clients are allowed 10,000 requests per 24-hour period, with a limit of 
+10 queries per second <strong>per OAuth access token</strong>.  This means that the total rates for your OAuth-enabled application effectively increase as more people use your application.  Unlike the Public entry points, there is not currently a way to increase these base limits on a per-application basis; this is something we're exploring for a future release.</p>
+
+<p>These default rate limits are subject to change at any time, without notice.</p>
+
+<h3 id="api_requests">API Requests</h3>
+
+<p>The Etsy API uses a <a href="http://en.wikipedia.org/wiki/REST" title="RESTful" target="_blank">RESTful</a> calling style that works with standard <a href="http://en.wikipedia.org/wiki/HTTP" title="HTTP" target="_blank"><code>HTTP</code></a> calls.  Any web programming language (PHP, Ruby, Perl, Python, Java, Objective C, C#...) should be able to make and receive <code>HTTP</code> networking calls; consult the documentation for your language of choice.</p>
+
+<h4 id="request_urls">Request URLs</h4>
+
+<p>In a RESTful API, each resource or collection of resources is identified by a unique URL, such as:</p>
+
+<pre>http://openapi.etsy.com/v2/public/listings/:listing_id</pre>
+
+</p>The prefix <code>v2</code> is the version specifier and must be present.  When significant changes are made to the API (changes that would break compatibility with existing applications) this value will change.</p>
+
+<p>URL paths contain the unique IDs of resources.  These are identified by a leading colon, as with <code>:listing_id</code> above.  Before making a call, you must substitute a valid ID value for these placeholders.  ID parameters must appear in the URL and cannot be substituted for GET parameters.  All ID parameters listed in the URL pattern must be present.</p>
+
+<h4 id="output_formats">Output Formats</h4>
+
+<p>The Etsy API handles multiple output formats.  Currently, the only supported formats are <code>JSON</code> and <code>JSONP</code> (<a href="#using_the_jsonp_interface">see below</a>.)  Output formats are selected with a specifier that is appended to the URL, like a filename extension:
+
+<table>
+    <tbody>
+        <tr>
+            <th>Format</th><th>Specifier</ht><th>Description</th>
+        </tr>
+        <tr>
+            <td><code>JSON</code></td><td><code>.json</code></td><td>JavaScript Object Notation.</td>
+        </tr>
+        <tr>
+            <td><code>JSONP</code></td><td><code>.js</code></td><td>JSON with Padding</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>JSON is the default, and will be used if nothing is specified.  Using the alternate <code>JSONP</code> format, the example from the previous section would look like this:
+
+<pre>http://openapi.etsy.com/v2/public/listings/:listing_id.js</pre>
+
+<h4 id="http_methods">HTTP Methods</h4>
+
+<p>RESTful APIs use standard HTTP methods to denote actions against a resource:</p>
+<ul>
+<li><code>GET</code> - Reads a resource.  Returns <code>HTTP 200</code> on success.  </li>
+<li><code>POST</code> - Creates a new resource.  Returns <code>HTTP 201</code> on success.</li>
+<li><code>PUT</code> - Updates a resource.  Returns <code>HTTP 200</code> on success.</li>
+<li><code>DELETE</code> - Deletes a resource.  Returns <code>HTTP 200</code> on success.</li>
+</ul>
+
+<p>Because some toolkits lack support for <code>PUT</code> and <code>DELETE</code> (most notably JavaScript) you can use method overloading to fake an HTTP method.  Use a <code>GET</code> or <code>POST</code> call and append the standard <code>method</code> parameter:</p>
+
+<pre>http://openapi.etsy.com/v2/private/users/__SELF__/favorites/listings/12345?method=DELETE</pre>
+
+<p>The standard token <code>__SELF__</code> in the above calls maps to the user ID of user using your application under OAuth.  It can be used in any URL in place of <code>:user_id</code> under the private entry points.  When used under the public entry points, it will cause an error.</p>
+
+<h4 id="parameter_types">Parameter Types</h4>
+
+<p>Many API methods take one or more parameters, either as query parameters of the URL itself, or as POST parameters.  The documentation for each method references these standard types:</p>
+
+<table>
+<tbody>
+<tr>
+<th> Param Type </th> <th> Meaning </th>
+</tr>
+<tr id="type_string">
+<td><code>string</code></td>
+<td>Any string (up to 255 characters).</td>
+</tr>
+<tr id="type_int">
+<td><code>int</code></td>
+<td>A whole number value.</td>
+</tr>
+<tr id="type_epoch">
+<td><code>epoch</code></td>
+<td>A whole number value representing <a href="http://en.wikipedia.org/wiki/Unix_time" taget="_blank">UNIX epoch time</a>, or any string accepted by PHP's <a href="http://us.php.net/strtotime" target="_blank"><code>strtotime()</code></a> function.</td>
+</tr>
+<tr id="type_float">
+<td><code>float</code></td>
+<td>A number with or without a decimal point.</td>
+</tr>
+<tr id="type_user_id_or_name">
+<td><code>user_id_or_name</code></td>
+<td>Either a user's numeric ID or login name.</td>
+</tr>
+<tr id="type_shop_id_or_name">
+<td><code>shop_id_or_name</code></td>
+<td>Either a shop's numeric ID or login name. (Note: shop IDs are not interchangeable with user IDs.)</td>
+</tr>
+<tr id="type_team_id_or_name">
+<td><code>team_id_or_name</code></td>
+<td>Either a teams's numeric ID or full name, including spaces and punctuation. (Note: Team captains may change the name of a team.)</td>
+</tr>
+<tr id="type_enum">
+<td><code>enum(values)</code></td>
+<td>A predefined list of string values, for example true and false. Any value not in the list will result in an error.</td>
+</tr>
+<tr id="type_array">
+<td><code>array(type)</code></td>
+<td>A list of values, separated by commas ("<code>,</code>"). Do not include parentheses or brackets.  Each value must be a valid instance of "type".</td>
+</tr>
+<tr id="type_color_triplet">
+<td><code>color_triplet</code></td>
+<td>Either an <a href="http://en.wikipedia.org/wiki/HSL_and_HSV" title="HSV format">HSV</a> color specified as an array in the range <code>0;0;0</code> - <code>360;100;100</code>, or an <a href="http://en.wikipedia.org/wiki/RGB" title="RGB">RGB</a> color specified in hexadecimal notation in the range <code>#000000</code> - <code>#FFFFFF</code>.&nbsp; (RGB colors are converted to HSV internally, which may result in small rounding errors.&nbsp; They may omit the leading "#", or use the three-digit form.)</td>
+</tr>
+<tr id="type_color_wiggle">
+<td><code>color_wiggle</code></td>
+<td>Specify the degree of tolerance for color matching where 0 is the most accurate, and 30 is the least.</td>
+</tr>
+<tr id="type_latitude">
+<td><code>latitude</code></td>
+<td>A valid numeric latitude, between -90.0 and 90.0</td>
+</tr>
+<tr id="type_longitude">
+<td><code>longitude</code></td>
+<td>A valid numeric longitude, between -180.0 and 180.0</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="standard_parameters">Standard Parameters</h4>
+
+<p>Here is a list of standard parameters that are accepted by many or all API methods:</p>
+
+<table>
+<tbody>
+    <tr><th>Parameter</th><th>Type</th><th>Meaning</ht></tr>
+    <tr><td><code>api_key</code></td><td><code>string</code></td><td>Your API key.  Required for all public entry point calls</td></tr>
+    <tr><td><code>method</code></td><td><code>string</code></td><td>Used to specify a custom <code>HTTP</code> method for method overloading.</td></tr>
+    <tr><td><code>limit</code></td><td><code>int</code></td><td>Specifies the maximum number of records to return.</td></tr>
+    <tr><td><code>offset</code></td><td><code>int</code></td><td>Skips the first N records before returning results.  Combine with <code>limit</code> for pagination.</td></tr>
+    <tr><td><code>fields</code></td><td><code>array(string)</code></td><td>Used to limit the fields in a response object; fields not listed will not be returned.  Separate multiple fields with commas.</td></tr>
+    <tr><td><code>includes</code></td><td><code>array(string)</code></td><td>Used to include associated objects in a response.  See Working with Resources below.</td></tr>
+    <tr><td><code>callback</code></td><td><code>string</code></td><td>Used in conjunction with the <code>JSONP</code> output format to specify a callback function name.</td></tr>
+</tbody>
+</table>
+
+<h3 id="api_responses">API Responses</h3>
+
+<h4 id="json_data">JSON Data</h4>
+
+<p>Data is returned using <a href="http://en.wikipedia.org/wiki/JSON" title="JSON" target="_blank">JSON</a>, a lightweight serialization language that is <a href="http://www.json.org/" target="_blank">compatible with many different languages</a>.  JSON is also syntactically correct JavaScript code, which means that it can be parsed with JavaScript's own <code>eval()</code> function.</p>
+    
+<h4 id="standard_response_format">Standard Response Format</h4>
+    
+<p>Each API response is wrapped in a standard structure that holds the results of the API call, plus metadata about the request:</p>
+
+<pre>{
+  &nbsp;&nbsp; "count":integer,
+  &nbsp;&nbsp; "results": [
+    &nbsp;&nbsp;&nbsp;&nbsp; { result object }
+  &nbsp;&nbsp; ],
+  &nbsp;&nbsp; "params": { parameters },
+  &nbsp;&nbsp; "type":result type
+}
+</pre>
+
+<p><code><strong>count</strong></code> specifies the total number of results available for this call, which may be more than the number of results returned in this request.  For example, if <code>count</code> is 1000, you can page through the results in blocks of 100 by specifying <code>limit=100&offset=0</code>, where <code>offset</code> is a multiple of 100 up to 900.  See <a href="#pagination">Pagination</a> below.</p>
+
+<p><code><strong>results</strong></code> is an array of results.  For consistency's sake, it is always an array, even if only one result is expected.</p>
+
+<p><code><strong>params</strong></code> echoes the parameters that were passed in the request.</p>
+
+<p><code><strong>type</strong></code> specifies the type of the objects in the results array.  See <a href="/docs/resource_types">Resource Types</a>.</p>
+
+<h4 id="pagination">Pagination</h4>
+
+<p>The default records returned per call is 25, and the maximum number that can be returned is 100.  We provide <code>limit</code> and <code>offset</code> parameters to allow navigation through larger data sets.  Responses include a <code>count</code> field, which specifies the total number of records available via pagination.  For performance reasons, the <code>offset</code> parameter is limited to a maximum value of <code>50000</code>.
+
+<p>Here's an example of sequential requests to paginate through the most recent 300 listings, 50 at a time:</p>
+
+<pre>http://openapi.etsy.com/v2/listings/active?limit=50&offset=0
+http://openapi.etsy.com/v2/listings/active?limit=50&offset=50
+http://openapi.etsy.com/v2/listings/active?limit=50&offset=100
+http://openapi.etsy.com/v2/listings/active?limit=50&offset=150
+http://openapi.etsy.com/v2/listings/active?limit=50&offset=200
+http://openapi.etsy.com/v2/listings/active?limit=50&offset=250
+</pre>
+
+<h4 id="standard_response_codes">Standard Response Codes</h4>
+
+<p>The Etsy API uses standard HTTP status codes to indicate success or failure of API calls (Consult the documentation for your programming language to learn how the read the status code of an HTTP call)</p>
+
+<table>
+<tbody>
+<tr>
+<th> HTTP Code </th> <th> Message </th> <th> Meaning </th> <th> Response Body </th>
+</tr>
+<tr>
+<th><code>200</code></th>
+<td><code>OK</code></td>
+<td>Success!</td>
+<td>A JSON response (see below.)</td>
+</tr>
+<tr>
+<th><code>201</code></th>
+<td><code>Created</code></td>
+<td>A new resource was successfully created.</td>
+<td>A JSON response containing the new resource's data.</td>
+</tr>
+<tr>
+<th><code>400</code></th>
+<td><code>Bad Request</code></td>
+<td>You've made an error in your request (such as passing a string for a parameter that expects a number).</td>
+<td>An error message</td>
+</tr>
+<tr>
+<th><code>403</code></th>
+<td><code>Forbidden</code></td>
+<td>You've exceeded the rate limits for your account, or the data you're trying to access is private.</td>
+<td>An error message</td>
+</tr>
+<tr>
+<th><code>404</code></th>
+<td><code>Not Found</code></td>
+<td>The requested resource could not be found, <em>or</em> the URI doesn't correspond to any known command.</td>
+<td>An error message</td>
+</tr>
+<tr>
+<th><code>500</code></th>
+<td><code>Server Error</code></td>
+<td>An internal error on our side. If this problem persists, submit a bug report in the bug section of our <a href="/forums/" title="forums">forums</a>.</td>
+<td>An error message</td>
+</tr>
+<tr>
+<th><code>503</code></th>
+<td><code>Service Unavailable</code></td>
+<td>The Etsy API is down for scheduled maintenance; please try again later (this should be rare!)</td>
+<td>An error message</td>
+</tr>
+</tbody>
+</table>
+
+<p>The <code>X-Error-Detail</code> <code>HTTP</code> header will contain a detailed description of many errors.</p>
+
+<p><strong>Tip:</strong> What's the difference between a <code>404 Not Found</code> and a <code>200 OK</code> with empty results? If you're searching for a specific record, say listing #1234567890, and it doesn't exist, that's a <code>404 Not Found</code>. The record wasn't found; it doesn't exist; it probably never did. However, if you're searching for a set of records and no listings match your search, that's a <code>200 OK</code>. There's nothing wrong with your request, but it doesn't match anything, and your result set is empty.</p>
+
+<p>This might seem a little arbitrary, but it makes practical sense: search engines typically don't display an error page if your search comes up empty. On the other hand, trying to access a URL that doesn't exist will turn up a standard 404 error page. Your application will probably have similar behavior.</p>
+
+<h2 id="developer_sandbox">Developer Sandbox</h2>
+
+<p>We have provided a sandbox area for developers to test their applications.  The sandbox entry points use a copy of the production database,  so it is safe to test any functionality that would alter data, such as adding and deleting favorites, without affecting production data.  In addition, listings uploaded against the sandbox API will not result in any charges against the user's Etsy account.</p>
+
+<h3 id="sandbox_keys">Sandbox Keys and OAuth Verification</h3>
+
+<p>The sandbox keys are separate from production keys, in that the keys you receive for the sandbox will <strong>not</strong> work for the production endpoints. The sandbox keys are handed out automatically when you sign up for access. Once you're ready to test you application against production data, you can request a production key be emailing <a href="mailto:devsupport@etsy.com">devsupport@etsy.com</a>.</p>
+
+<p>The OAuth process itself will verify the user login against the production database.  Because the sandbox is updated on a weekly basis, it's possible the user accounts created in the past week will not exist in the sandbox. To work around this problem, we've created a page that will allow you to sync the user account over to the sandbox database, which can be accessed here:</p>
+    
+<p><a href="http://www.etsy.com/your/applications/sandboxsync">http://www.etsy.com/your/applications/sandboxsync</a>.</p>
+
+<p>After clicking the "sync" button on that page you will then be able to access that user on the sandbox. At the moment, we are only syncing the user account itself, not associated information such as listings, purchases and sales.  This is subject to change in the future.</p>
+
+<h3 id="sandbox_refresh">Sandbox Refresh Scheduled Maintenance</h3>
+
+<p>We will periodically refresh the sandbox database with a copy of production, so that it stays up to date with the data in master. This maintenance will happen Sundays at 4:00 AM EST, and can take several hours to complete. During this time the sandbox entry point will return a <code>503 Service Unavailable</code> status code. Please note that after the refresh, data will reflect production and any changes you have made to the sandbox data will be lost.</p>
+
+<h3 id="sandbox_caveats">Sandbox Caveats</h3>
+
+</p>The sandbox endpoints are serving images from production, though the sandbox itself is only a copy of production. This means there is a possibility that image IDs on the sandbox may be slightly out of sync in some cases with the IDs on our image server, and you may get different or no images than in production for the same listing.  In addition, image uploads to the sandbox API will be discarded, although the image upload calls will not result in an error.  We are investigating a separate image store for use with the sandbox.</p>
+
+<p>Search results via the sandbox API come from the production search engine.  This means that some listings returned may not be available in a single listing lookup, because the sandbox may be up to one week out of sync with production.  We are investigating a separate search index for the sandbox.</p>
+
+<p>There is not currently a web front end to the sandbox database.  Again, we are investigating this for a future API release.</p>
+
+<p>These are temporary measures, and are subject to improvement in a future release of the API.</p>
+
+<h2 id="how_to_make_a_request">How to Make A Request And Process The Response</h2>
+
+<p>Here's a step-by-step example of how to make a request to the Etsy API.  This example uses the public endpoint, so no OAuth authentication is required.  For an example using OAuth, see the next section.</p>
+
+<p>We'll make a request to get details for the user that runs the official Etsy store, "EtsyStore" using the <a href="/docs/methods#getUser">getUser</a> method.  You can also substitute your own user name for "EtsyStore".  If you consult the documentation for that method, you'll see the following:</p>
+
+<table class="api_method"> 
+  <tbody> 
+    <tr> 
+      <th>Method Name</th> 
+      <td><code>getUser</code></td> 
+    </tr> 
+    <tr> 
+      <th>Synopsis</th> 
+      <td>Retrieves a User by id.</td> 
+    </tr> 
+    <tr> 
+      <th>HTTP Method</th> 
+      <td><code>GET</code></td> 
+    </tr> 
+    <tr> 
+      <th>URI</th> 
+      <td><code>/users/:user_id</code></td> 
+    </tr> 
+
+    <tr> 
+    <th>Parameters</th> 
+            <td> 
+    <table class="api_method_params"> 
+      <tbody> 
+      <tr> 
+        <th>Name</th> <th>Required</th> <th>Default</th> <th>Type</th> 
+      </tr> 
+                <tr> 
+        <td><code>user_id</code></td> 
+        <td><code>Y</code></td> 
+        <td><code>&nbsp;</code></td> 
+        <td><code>array(user_id_or_name)</code></td> 
+      </tr> 
+                </tbody> 
+    </table> 
+    </td> 
+    
+    </tr> 
+    
+    <tr> 
+      <th>Return Type</th> 
+      <td><code>User</code></td> 
+    </tr> 
+
+    <tr> 
+      <th>Requires OAuth</th> 
+      <td><code>N</code></td> 
+    </tr> 
+
+  </tbody> 
+</table> 
+
+
+<p>Every Etsy API request begins with the base URL:</p>
+
+<pre>http://openapi.etsy.com/v2</pre>
+
+<p>and ends with the URI for the command.&nbsp; The part of the URI that reads <code>:user_id</code> is an embedded parameter&mdash;you'll need to substitute either the user name "etsystore" or the ID of the user you're trying to access.</p>
+
+<p>Finally, you'll add a question mark (<code>?</code>) plus any optional parameters you'd like to send, and of course, your API key.&nbsp; The final request looks like this:</p>
+
+<pre>http://openapi.etsy.com/v2/public/users/etsystore?api_key=<em>your_api_key</em></pre>
+
+<p>You can test this right in your browser.&nbsp; You should see a long string of JSON data language.&nbsp; Note that the object returned is of resource type <code>User</code>.&nbsp; See section <a href="#resource_types" title="Reference Types">Resource Types</a> for for details on this resource.</p>
+
+<h3 id="sample_request_from_php">Sample Request from PHP</h3>
+
+<p>Here is an example of a call in a PHP script. You can use any language that supports HTTP requests (JavaScript, Ruby, Perl...) which is just about every language in use on the web.</p>
+
+<pre>
+// Make sure you define API_KEY to be your unique, registered key
+$url = "http://openapi.etsy.com/v2/public/users/etsystore?api_key=" . API_KEY;
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response_body = curl_exec($ch);
+$status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+if (intval($status) != 200) throw new Exception("HTTP $status\n$response_body");
+</pre>
+
+<p>Notice that in line #6 we're using the value of $response_body as an error message.&nbsp; In the event of an error, the response body will contain a plaintext formatted explanation of the problem. The error will not be JSON encoded.</p>
+
+<h3 id="sample_response">Sample Response</h3>
+
+<p>Here's the response from our request above (with added white space to make it easier to read.)&nbsp; The response is formatted using JSON, a simple data serialization language that can be used by just about any language on the web.&nbsp; (To find JSON support for your language, <a href="http://www.json.org" target="_blank">go here</a>.)</p>
+
+<pre>{
+&nbsp;&nbsp;"count": 1,
+&nbsp;&nbsp;"results": [
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"user_id": 5029420,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"login_name": "EtsyStore",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"creation_tsz": 1166740121,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"referred_by_user_id": null,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"feedback_info": {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"count": 2559,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"score": 100
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;],
+&nbsp;&nbsp;"params": {
+&nbsp;&nbsp;&nbsp;&nbsp;"user_id": "etsystore",
+&nbsp;&nbsp;},
+&nbsp;&nbsp;"type": "User"
+}
+</pre>
+
+<p>Notice that in the response above, the user name "etsystore" that you passed in has been helpfully converted into a user ID.&nbsp; Since it's slightly more efficient to look up users by ID, we suggest that you use the ID for subsequent requests.</p>
+
+<h3 id="sample_response_in_php">Sample Response in PHP</h3>
+
+<p>And here's how we'd parse and use the response in PHP:</p>
+
+<pre>
+$response = json_decode($response_body);
+$user = $response->results[0];
+
+if (!isset($user->login_name)) {
+    throw new RuntimeException("User Resource doesn't have field login_name");
+}
+if (!isset($user->feedback_info->score)) {
+    throw new RuntimeException("User Resource doesn't have field feedback_info['score']");
+}
+print "User $user->login_name has a feedback score of {$user->feedback_info->score}\n";
+</pre>
+
+<h2 id="oauth_authentication">OAuth Authentication</h2>
+
+<h3 id="obtaining_a_request_token">Obtaining a Request Token</h3>
+
+<p>The first step in OAuth is to obtain a request token.  You'll send us a request with your <strong>consumer key</strong>, signed with your <strong>shared secret</strong>;  we'll check that your consumer key and shared secret match up, and return a <strong>request token</strong> and a <strong>token secret</strong>.  These are used to produce a secure login URL to the OAuth signin page on the Etsy site using your <strong>consumer key</strong> and <strong>request token</strong> provided by the call.  This way, your application can authenticate against an Etsy user's account without requesting a username or password.</p>
+
+<p><strong>NOTE:</strong> we use your api key as the OAuth <strong>consumer key</strong>, and your api key's shared secret as the consumer <strong>shared secret</strong>.</p>
+
+<p>Using the <a href="http://us.php.net/oauth" title="PHP OAuth Library">PHP OAuth library</a> this would look something like the following:</p>
+
+<pre>
+// instantiate the OAuth object
+// OAUTH_CONSUMER_KEY and OAUTH_CONSUMER_SECRET are constants holding your key and secret
+// and are always used when instantiating the OAuth object 
+$oauth = new OAuth(OAUTH_CONSUMER_KEY, OAUTH_CONSUMER_SECRET);
+
+// make an API request for your request tokens
+$req_token = $oauth-&gt;getRequestToken("http://openapi.etsy.com/v2/oauth/request_token", 'oob');
+
+// create the Etsy login url
+$login_url = sprintf(
+    "%s?oauth_consumer_key=%s&amp;oauth_token=%s",
+    $req_token['login_url'],
+    $req_token['oauth_consumer_key'],
+    $req_token['oauth_token']
+);
+
+print $login_url."\n";
+</pre>
+
+<p>If you fill out your consumer key and secret and run this on the command line, this should print out the login url for the member to sign in.  In your finished application, you could present this URL for the user to click on, open the URL in a new browser window, or automatically redirect to the URL.</p>
+
+<h3 id="authorizing_the_request">Authorizing the Request</h3>
+
+<p>The URL generated in the previous step looks something like this:</p>
+
+<pre>https://www.etsy.com/oauth/signin?oauth_token=YOUR_NEW_REQUEST_TOKEN</pre>
+
+<p>After signing in, the user is presented with a verifier token. They'll need to return to your application and enter this verifier token by hand.  However, you will probably want the user redirected back to your app automatically, so that they don't need to paste the verifier token manually. If you provide a callback URL as the second parameter to getRequestToken(), a successful sign-in will redirect to that page in your app. (In the getRequestToken() method above,  we're passing 'oob' for the second parameter&mdash;this is equivalent to passing null for the callback, because null values are not allowed.) The callback URL will be passed two GET  parameters called <strong>oauth_verifier</strong> (for the verifier value) and <strong>oauth_token,</strong> which is the request token you already receieved.  (The request token secret  from step one is not passed in the URL, and you will have to store the request token secret so that you can properly sign the request when obtaining an access token in the next step.)</p>
+
+<p><strong>Note:</strong> There is a small window of time between obtaining a request token, and authorizing it against a user's account.  If this window is exceeded, you will need to restart the OAuth process.</p>
+
+<h3 id="obtaining_an_access_token">Obtaining an Access Token</h3>
+
+<p>The next step is to request an OAuth access token.  You will sign the request with the oauth request token, the request token secret, and the oauth verifier.    If you passed a callback URL in the first step, the request token and verifier will come as GET params in the callback URL. You'll need to store the request secret from step 1 somewhere, as that is not passed in the parameter list to your callback. (In our example, we're storing the secret in a cookie, but this <strong>is not recommended for a production application.</strong>  Use a database like MySQL, or a local file on disk instead.) Using the PHP library, you can then request  access tokens like so:</p>
+
+<pre>
+// get request token from the url
+$request_token = $_GET['oauth_token'];
+
+// get the request token secret - this assumes you set the request secret  
+// in a cookie, but you may also set it in a database or elsewhere
+$request_token_secret = $_COOKIE['request_secret'];
+
+// get the verifier from the url
+$verifier = $_GET['oauth_verifier'];
+
+$oauth = new OAuth(OAUTH_CONSUMER_KEY, OAUTH_CONSUMER_SECRET);
+
+// set the request token and secret
+$oauth-&gt;setToken($request_token, $request_token_secret);
+
+try {
+    // set the verifier and request etsy's access token url
+    $acc_token = $oauth-&gt;getAccessToken("http://openapi.etsy.com/v2/oauth/access_token", null, $verifier);
+} catch (OAuthException $e) {
+    error_log($e-&gt;getMessage());
+}
+</pre>
+
+<p>The array returned from the getAccessToken() call, if successful, should contain your <strong>oauth_token</strong> and <strong>oauth_token_secret</strong>.  These will remain valid until the member revokes access to your application, and they can be reused for this user from this point on.</p>
+
+<p><strong>Note:</strong> There is a small window of time from when the user signs in to receive the verifier token and when you can request the oauth access tokens.  If this window is exceeded, this call will fail.</p>
+
+<h3 id="making_and_authorized_request">Making an Authorized Request to the API</h3>
+
+<p>You can use the oauth access token and access token secret from the previous steps to make calls for that authenticated user.  The setToken() call will now set these final tokens and make the call to the Etsy API. In the URL here, __SELF__ is shorthand for the logged-in user's ID.  The API will fill that in for you.</p>
+
+<pre>
+$access_token = // get from db
+$access_token_secret = // get from db
+
+$oauth = new OAuth(OAUTH_CONSUMER_KEY, OAUTH_CONSUMER_SECRET,
+                   OAUTH_SIG_METHOD_HMACSHA1, OAUTH_AUTH_TYPE_URI);
+$oauth-&gt;setToken($access_token, $access_token_secret);
+
+try {
+    $data = $oauth-&gt;fetch("http://openapi.etsy.com/v2/private/users/__SELF__");
+    $json = $oauth-&gt;getLastResponse();
+    print_r(json_decode($json, true));
+    
+} catch (OAuthException $e) {
+    error_log($e-&gt;getMessage());
+    error_log(print_r($oauth-&gt;getLastResponse(), true));
+    error_log(print_r($oauth-&gt;getLastResponseInfo(), true));
+    exit;
+}
+</pre>
+
+<h2 id="working_with_resources">Working with Resources</h2>
+
+<h3 id="fields">Fields</h3>
+
+<p>Each resource type contains a number of fields; those with the visibility level of "public" are available through both the public and private entry points, those with the visibility level "private" are only available through the private entry point.</p>
+
+<p>In addition, you can control which fields are returned using the standard parameter <code>fields</code>:</p>
+<pre>/v2/public/listings/active?fields=listing_id,title,price</pre>
+
+<h3 id="associations">Associations</h3>
+
+<p>Each resource has one or more associations that can be included using the standard includes parameter:</p>
+
+<pre>/v2/public/listings/active?includes=Images</pre>
+
+<p>Multiple associations can be separated with commas:</p>
+
+<pre>/v2/public/listings/active?includes=Images,Shop</pre>
+
+<p>In addition, associations can specify limit/offset parameters.  The following example loads only the first image (limit 1, offset 0:)</p>
+
+<pre>/v2/public/listings/active?includes=Images:1:0</pre>
+
+<p>You can also specify which fields of an association are returned:</p>
+
+<pre>/v2/public/listings/active?includes=Images(url_75x75,hex_code)</pre>
+
+<p>Finally, associations can be nested up to three levels deep, using slashes:</p>
+
+<pre>/v2/public/listings/active?includes=Shop/User
+/v2/public/shops/etsystore?includes=Listings:1:0/Images</pre>
+
+<h3 id="scopes">Scopes</h3>
+
+<p>Scopes define a subset of resources according to a condition.  For instance, the "active" scope of listings specifies that the "state" field of each listing must be "active" (these are listings that are still for sale on Etsy and are not sold our or expired.)</p>
+<p>Scopes are typically appended to the resource name in a URL:</p>
+<pre>/v2/public/listings/active
+/v2/public/shops/etsystore/listings/active</pre>
+<p>Scopes can also be used when including associations, and can be combined with limit/offset parameters:</p>
+<pre>/v2/public/shops/etsystore?includes=Listings:active
+/v2/public/shops/etsystore?includes=Listings:active:1:0</pre>
+
+<h3 id="association_syntax">Association Syntax</h3>
+
+<p>For reference, here's the complete Association inclusion syntax.  Elements in <code>[square brackets]</code> are <strong>optional</strong>.
+
+<pre>?includes=Association[(fieldname[,fieldname...])][:scope][:limit[:offset]][,Assocation...]</pre>
+
+<h2 id="using_the_jsonp_interface">Using the JSONP interface with JavaScript</h2>
+
+<p>JavaScript programmers will be familiar with the <a href="http://en.wikipedia.org/wiki/Same_origin_policy">Same-Origin Policy</a>, which limits requests made with the <code>XMLHttpRequest</code> object to servers on the same domain name as the page running the JavaScript code.&nbsp; For this reason, you won't be able to call the Etsy API directly using <code>XMLHttpRequest</code>.&nbsp; One way to get around this limitation is to build a proxy application to make requests to <code>beta-api.etsy.com</code> and serve the response to your JavaScript code.&nbsp; This can be useful if you want to implement caching.&nbsp; Another solution is to use the Etsy API's built-in <a href="http://en.wikipedia.org/wiki/JSONP#JSONP" title="JSONP">JSONP</a> interface, which uses <code>&lt;script&gt;</code> tag injection as an alternative to <code>XMLHttpRequest</code>.&nbsp; (For an in-depth description of JSONP, <a href="http://bob.pythonmac.org/archives/2005/12/05/remote-json-jsonp/" title="see here">see here</a>.) To use the JSONP interface, you will need to make some small changes to the way you call and process the Etsy API:</p>
+
+<ul>
+<li> The URI must end in <code>.js</code> </li>
+<li> An additional parameter, <code>callback,</code> must be specified </li>
+<li> Callback values may only contain the letters <code>A-Z</code>, the digits <code>0-9</code>, periods ("<code>.</code>"), underscores ("<code>_</code>") and square brackets ("<code>[</code>" and "<code>]</code>").</li>
+</ul>
+<p>Here's an example of an API method, first called using the standard JSON interface, and then with the alternate JSONP interface:</p>
+<table cellpadding="3" cellspacing="0" class="zeroBorder" id="w37d">
+<tbody>
+<tr>
+<th> JSON Interface</th>
+<td><code>http://openapi.etsy.com/v2/users/testusername?api_key=<em>your_api_key</em></code></td>
+</tr>
+<tr>
+<th> JSONP Interface</th>
+<td><code>http://openapi.etsy.com/v2/users/testusername.js?callback=getData&amp;api_key=<em>your_api_key</em></code></td>
+</tr>
+</tbody>
+</table>
+<p>To call this request, you would first define a JavaScript function <code>getData()</code> to process the response, and then insert a <code>&lt;script&gt;</code> tag to make the request, like so:</p>
+<pre>&lt;script type="application/javascript"&gt;
+function getData(data) {
+  &nbsp;&nbsp; &nbsp;if (data.ok) {
+    &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;// do something with the data here
+    &nbsp;&nbsp; &nbsp;} else {
+    &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;alert(data.error);
+  &nbsp;&nbsp; &nbsp;}
+}
+&lt;/script&gt;
+
+&lt;script src="http://openapi.etsy.com/v2/users/testusername.js?callback=getData&amp;api_key=<em>your_api_key</em>"&gt;&lt;/script&gt;
+</pre>
+<p>Notice that we need to explicitly check the value of <code>data.ok</code> before proceeding with the <code>getData()</code> function.&nbsp; This is because the normal error handling rules of the Etsy API don't apply when using the JSONP interface.&nbsp; Under JSONP, every API call results in a <code>200 OK</code> regardless of its actual error state (this is because the <code>&lt;script&gt;</code> tag injection won't work with any other status code).&nbsp; When they occur, errors will be reported as part of the result object using the following special fields:</p>
+
+<table>
+<tbody>
+<tr>
+<th> <strong>JSONP Response Field</strong> </th>
+<td><strong>Purpose</strong></td>
+<td><strong>Equivalent using normal JSON</strong></td>
+</tr>
+<tr>
+<th> <code>data.ok</code> </th>
+<td>Indicates success (<code>true</code>) or failure (<code>false</code>)</td>
+<td><em>none</em></td>
+</tr>
+<tr>
+<th> <code>data.status</code> </th>
+<td>Indicates the response <a href="#standard_response_codes" title="status code">status code</a></td>
+<td>HTTP response status</td>
+</tr>
+<tr>
+<th> <code>data.error</code> </th>
+<td>Indicates the error message, if any</td>
+<td>HTTP response body, or <code>X-Error-Detail</code> HTTP header</td>
+</tr>
+</tbody>
+</table>
+
+<p>Starting with version 1.2, the <a href="http://docs.jquery.com/Release:jQuery_1.2/Ajax#Cross-Domain_getJSON_.28using_JSONP.29" title="jQuery">jQuery</a> JavaScript framework includes native support for JSONP.</p>
+
+<img src="/files/jquery_app.png">
+
+<p><a href="/docs/jqdemo">Click here</a> to see a sample JavaScript application written with jQuery.  If you save this code and view it in your browser, you should be able to make some simple searches and see listings on Etsy.com</p>
+
+<p>Notice that using jQuery, it's not necessary to pick your own value for <code>callback.</code>  jQuery recognizes the standard parameter name and will pick its own value and create a function to handle it.  jQuery will also clean up the callback function after the call is finished.</p>
+</body>
+        </div>
+
+
+        <div class="section-meta">
+            <p>
+            <span class="revision">version 67</span> <span class="timestamp">as of <abbr title="5/5/11 12:54 pm">1 month ago</abbr></span> <span class="moniker">by <span class="user-reference"><a href="http://developer.etsy.com/profile/45529">Justin</a></span></span></p>
+        </div>
+                
+        
+            </div>
+
+            <div class="comments">
+            <h3>Comments</h3>
+                        <ol class="comments">
+            <li class="comment ">
+    <div class="comment-body" id="comment-95630">
+        <p class="comment-meta">
+            <span class="moniker"><span class="user-reference"><a href="http://developer.etsy.com/profile/213029">GrandmasCabin</a></span></span>
+            &ndash; <span class="timestamp"><abbr title="12/12/10 11:40 am">6 months ago</abbr></span>
+                    </p>
+        <p>Excited about Etsy!</p>            </div>
 </li>
-<li>
-<p><a href="tips/barebones">Barebones</a> wikis that just look like directories with Markdown-formatted
-    text files in them.</p>
+<li class="comment ">
+    <div class="comment-body" id="comment-114808">
+        <p class="comment-meta">
+            <span class="moniker"><span class="user-reference"><a href="http://developer.etsy.com/profile/288693">PeggyAnnesCrafts</a></span></span>
+            &ndash; <span class="timestamp"><abbr title="4/30/11 6:43 am">1 month ago</abbr></span>
+                    </p>
+        <p>I see great potential as an ETSY Shop owner!</p>            </div>
 </li>
-<li>
-<p>A built-in HTTP server and WSGI application to serve up a compiled wiki with
-    a single command.</p>
-</li>
-<li>
-<p>Continuous builds (via <code>rsync</code>) mean the server can keep running whilst
-    Markdoc re-compiles the wiki. Just refresh your browser to see the changes.</p>
-</li>
-<li>
-<p>Add <a href="http://pygments.org/">Pygments</a>-powered syntax highlighting to your Markdoc wiki with a
-    single <a href="tips/syntax-highlighting">configuration parameter</a>.</p>
-</li>
-<li>
-<p>Markdoc is <a href="about#license">public domain software</a>. It will always be completely
-    free to use, and you can redistribute it (in part or in whole) under any
-    circumstances (open-source, proprietary or otherwise) with no attribution or
-    encumberances.</p>
+            </ol>
+                
+            <p><a href="http://developer.etsy.com/login/mashery-id?r=http%3A%2F%2Fdeveloper.etsy.com%2Fdocs&amp;h=05d346e6e30b464583e639cdadd7f189">Please sign in to post a comment.</a></p>        </div>
+        
+
+                </div><!-- /main -->
+
+                <!-- SUB -->
+                <div id="sub" class="sub">
+                    <h2>Docs Navigation</h2>
+
+<ul>
+<li class="active"><a href="http://developer.etsy.com/docs/read/Home" class="active">The Etsy API</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resources">Resource Types</a></li>
+<li><a href="http://developer.etsy.com/docs/read/methods">Methods</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_apimethod">ApiMethod</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_avatar">Avatar</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_billcharge">BillCharge</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_billpayment">BillPayment</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_category">Category</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_cart">Cart</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_cartlisting">CartListing</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_country">Country</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_coupon">Coupon</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_favoritelisting">FavoriteListing</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_favoriteuser">FavoriteUser</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_featuredlisting">FeaturedListing</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_featuredlistingpicker">FeaturedListingPicker</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_featureduser">FeaturedUser</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_feedback">Feedback</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_feedbackinfo">FeedbackInfo</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_listing">Listing</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_listingimage">ListingImage</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_listingpayment">ListingPayment</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_order">Order</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_paramlist">ParamList</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_paymenttemplate">PaymentTemplate</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_receipt">Receipt</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_region">Region</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_shippinginfo">ShippingInfo</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_shippingtemplate">ShippingTemplate</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_shippingtemplateentry">ShippingTemplateEntry</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_shop">Shop</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_shopbanner">ShopBanner</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_shopsection">ShopSection</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_tag">Tag</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_team">Team</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_transaction">Transaction</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_treasury">Treasury</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_treasurycounts">TreasuryCounts</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_treasurylisting">TreasuryListing</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_treasurylistingdata">TreasuryListingData</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_user">User</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_useraddress">UserAddress</a></li>
+<li><a href="http://developer.etsy.com/docs/read/resource_userprofile">UserProfile</a></li>
+<li><a href="http://developer.etsy.com/docs/read/OAuth_Libraries">OAuth Libraries</a></li>
+<li><a href="http://developer.etsy.com/docs/read/rss_feeds">Etsy RSS Feeds</a></li>
+<li><a href="http://developer.etsy.com/docs/read/PubSubHubbub_Feeds">PubSubHubbub Feeds (Beta)</a></li>
+<li><a href="http://developer.etsy.com/docs/read/Realtime_Feeds">Real-time Feeds (Beta)</a></li>
+<li><a href="http://developer.etsy.com/docs/read/jqdemo">Etsy JQuery Demo</a></li>
+<li><a href="http://developer.etsy.com/docs/read/changelog">Change Log</a></li>
+<li><a href="http://developer.etsy.com/docs/read/Sample_Code">Sample Code</a><ul>
+<li><a href="http://developer.etsy.com/docs/read/sample_code/PubSubHubbub_Subscriber">PubSubHubbub Subscriber</a></li>
+<li><a href="http://developer.etsy.com/docs/read/sample_code/PubSubHubbub_Subscribe_Unsubscribe_Script">PubSubHubbub Subscribe / Unsubscribe Script</a></li>
+</ul>
 </li>
 </ul>
-<h2 id="where_do_i_start">Where do I start?</h2>
-<p>The <a href="quickstart">quickstart</a> document has all the information you need to put
-together a simple Markdoc wiki. The <a href="authoring">authoring</a> guide provides a
-quick introduction to writing Markdoc pages themselves, especially with regards
-to linking between pages.</p>
-<h2 id="reference">Reference</h2>
-<p>See the <a href="ref/configuration">configuration</a> reference for in-depth knowledge on
-writing your <code>markdoc.yaml</code> file. The <a href="ref/layout">layout</a> reference describes
-the basic filesystem layout for a Markdoc wiki, and the <a href="tips/">tips</a> directory
-contains several handy recipes.</p>
-<p>The Markdoc project’s goals and history are described in the <a href="about">about</a>
-page. If you’d like to know more about how Markdoc works at a deeper level, take
-a look at the <a href="internals/">internals directory</a>. Developers interested in
-hacking the utility will likely want the <a href="internals/development">development</a>
-page.</p>
-<p>To see the complete list of pages in this wiki, you can browse the
-<a href="_list">directory listing</a>.</p>
-        
-        
-        
-        
-        <hr class="clear" />
-      </div> <!-- div#content -->
-      
-      
-      <div id="footer">
-        <p>
-          
-            Markdoc Documentation —
-          
-          Powered by <a href="http://markdoc.org/">Markdoc</a>.
-        </p>
-      </div>
-      
-    
-    
-    
-    <hr class="clear" />
-  </body>
-</html>
+                </div>
+                <!-- /SUB -->
 
+                <div id="breadcrumbs">
+                </div><!-- /breadcrumbs -->
+
+                <div id="local" class="local">
+                    <ul>
+    <li class=" first"><a href="http://developer.etsy.com/home">Home</a></li>
+    <li class="active "><a href="http://developer.etsy.com/docs">Documentation</a></li>
+    <li class=" "><a href="http://developer.etsy.com/resources">Resources</a></li>
+    <li class=" "><a href="http://developer.etsy.com/discussion">Discussion</a></li>
+    <li class=" "><a href="http://developer.etsy.com/production_keys">Get A Prod Key</a></li>
+    <li class=" last"><a href="http://developer.etsy.com/promotion">Promote Your App</a></li>
+</ul>
+                </div><!-- /local -->
+
+                                    <div id="nav" class="nav">
+                    </div><!-- /nav -->
+                            </div>
+            <!-- /CONTENT -->
+
+            <div id="footer" class="footer">
+
+                <ul>
+    <li class=" first"><a href="http://www.etsy.com">Etsy.com</a></li>
+    <li class=" "><a href="http://developer.etsy.com/Api_terms_of_use">Terms Of Use</a></li>
+    <li class=" "><a href="http://www.etsy.com/privacy_policy.php">Privacy Policy</a></li>
+    <li class=" "><a href="http://www.etsy.com/copyright_policy.php">Copyright Policy</a></li>
+    <li class=" "><a href="http://codeascraft.etsy.com/">Etsy's Developer Blog</a></li>
+    <li class=" last"><a href="http://www.etsy.com/jobs">Jobs at Etsy</a></li>
+</ul>
+
+                <!-- SITEINFO -->
+                <div id="siteinfo" class="siteinfo">
+                        <p> <link rel="shortcut icon" href="/files/favicon.ico" type="image/x-icon" />
+
+© 2009, 2010 Etsy, Inc. All rights reserved. 
+
+</p>                </div>
+                <!-- /SITEINFO -->
+            </div><!-- /footer -->
+        </div>
+        <!-- /page -->
+
+        <!-- Start Branding script tag -->
+        <script type="text/javascript">
+            // get the branding logo to set the mouseover/out and onclick
+            var brandingLogo = document.getElementById('branding-logo');
+            if(brandingLogo != undefined) {
+                brandingLogo['onclick'] = function() {
+                    location.href = "http://developer.etsy.com";
+                };
+                brandingLogo['onmouseover'] = function() {
+                    this.style.cursor = 'pointer';
+                };
+                brandingLogo['onmouseout'] = function() {
+                    this.style.cursor = 'auto';
+                };
+            }
+
+            // get the mashery logo to set the mouseover/out and onclick
+            var masheryLogo = document.getElementById('branding-mashery');
+            if(masheryLogo != undefined) {
+                masheryLogo['onclick'] = function() {
+                    location.href = "http://www.mashery.com/";
+                };
+                masheryLogo['onmouseover'] = function() {
+                    this.style.cursor = 'pointer';
+                };
+                masheryLogo['onmouseout'] = function() {
+                    this.style.cursor = 'auto';
+                };
+            }
+        </script>
+        <!-- End Branding script tag -->
+            <!-- <div id="extra1">&nbsp;</div>
+            <div id="extra2">&nbsp;</div> -->
+                <div id="indicator1" style="display: none;"><img src="/public/Solar/images/indicators/indicator_medium.gif" height="32px" width="32px" alt="indicator_medium.gif" /></div>
+        <div id="indicator2" style="display: none;">Draft</div>
+        <script type="text/javascript">
+//<![CDATA[
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+
+
+
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+
+
+
+</script>
+
+
+
+<script type="text/javascript">
+
+
+
+try {
+
+
+
+var pageTracker = _gat._getTracker("UA-2409779-12");
+
+
+
+pageTracker._trackPageview();
+
+
+
+} catch(err) {}
+//]]>
+</script>
+        <!-- Start Quantcast tag -->
+        <script type="text/javascript">
+            _qoptions={
+                qacct:"p-2eDO_fDX5hTv6"
+            };
+        </script>
+        <script type="text/javascript" src="http://edge.quantserve.com/quant.js"></script>
+        <noscript>
+            <img src="http://pixel.quantserve.com/pixel/p-2eDO_fDX5hTv6.gif" style="display: none;" border="0" height="1" width="1" alt="Quantcast"/>
+        </noscript>
+        <!-- End Quantcast tag -->
+    </body>
+</html>
+        
+      
+ 
+ 
