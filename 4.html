@@ -1,6 +1,25 @@
- #!/usr/bin/perl
- use CGI':all';$$_=param$_ for x,t;$z=($t&&"+>").$x;open z;print z$t
- if$t;$_=escapeHTML($t||join"",<z>);s/([A-Z]\w+){2,}/v$&/ge;print
- header,h1($x),pre($_,map{"\n".v$_}grep{open
- _;grep/$x/,<_>}<*>),start_form,textarea(t),hidden(x,$x),submit,end_form;sub
- v{a{href,url."?x=@_"},@_}
+#!/usr/bin/python
+import cgi, os, string, cgitb; cgitb.enable();f = cgi.FieldStorage();
+def gc(f):ff = open(f+".pki", "r");a = ff.read();ff.close;a = string.replace(a, """
+""", "<br>");return a;
+def cfe(f):
+  if os.path.exists(f+".pki"):return gc(f)+"""<br><a href="?e="""+f+"""">Edit</a>""";
+   else:return "<a href=\"?c="+f+"\">Create page</a>";
+def wr(f, c):fl = open(f+".pki", "wb");fl.write(c);fl.close();
+def frm(a,c, f):return """<form action=\""""+a+"""\"><textarea name=\"cnt\" cols=\"50\" rows=\"10\">
+"""+c+"""</textarea><input type=hidden name=fl value="""+f+"""><input type=\"submit\" /></form>""";
+def back(h):return "<a href=\"javascript:history.go(-"+h+")\">Go back</a>"
+vl = lambda v: f[v].value
+ky = lambda k: f.has_key(k)
+print "Content-Type: text/html\n\n<html><head><title>Pyki</title></head><body>"
+if ky('e'):print frm('?ed='+vl('e'), string.replace(gc(vl('e')),'<br>',''), vl('e'))
+elif ky('c'):print frm('?cs='+vl('c'), "", vl('c'))
+elif ky('cnt'):wr(vl('fl'), vl('cnt')); print"Done, "+back("2")
+else:
+    if not ky('p'):print "<h1>Index</h1>";print cfe('index')
+  else:print "<h1>"+vl('p')+"</h1>";print cfe(vl('p'))
+print "<br><br><hr>Pages: ";nn = os.listdir(".");
+for n in nn:
+ a = string.split(n, '.')
+    if a[1] == 'pki':print "<a href=\"?p="+a[0]+"\">"+a[0]+"</a>"
+print back("1")+"</body></html>"
