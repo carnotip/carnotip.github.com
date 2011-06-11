@@ -1,19 +1,190 @@
-<!DOCTYPE html>
-<html>
+#!/usr/bin/python
 
-<head>
-  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-  <title>hello-backbonejs</title>
+'''
+rstiki - a minimalist wiki, using reStructuredText_ syntax via docutils_,
+inspired by pwyky_.
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
-  <script src="http://ajax.cdnjs.com/ajax/libs/json2/20110223/json2.js" type="text/javascript" charset="utf-8"></script>
-  <script src="http://ajax.cdnjs.com/ajax/libs/underscore.js/1.1.6/underscore-min.js" type="text/javascript" charset="utf-8"></script>
-  <script src="http://ajax.cdnjs.com/ajax/libs/backbone.js/0.3.3/backbone-min.js" type="text/javascript" charset="utf-8"></script>
++-------------------------------+------------------+
+| Method + URL                  |    Action        |  
++-------------------------------+------------------+
+| GET /rst-wiki/FooBar          | normal rendering |
+| GET /rst-wiki/FooBar?edit     | edit form        |
+| POST /rst-wiki/FooBar         | edit submission  |
++-------------------------------+------------------+
+
+.. _docutils: http://docutils.sourceforge.net/docs/index.html
+.. _reStructuredText: http://docutils.sourceforge.net/docs/user/rst/cheatsheet.txt
+.. _pwyky: http://infomesh.net/pwyky/
+
+@author Josh Sled <jsled@asynchronous.org>
+@since 2007-02-03
+@license GNU GPL version 2.
+'''
+
+import cgi
+import cgitb
+import docutils.core
+import os
+import os.path
+import textwrap
+
+
+class Response (object):
+    def __init__(self, **kwargs):
+        kwargs.setdefault('response_code', '200')
+        kwargs.setdefault('content_type', 'text/html')
+        kwargs.setdefault('content', '')
+        kwargs.setdefault('headers', [])
+        self._response_code = kwargs['response_code']
+        self._content_type = kwargs['content_type']
+        self._headers = kwargs['headers']
+        self._content = kwargs['content']
+
+    def _set_content_type(self, content_type):
+        self._content_type = content_type
+
+    def _set_content(self, content):
+        self._content = content
+
+    content_type = property(lambda s: s._content_type, _set_content_type)
+    content = property(lambda s: s._content, _set_content)
+    response_code = property(lambda s: s._response_code)
+    headers = property(lambda s: s._headers)
+
+
+def get_node_name(request_uri = None):
+    if not request_uri: request_uri = os.environ.get('REDIRECT_URL')
+    if not request_uri: return 'index'
+    rel_path = '/'.join(request_uri.split('/')[2:])
+    return rel_path
+
+
+def edit_fetch(form):
+    node_name = get_node_name()
+    node_content = ''
+    if os.path.exists(node_name):
+        node_file = file(node_name, 'r')
+        node_content = node_file.read(-1)
+        node_file.close()
+    r = Response()
+    r.content = common_header() + textwrap.dedent('''
+    <form method="POST">
+      <input type="hidden" name="edit"/>
+      <textarea name="content">%s</textarea><br />
+      <input type="submit" name="Submit"/>
+      syntax <a href="http://docutils.sourceforge.net/docs/user/rst/quickref.html">quickref</a>
+      - <a href="http://docutils.sourceforge.net/docs/user/rst/cheatsheet.txt">cheatsheet</a>
+    </form>
+    ''' % (cgi.escape(node_content))) + common_footer()
+    return r
     
-  <script src="4.js" type="text/javascript" charset="utf-8"></script>
-</head>
 
-<body>
-</body>
+def render(form):
+    node_name = get_node_name()
+    if not os.path.exists(node_name):
+        r = Response(content=common_header() + '<p>[%s] does not exist; <a href="?edit">create it</a>?</p>' % (node_name) + common_footer())
+        return r
+    node_file = file(node_name, 'r')
+    node_content = node_file.read(-1)
+    node_file.close()
+    # http://docutils.sourceforge.net/docs/howto/security.html
+    heightened_security_settings = {'file_insertion_enabled': 0,
+                                    'raw_enabled': 0}
+    # http://docutils.sourceforge.net/docs/api/publisher.html
+    parts = docutils.core.publish_parts(source=node_content, writer_name='html',
+                                        settings_overrides=heightened_security_settings)
+    r = Response(content=common_header(parts['title']) + parts['html_body'] + common_footer())
+    return r
 
-</html>
+
+def edit_submit(form):
+    node_name = get_node_name()
+    node_file = file(node_name, 'w+')
+    node_file.write(form['content'].value)
+    node_file.close()
+    return render(form)
+    # fixme, this should really be a redirect... something like:
+    #path = os.environ.get('REQUEST_URI')
+    #rel_url = path.split('?')[0]
+    #new_url = 'http://%s%s' % (os.environ.get('HTTP_HOST'), rel_url)
+    #return Response(response_code='201',
+    #                headers=[('Location',new_url)],
+    #                content= common_header('created!') + '<p><a href="%(url)s">%(url)s</a> created.</p>' % {'url':rel_url} + common_footer())
+
+
+def dispatch():
+    form = cgi.FieldStorage(keep_blank_values=True)
+    fn = render
+    if form.has_key('edit'):
+        if os.environ.get('REQUEST_METHOD') == 'POST':
+            fn = edit_submit
+        else:
+            fn = edit_fetch
+    return fn(form)
+
+
+def common_header(title=None):
+    if not title: title = '(unknown)'
+    title = 'rstiki > %s' % (title)
+    return textwrap.dedent('''
+    <html>
+      <head>
+        <title>%s</title>
+        <style type="text/css">
+        BODY { background-color: white; }
+        TABLE { border-width: 1; }
+        TEXTAREA { width: 90%%; height: 90%%; border: solid thin black; }
+        </style>
+      </head>
+      <body>
+''' % (cgi.escape(title)))
+
+
+def common_footer():
+    return textwrap.dedent('''
+        <hr />
+        <a href="?edit">[Edit]</a><br />
+      </body>
+    </html>''')
+
+
+def check_install():
+    if os.path.exists('.htaccess'):
+        return None
+    htaccess = file('.htaccess', 'w+')
+    htaccess.write(textwrap.dedent('''
+# cribbed from pwyky...
+DirectoryIndex index.cgi
+Options -MultiViews
+RewriteEngine on
+RewriteRule ^([A-Za-z0-9-]+)$ index.cgi [L]
+'''))
+    htaccess.close()
+    return Response(content=common_header('install') + textwrap.dedent('''
+    <h1>rstiki installed</h1>
+    <p>rstiki has been installed.  You should <a href="./?edit">edit the first page</a>.</p>
+    ''') + common_footer())
+
+
+def main():
+    rtn = check_install()
+    if rtn: return rtn
+    return dispatch()
+
+
+def print_response(resp):
+    print 'Status: %s' % (resp.response_code)
+    print 'Content-Type: ' + resp.content_type
+    if resp.headers:
+        for name,value in resp.headers:
+            print '%s: %s' % (name,value)
+    if resp.content:
+        print ''
+        print resp.content
+
+
+if __name__ == '__main__':
+    # cgi.test()
+    cgitb.enable()
+    resp = main()
+    print_response(resp)
