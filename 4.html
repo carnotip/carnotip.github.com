@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #coding: utf8
 
-# wikiri - A single-file wiki engine.
-# Alberto Bertogli (albertito@blitiri.com.ar)
+# blitiri - A single-file blog engine.
+# Alberto Bertogli (albertito@gmail.com)
 
 #
 # Configuration section
@@ -12,28 +12,44 @@
 #
 
 # Directory where entries are stored
-data_path = "data/"
+data_path = "/tmp/blog/data"
+
+# Are comments allowed? (if False, comments_path option is not used)
+enable_comments = False
+
+# Directory where comments are stored (must be writeable by the web server)
+comments_path = "/tmp/blog/comments"
 
 # Path where templates are stored. Use an empty string for the built-in
 # default templates. If they're not found, the built-in ones will be used.
-templates_path = "templates/"
+templates_path = "/tmp/blog/templates"
 
-# URL to the wiki, including the name. Can be a full URL or just the path.
-wiki_url = "/wiki/wikiri.cgi"
+# Path where the cache is stored (must be writeable by the web server);
+# set to None to disable. When enabled, you must take care of cleaning it up
+# every once in a while.
+#cache_path = "/tmp/blog/cache"
+cache_path = None
+
+# URL to the blog, including the name. Can be a full URL or just the path.
+blog_url = "/blog/blitiri.cgi"
 
 # Style sheet (CSS) URL. Can be relative or absolute. To use the built-in
-# default, set it to wiki_url + "/style".
-css_url = wiki_url + "/style"
+# default, set it to blog_url + "/style".
+css_url = blog_url + "/style"
 
-# Wiki title.
-title = "I like wikis"
+# Blog title
+title = "I don't like blogs"
 
-# History backend. Can be one of:
-#  - "none" for no history
-#  - "git" to use git (needs git and the data path to be a repository)
-#  - "darcs" to use darcs (needs darcs and the data path to be a repository)
-#  - "auto" to select automatically (looks if the data path is a repository)
-history = "auto"
+# Default author
+author = "Hartmut Kegan"
+
+# Article encoding
+encoding = "utf8"
+
+# Captcha method to use. At the moment only "title" is supported, but if you
+# are keen with Python you can provide your own captcha implementation, see
+# below for details.
+captcha_method = "title"
 
 
 #
@@ -45,9 +61,18 @@ history = "auto"
 import sys
 import os
 import errno
+import shutil
+import time
 import datetime
+import calendar
+import zlib
 import urllib
 import cgi
+from docutils.core import publish_parts
+from docutils.utils import SystemMessage
+
+# Before importing the config, add our cwd to the Python path
+sys.path.append(os.getcwd())
 
 # Load the config file, if there is one
 try:
@@ -56,96 +81,99 @@ except:
 	pass
 
 
-# Find out our URL, just in case the templates need it (the default templates
-# do not use it at all)
-try:
-	n = os.environ['SERVER_NAME']
-	p = os.environ['SERVER_PORT']
-	s = os.environ['SCRIPT_NAME']
-	if p == '80': p = ''
-	else: p = ':' + p
-	full_url = 'http://%s%s%s' % (n, p, s)
-except KeyError:
-	full_url = 'Not needed'
-
+# Pimp *_path config variables to support relative paths
+data_path = os.path.realpath(data_path)
+templates_path = os.path.realpath(templates_path)
 
 
 #
-# Markup processing
+# Captcha classes
 #
+# They must follow the interface described below.
+#
+# Constructor:
+# 	Captcha(article) -> constructor, takes an article[1] as argument
+# Attributes:
+# 	puzzle -> a string with the puzzle the user must solve to prove he is
+# 	          not a bot (can be raw HTML)
+# 	help -> a string with extra instructions, shown only when the user
+# 	        failed to solve the puzzle
+# Methods:
+#	validate(form_data) -> based on the form data[2],  returns True if
+#	                       the user has solved the puzzle uccessfully
+#	                       (False otherwise).
+#
+# Note you must ensure that the puzzle attribute and validate() method can
+# "communicate" because they are executed in different requests. You can pass a
+# cookie or just calculate the answer based on the article's data, for example.
+#
+# [1] article is an object with all the article's information:
+# 	path -> string
+# 	created -> datetime
+# 	updated -> datetime
+# 	uuid -> string (unique ID)
+# 	title -> string
+# 	author -> string
+# 	tags -> list of strings
+# 	raw_contents -> string in rst format
+# 	comments -> list of Comment objects (not too relevant here)
+# [2] form_data is an object with the form fields (all strings):
+# 	author, author_error
+# 	link, link_error
+# 	catpcha, captcha_error
+# 	body, body_error
+# 	action, method
 
-import docutils.parsers.rst
-import docutils.nodes
-from docutils.core import publish_parts
+class TitleCaptcha (object):
+	"Captcha that uses the article's title for the puzzle"
+	def __init__(self, article):
+		self.article = article
+		words = article.title.split()
+		self.nword = hash(article.title) % len(words) % 5
+		self.answer = words[self.nword]
+		self.help = 'gotcha, damn spam bot!'
 
-def _wiki_link_role(role, rawtext, text, lineno, inliner,
-		options = {}, content = []):
-
-	ref = wiki_url + '/' + \
-		urllib.quote_plus(text.encode('utf8'), safe = '')
-
-	node = docutils.nodes.reference(rawtext, text, refuri = ref,
-			**options)
-	return [node], []
-
-def content2html(content):
-	settings = {
-		'input_encoding': 'utf8',
-		'output_encoding': 'utf8',
-	}
-
-	docutils.parsers.rst.roles.register_canonical_role('wikilink',
-		_wiki_link_role)
-	docutils.parsers.rst.roles.DEFAULT_INTERPRETED_ROLE = 'wikilink'
-
-	parts = publish_parts(content,
-			settings_overrides = settings,
-			writer_name = "html")
-	return parts['body'].encode('utf8')
-
-def diff2html(diff):
-	from xml.sax.saxutils import escape
-
-	s = '<div class="diff">'
-	for l in diff.split('\n'):
-		l = l.rstrip()
-		if l.startswith("+") and not l.startswith("+++"):
-			c = "add"
-		elif l.startswith("-") and not l.startswith("---"):
-			c = "remove"
-		elif l.startswith(" "):
-			c = "unchanged"
-		elif l.startswith("@@"):
-			c = "position"
-		elif l.startswith("diff"):
-			c = "header"
+	@property
+	def puzzle(self):
+		nword = self.nword + 1
+		if nword == 1:
+			n = '1st'
+		elif nword == 2:
+			n = '2nd'
+		elif nword == 3:
+			n = '3rd'
 		else:
-			c = "other"
-		s += '<span class="%s">' % c + escape(l) + '</span>\n'
-		# note there's no need to put <br/>s because the div.diff has
-		# "white-space: pre" in the css
-	s += '</div>'
-	return s
+			n = str(nword) + 'th'
+		return "enter the %s word of the article's title" % n
 
+	def validate(self, form_data):
+		if form_data.captcha.lower() == self.answer.lower():
+			return True
+		return False
 
+known_captcha_methods = {
+	'title': TitleCaptcha,
+}
 
-#
-# Templates
-#
+# If the configured captcha method was a known string, replace it by the
+# matching class; otherwise assume it's already a class and leave it
+# alone. This way the user can either use one of our methods, or provide one
+# of his/her own.
+if captcha_method in known_captcha_methods:
+	captcha_method = known_captcha_methods[captcha_method]
+
 
 # Default template
 
-default_article_content = """\
-title: %(artname)s
+default_main_header = """\
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
-This page does *not* exist yet.
-"""
-
-default_main_header = """
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
+<link rel="alternate" title="%(title)s" href="%(fullurl)s/atom"
+	type="application/atom+xml" />
 <link href="%(css_url)s" rel="stylesheet" type="text/css" />
 <title>%(title)s</title>
 </head>
@@ -158,7 +186,12 @@ default_main_header = """
 """
 
 default_main_footer = """
-</div><p/>
+</div>
+<div class="footer">
+  %(showyear)s: %(monthlinks)s<br/>
+  years: %(yearlinks)s<br/>
+  subscribe: <a href="%(url)s/atom">atom</a><br/>
+  views: <a href="%(url)s/">blog</a> <a href="%(url)s/list">list</a><br/>
 </div>
 
 </body>
@@ -167,202 +200,141 @@ default_main_footer = """
 
 default_article_header = """
 <div class="article">
-<h2><a href="%(url)s/%(artqname)s">%(arttitle)s</a></h2>
+<h2><a href="%(url)s/post/%(uuid)s">%(arttitle)s</a></h2>
 <span class="artinfo">
-  updated on %(uyear)04d-%(umonth)02d-%(uday)02d
-    %(uhour)02d:%(uminute)02d<br/>
-</span><p/>
+  by %(author)s on <span class="date">
+
+<a class="date" href="%(url)s/%(cyear)d/">%(cyear)04d</a>-\
+<a class="date" href="%(url)s/%(cyear)d/%(cmonth)d/">%(cmonth)02d</a>-\
+<a class="date" href="%(url)s/%(cyear)d/%(cmonth)d/%(cday)d/">%(cday)02d</a>\
+    %(chour)02d:%(cminute)02d</span>
+  (updated on <span class="date">
+<a class="date" href="%(url)s/%(uyear)d/">%(uyear)04d</a>-\
+<a class="date" href="%(url)s/%(uyear)d/%(umonth)d/">%(umonth)02d</a>-\
+<a class="date" href="%(url)s/%(uyear)d/%(umonth)d/%(uday)d/">%(uday)02d</a>\
+    %(uhour)02d:%(uminute)02d)</span><br/>
+  <span class="tags">tagged %(tags)s</span> -
+  <span class="comments">with %(comments)s
+    <a href="%(url)s/post/%(uuid)s#comments">comment(s)</a></span>
+</span><br/>
+<p/>
 <div class="artbody">
 """
 
 default_article_footer = """
 <p/>
 </div>
-<hr/><p/>
-<div class="footer">
-  <a href="%(url)s/about">about</a> |
-  <a href="%(url)s/help">help</a> |
-  <a href="%(url)s/%(artqname)s/log">view history</a> |
-  <a href="%(url)s/%(artqname)s/edit">edit this page</a><br/>
+</div>
+"""
+
+default_comment_header = """
+<div class="comment">
+<a name="comment-%(number)d" />
+<h3><a href="#comment-%(number)d">Comment #%(number)d</a></h3>
+<span class="cominfo">by %(linked_author)s
+  on %(year)04d-%(month)02d-%(day)02d %(hour)02d:%(minute)02d</span>
+<p/>
+<div class="combody">
+"""
+
+default_comment_footer = """
+<p/>
 </div>
 </div>
 """
 
-default_edit_page = """
-<h2>Edit <a href="%(url)s/%(artqname)s">%(artname)s</a></h2>
-<p/>
-
-<div class="editpage">
-<form method="POST" action="save">
-
-<label for="newtitle">Title: </label>
-<input id="newtitle" type="text" name="newtitle"
-  value="%(arttitle)s"/><p/>
-
-<textarea name="newcontent" cols="76" rows="25">
-%(content)s
-</textarea><p/>
-
-<label for="comment">Change summary: </label>
-<input id="comment" type="text" name="comment"
-  size="50" value="%(comment)s"/><p/>
-
-<button name="submit" type="submit" value="submit">Save</button>
-<button name="preview" type="submit" value="preview">Preview</button>
+default_comment_form = """
+<div class="comform">
+<a name="comment" />
+<h3 class="comform"><a href="#comment">Your comment</a></h3>
+<div class="comforminner">
+<form method="%(form_method)s" action="%(form_action)s">
+<div class="comformauthor">
+  <label for="comformauthor">Your name %(form_author_error)s</label>
+  <input type="text" class="comformauthor" id="comformauthor"
+         name="comformauthor" value="%(form_author)s" />
+</div>
+<div class="comformlink">
+  <label for="comformlink">Your link
+    <span class="comformoptional">(optional, will be published)</span>
+      %(form_link_error)s</label>
+  <input type="text" class="comformlink" id="comformlink"
+         name="comformlink" value="%(form_link)s" />
+  <div class="comformhelp">
+    like <span class="formurlexample">http://www.example.com/</span>
+    or <span class="formurlexample">mailto:you@example.com</span>
+  </div>
+</div>
+<div class="comformcaptcha">
+  <label for="comformcaptcha">Your humanity proof %(form_captcha_error)s</label>
+  <input type="text" class="comformcaptcha" id="comformcaptcha"
+         name="comformcaptcha" value="%(form_captcha)s" />
+  <div class="comformhelp">%(captcha_puzzle)s</div>
+</div>
+<div class="comformbody">
+  <label for="comformbody" class="comformbody">The comment
+    %(form_body_error)s</label>
+  <textarea class="comformbody" id="comformbody" name="comformbody" rows="15"
+            cols="80">%(form_body)s</textarea>
+  <div class="comformhelp">
+    in
+    <a href="http://docutils.sourceforge.net/docs/user/rst/quickref.html">\
+RestructuredText</a> format, please
+  </div>
+</div>
+<div class="comformsend">
+  <button type="submit" class="comformsend" id="comformsend" name="comformsend">
+    Send comment
+  </button>
+</div>
 </form>
-<p/>
-</div>
-
-<div class="quickhelp">
-<h2>Quick help</h2>
-
-<ul>
-  <li>Paragraphs are split by an empty line.</li>
-  <li>Lines that are underlined with dashes ("----") are a title.</li>
-  <li>Lines beginning with an "*" form a list.</li>
-  <li>To create new links, put them between backticks, <tt>`like
-    this`</tt>.</li>
-</ul>
-
-More information:
-<a href="http://docutils.sourceforge.net/docs/user/rst/quickref.html">reST
-quick reference</a>.<p/>
-</div>
-
-</div>
-"""
-
-default_removed_page = """
-<div class="article">
-<h2><a href="%(url)s/%(artqname)s">%(artname)s</a></h2>
-<div class="artbody">
-<p/>
-This page has been successfuly removed.<p/>
-
 </div>
 </div>
 """
 
-default_diff_header = """
-<h2>Modification to <a href="%(url)s/%(artqname)s">%(arttitle)s</a></h2>
-<p/>
-This page displays the modifications performed by the selected change. Green
-lines are additions, red lines are removals.<p/>
-"""
+default_comment_error = '<span class="comformerror">(%(error)s)</span>'
 
-default_diff_footer = """
-<hr/><p/>
-<div class="footer">
-  <a href="%(url)s/about">about</a> |
-  <a href="%(url)s/help">help</a> |
-  <a href="%(url)s/%(artqname)s/log">view history</a> |
-  <a href="%(url)s/%(artqname)s/edit">edit this page</a><br/>
-</div>
-</div>
-"""
-
-default_help_page = """
-<div class="article">
-<h2>Help</h2>
-<div class="artbody">
-<p/>
-
-This wiki uses <a href="http://docutils.sf.net/rst.html">reStructuredText</a>
-for markup.<br/>
-Here is a quick syntax summary.<p/>
-
-<ul>
-  <li>Paragraphs are split by an empty line.</li>
-  <li>Lines that are underlined with dashes ("----") are a title.</li>
-  <li>Lines beginning with an "*" form a list.</li>
-  <li>To create new links, put them between backticks, <tt>`like
-    this`</tt>.</li>
-</ul>
-
-If you want more information, see the
-<a href="http://docutils.sourceforge.net/docs/user/rst/quickref.html">reST
-quick reference</a>.<p/>
-
-</div>
-</div>
-"""
-
-default_about_page = """
-<div class="article">
-<h2>About</h2>
-<div class="artbody">
-<p/>
-
-This wiki is powered by
-<a href="http://blitiri.com.ar/p/misc.html">wikiri</a>, a single-file
-blog engine written in <a href="http://python.org">Python</a>, and uses
-<a href="http://docutils.sf.net/rst.html">reStructuredText</a>
-for markup.<p/>
-
-If you have any questions or comments, please send an email to
-<a href="mailto:albertito@blitiri.com.ar">Alberto Bertogli</a>.<p/>
-
-</div>
-</div>
-"""
-
-default_log_header = """
-<h2>Change history for <a href="%(url)s/%(artqname)s">%(artname)s</a></h2>
-<p/>
-
-<table class="log">
-"""
-
-default_log_entry = """
-<tr>
-  <td class="date">
-    %(date_y)04d-%(date_m)02d-%(date_d)02d
-    %(date_H)02d:%(date_M)02d:%(date_S)02d
-  </td>
-  <td class="summary">%(summary)s</td>
-  <td class="links">
-    <a href="%(url)s/logview/%(commitid)s/%(artqname)s">view</a> |
-    <a href="%(url)s/restore/%(commitid)s/%(artqname)s">restore</a> |
-    <a href="%(url)s/diff/%(commitid)s/%(artqname)s">diff</a>
-  </td>
-</tr>
-"""
-
-default_log_footer = """
-</table>
-"""
 
 # Default CSS
 default_css = """
 body {
 	font-family: sans-serif;
+	font-size: small;
+	width: 52em;
 }
 
 div.content {
-	width: 60%;
+	width: 96%;
 }
 
 h1 {
-	font-size: x-large;
+	font-size: large;
 	border-bottom: 2px solid #99F;
-	width: 65%;
+	width: 100%;
 	margin-bottom: 1em;
 }
 
 h2 {
-	font-size: large;
-	font-weight: bold;
+	font-size: medium;
+	font-weigth: none;
 	margin-bottom: 1pt;
 	border-bottom: 1px solid #99C;
 }
 
-h1 a, h2 a {
+h3 {
+	font-size: small;
+	font-weigth: none;
+	margin-bottom: 1pt;
+	border-bottom: 1px solid #99C;
+}
+
+h1 a, h2 a, h3 a {
 	text-decoration: none;
 	color: black;
 }
 
 span.artinfo {
-	font-size: x-small;
+	font-size: xx-small;
 }
 
 span.artinfo a {
@@ -383,11 +355,88 @@ div.article {
 	margin-bottom: 2em;
 }
 
-hr {
-	/* hack to properly align the hr */
-	text-align: left;
-	margin: 0 auto 0 0;
+span.cominfo {
+	font-size: xx-small;
+}
 
+span.cominfo a {
+	text-decoration: none;
+	color: #339;
+}
+
+span.cominfo a:hover {
+	text-decoration: none;
+	color: blue;
+}
+
+div.combody {
+	margin-left: 2em;
+}
+
+div.comment {
+	margin-left: 1em;
+	margin-bottom: 1em;
+}
+
+div.comforminner {
+	margin-left: 2em;
+}
+
+div.comform {
+	margin-left: 1em;
+	margin-bottom: 1em;
+}
+
+div.comform label {
+	display: block;
+	border-bottom: 1px solid #99C;
+	margin-top: 0.5em;
+	clear: both;
+}
+
+div.comform span.comformoptional {
+	font-size: xx-small;
+	color: #666;
+}
+
+div.comform input {
+	font-size: small;
+	width: 99%;
+}
+
+div.comformhelp {
+	font-size: xx-small;
+	text-align: right;
+	float: right;
+}
+
+span.formurlexample {
+	color: #111;
+	background-color: #EEF;
+	font-family: monospace;
+	padding-left: 0.2em;
+	padding-right: 0.2em;
+}
+
+textarea.comformbody {
+	font-family: monospace;
+	font-size: small;
+	width: 99%;
+	height: 15em;
+}
+
+button.comformsend {
+	margin-top: 0.5em;
+}
+
+span.comformerror {
+	color: #900;
+	font-size: xx-small;
+	margin-left: 0.5em;
+}
+
+hr {
+	float: left;
 	height: 2px;
 	border: 0;
 	background-color: #99F;
@@ -395,902 +444,912 @@ hr {
 }
 
 div.footer {
-	font-size: small;
+	margin-top: 1em;
+	padding-top: 0.4em;
+	width: 100%;
+	border-top: 2px solid #99F;
+	font-size: x-small;
 }
 
 div.footer a {
 	text-decoration: none;
 }
 
-table.log {
-	border-right: 1px solid #6666cc;
-	border-collapse: collapse;
-	margin-left: 1em;
-}
-
-table.log td {
-	border-left: 1px solid #6666cc;
-	padding-right: 1em;
-	padding-left: 1em;
-}
-
-table.log td.date {
-	white-space: nowrap;
-}
-
-table.log td.summary {
-
-}
-
-table.log td.links {
-	white-space: nowrap;
-	font-size: small;
-}
-
 /* Articles are enclosed in <div class="section"> */
 div.section h1 {
-	font-size: medium;
-	font-weight: bold;
+	font-size: small;
+	font-weigth: none;
 	width: 100%;
 	margin-bottom: 1pt;
 	border-bottom: 1px dotted #99C;
 }
 
-div.section h2 {
-	font-size: small;
-	font-weight: bold;
-	width: 75%;
-	margin-bottom: 1pt;
-	border-bottom: 1px dotted #DDD;
-}
-
-/* diff */
-div.diff {
-	font-family: monospace;
-	white-space: pre;
-	margin: 0;
-	padding: 0;
-}
-
-div.diff span.add {
-	color: #090;
-}
-
-div.diff span.remove {
-	color: #900;
-}
-
-div.diff span.unchanged {
-}
-
-div.diff span.position {
-	background-color: #E5E5FF;
-}
-
-div.diff span.header {
-	background-color: #CCF;
-	font-weight: bold;
-}
-
-div.diff span.other {
-}
-
 """
 
+
+# Cache decorator
+# It only works if the function is pure (that is, its return value depends
+# only on its arguments), and if all the arguments are hash()eable.
+def cached(f):
+	# do not decorate if the cache is disabled
+	if cache_path is None:
+		return f
+
+	def decorate(*args, **kwargs):
+		hashes = '-'.join( str(hash(x)) for x in args +
+				tuple(kwargs.items()) )
+		fname = 'blitiri.%s.%s.cache' % (f.__name__, hashes)
+		cache_file = os.path.join(cache_path, fname)
+		try:
+			s = open(cache_file).read()
+		except:
+			s = f(*args, **kwargs)
+			open(cache_file, 'w').write(s)
+		return s
+
+	return decorate
+
+
+# helper functions
+@cached
+def rst_to_html(rst, secure = True):
+	settings = {
+		'input_encoding': encoding,
+		'output_encoding': 'utf8',
+		'halt_level': 1,
+		'traceback':  1,
+		'file_insertion_enabled': secure,
+		'raw_enabled': secure,
+	}
+	parts = publish_parts(rst, settings_overrides = settings,
+				writer_name = "html")
+	return parts['body'].encode('utf8')
+
+def validate_rst(rst, secure = True):
+	try:
+		rst_to_html(rst, secure)
+		return None
+	except SystemMessage, e:
+		desc = e.args[0].encode('utf-8') # the error string
+		desc = desc[9:] # remove "<string>:"
+		line = int(desc[:desc.find(':')] or 0) # get the line number
+		desc = desc[desc.find(')')+2:-1] # remove (LEVEL/N)
+		try:
+			desc, context = desc.split('\n', 1)
+		except ValueError:
+			context = ''
+		if desc.endswith('.'):
+			desc = desc[:-1]
+		return (line, desc, context)
+
+def valid_link(link):
+	import re
+	scheme_re = r'^[a-zA-Z]+:'
+	mail_re = r"^[^ \t\n\r@<>()]+@[a-z0-9][a-z0-9\.\-_]*\.[a-z]+$"
+	url_re = r'^(?:[a-z0-9\-]+|[a-z0-9][a-z0-9\-\.\_]*\.[a-z]+)' \
+			r'(?::[0-9]+)?(?:/.*)?$'
+
+	if re.match(scheme_re, link, re.I):
+		scheme, rest = link.split(':', 1)
+		# if we have an scheme and a rest, assume the link is valid
+		# and return it as-is; otherwise (having just the scheme) is
+		# invalid
+		if rest:
+			return link
+		return None
+
+	# at this point, we don't have a scheme; we will try to recognize some
+	# common addresses (mail and http at the moment) and complete them to
+	# form a valid link, if we fail we will just claim it's invalid
+	if re.match(mail_re, link, re.I):
+		return 'mailto:' + link
+	elif re.match(url_re, link, re.I):
+		return 'http://' + link
+
+	return None
+
+def sanitize(obj):
+	return cgi.escape(obj, quote = True)
+
+
+# find out our URL, needed for syndication
+try:
+	n = os.environ['SERVER_NAME']
+	p = os.environ['SERVER_PORT']
+	s = os.environ['SCRIPT_NAME']
+	if p == '80': p = ''
+	else: p = ':' + p
+	full_url = 'http://%s%s%s' % (n, p, s)
+except KeyError:
+	full_url = 'Not needed'
+
+
 class Templates (object):
-	def __init__(self):
-		self.tpath = templates_path
+	def __init__(self, tpath, db, showyear = None):
+		self.tpath = tpath
+		self.db = db
 		now = datetime.datetime.now()
+		if not showyear:
+			showyear = now.year
 
 		self.vars = {
 			'css_url': css_url,
 			'title': title,
-			'url': wiki_url,
+			'url': blog_url,
 			'fullurl': full_url,
 			'year': now.year,
 			'month': now.month,
 			'day': now.day,
+			'showyear': showyear,
+			'monthlinks': ' '.join(db.get_month_links(showyear)),
+			'yearlinks': ' '.join(db.get_year_links()),
 		}
 
-	def art_vars(self, article):
-		avars = self.vars.copy()
-		avars.update( {
-			'arttitle': article.title,
-			'artname': article.name,
-			'artqname': article.qname,
-			'updated': article.updated.isoformat(' '),
+	def get_template(self, page_name, default_template, extra_vars = None):
+		if extra_vars is None:
+			vars = self.vars
+		else:
+			vars = self.vars.copy()
+			vars.update(extra_vars)
 
-			'uyear': article.updated.year,
-			'umonth': article.updated.month,
-			'uday': article.updated.day,
-			'uhour': article.updated.hour,
-			'uminute': article.updated.minute,
-			'usecond': article.updated.second,
-		} )
-		return avars
+		p = '%s/%s.html' % (self.tpath, page_name)
+		if os.path.isfile(p):
+			return open(p).read() % vars
+		return default_template % vars
 
 	def get_main_header(self):
-		p = self.tpath + '/header.html'
-		if os.path.isfile(p):
-			return open(p).read() % self.vars
-		return default_main_header % self.vars
-
-	def get_default_article_content(self, artname):
-		avars = self.vars.copy()
-		avars.update( {
-			'artname': artname,
-			'artqname': urllib.quote_plus(artname, safe = ''),
-		} )
-		p = self.tpath + '/default_article_content.wiki'
-		if os.path.isfile(p):
-			return open(p).read() % avars
-		return default_article_content % avars
+		return self.get_template('header', default_main_header)
 
 	def get_main_footer(self):
-		p = self.tpath + '/footer.html'
-		if os.path.isfile(p):
-			return open(p).read() % self.vars
-		return default_main_footer % self.vars
+		return self.get_template('footer', default_main_footer)
 
 	def get_article_header(self, article):
-		avars = self.art_vars(article)
-		p = self.tpath + '/art_header.html'
-		if os.path.isfile(p):
-			return open(p).read() % avars
-		return default_article_header % avars
+		return self.get_template(
+			'art_header', default_article_header, article.to_vars())
 
 	def get_article_footer(self, article):
-		avars = self.art_vars(article)
-		p = self.tpath + '/art_footer.html'
-		if os.path.isfile(p):
-			return open(p).read() % avars
-		return default_article_footer % avars
+		return self.get_template(
+			'art_footer', default_article_footer, article.to_vars())
 
-	def get_edit_page(self, article, comment):
-		avars = self.art_vars(article)
-		avars.update( {
-			'content': article.raw_content,
-			'comment': comment,
-		} )
-		p = self.tpath + '/edit_page.html'
-		if os.path.isfile(p):
-			return open(p).read() % avars
-		return default_edit_page % avars
+	def get_comment_header(self, comment):
+		vars = comment.to_vars()
+		if comment.link:
+			vars['linked_author'] = '<a href="%s">%s</a>' \
+					% (vars['link'], vars['author'])
+		else:
+			vars['linked_author'] = vars['author']
+		return self.get_template(
+			'com_header', default_comment_header, vars)
 
-	def get_removed_page(self, artname):
-		avars = self.vars.copy()
-		avars.update( {
-			'artname': artname,
-			'artqname': urllib.quote_plus(artname, safe = ''),
-		} )
-		p = self.tpath + '/removed_page.html'
-		if os.path.isfile(p):
-			return open(p).read() % avars
-		return default_removed_page % avars
+	def get_comment_footer(self, comment):
+		return self.get_template(
+			'com_footer', default_comment_footer, comment.to_vars())
 
-	def get_diff_header(self, article, commitid):
-		avars = self.art_vars(article)
-		avars.update( {
-			'commitid': commitid,
-		} )
-		p = self.tpath + '/diff_header.html'
-		if os.path.isfile(p):
-			return open(p).read() % avars
-		return default_diff_header % avars
+	def get_comment_form(self, article, form_data, captcha_puzzle):
+		vars = article.to_vars()
+		vars.update(form_data.to_vars(self))
+		vars['captcha_puzzle'] = captcha_puzzle
+		return self.get_template(
+			'com_form', default_comment_form, vars)
 
-	def get_diff_footer(self, article, commitid):
-		avars = self.art_vars(article)
-		avars.update( {
-			'commitid': commitid,
-		} )
-		p = self.tpath + '/diff_footer.html'
-		if os.path.isfile(p):
-			return open(p).read() % avars
-		return default_diff_footer % avars
-
-	def get_help_page(self):
-		p = self.tpath + '/help_page.html'
-		if os.path.isfile(p):
-			return open(p).read() % self.vars
-		return default_help_page % self.vars
-
-	def get_about_page(self):
-		p = self.tpath + '/about_page.html'
-		if os.path.isfile(p):
-			return open(p).read() % self.vars
-		return default_about_page % self.vars
-
-	def get_log_header(self, artname):
-		avars = self.vars.copy()
-		avars.update( {
-			'artname': artname,
-			'artqname': urllib.quote_plus(artname, safe = ''),
-		} )
-		p = self.tpath + '/log_header.html'
-		if os.path.isfile(p):
-			return open(p).read() % avars
-		return default_log_header % avars
-
-	def get_log_entry(self, artname, commit):
-		avars = self.vars.copy()
-		avars.update( {
-			'artname': artname,
-			'artqname': urllib.quote_plus(artname, safe = ''),
-			'summary': commit['msg'],
-			'commitid': commit['commit'],
-			'date_y': commit['atime'].year,
-			'date_m': commit['atime'].month,
-			'date_d': commit['atime'].day,
-			'date_H': commit['atime'].hour,
-			'date_M': commit['atime'].minute,
-			'date_S': commit['atime'].second,
-		} )
-		p = self.tpath + '/log_entry.html'
-		if os.path.isfile(p):
-			return open(p).read() % avars
-		return default_log_entry % avars
-
-	def get_log_footer(self, artname):
-		avars = self.vars.copy()
-		avars.update( {
-			'artname': artname,
-			'artqname': urllib.quote_plus(artname, safe = ''),
-		} )
-		p = self.tpath + '/log_footer.html'
-		if os.path.isfile(p):
-			return open(p).read() % avars
-		return default_log_footer % avars
+	def get_comment_error(self, error):
+		return self.get_template(
+			'com_error', default_comment_error, dict(error=error))
 
 
+class CommentFormData (object):
+	def __init__(self, author = '', link = '', captcha = '', body = ''):
+		self.author = author
+		self.link = link
+		self.captcha = captcha
+		self.body = body
+		self.author_error = ''
+		self.link_error = ''
+		self.captcha_error = ''
+		self.body_error = ''
+		self.action = ''
+		self.method = 'post'
 
-#
-# Article handling
-#
+	def to_vars(self, template):
+		render_error = template.get_comment_error
+		a_error = self.author_error and render_error(self.author_error)
+		l_error = self.link_error and render_error(self.link_error)
+		c_error = self.captcha_error \
+				and render_error(self.captcha_error)
+		b_error = self.body_error and render_error(self.body_error)
+		return {
+			'form_author': sanitize(self.author),
+			'form_link': sanitize(self.link),
+			'form_captcha': sanitize(self.captcha),
+			'form_body': sanitize(self.body),
 
-class Article (object):
-	def __init__(self, name, title = None, content = None,
-			has_header = True):
-		self.name = name
-		self.qname = urllib.quote_plus(name, safe = "")
-		self.updated = None
+			'form_author_error': a_error,
+			'form_link_error': l_error,
+			'form_captcha_error': c_error,
+			'form_body_error': b_error,
+
+			'form_action': self.action,
+			'form_method': self.method,
+		}
+
+
+class Comment (object):
+	def __init__(self, article, number, created = None):
+		self.article = article
+		self.number = number
+		if created is None:
+			self.created = datetime.datetime.now()
+		else:
+			self.created = created
 
 		self.loaded = False
 
-		self.preloaded_title = title
-		self.preloaded_content = content
-		self.has_header = has_header
-
 		# loaded on demand
-		self.attrs = {}
-		self._raw_content = ''
+		self._author = author
+		self._link = ''
+		self._raw_content = 'Removed comment'
 
-	def get_raw_content(self):
+	@property
+	def author(self):
+		if not self.loaded:
+			self.load()
+		return self._author
+
+	@property
+	def link(self):
+		if not self.loaded:
+			self.load()
+		return self._link
+
+	@property
+	def raw_content(self):
 		if not self.loaded:
 			self.load()
 		return self._raw_content
-	raw_content = property(fget = get_raw_content)
 
-	def get_title(self):
+	def set(self, author, raw_content, link = '', created = None):
+		self.loaded = True
+		self._author = author
+		self._raw_content = raw_content
+		self._link = link
+		self.created = created or datetime.datetime.now()
+
+
+	def load(self):
+		filename = os.path.join(comments_path, self.article.uuid,
+					str(self.number))
+		try:
+			raw = open(filename).readlines()
+		except:
+			return
+
+		count = 0
+		for l in raw:
+			if ':' in l:
+				name, value = l.split(':', 1)
+				if name.lower() == 'author':
+					self._author = value.strip()
+				elif name.lower() == 'link':
+					self._link = value.strip()
+			elif l == '\n':
+				# end of header
+				break
+			count += 1
+		self._raw_content = ''.join(raw[count + 1:])
+		self.loaded = True
+
+	def save(self):
+		filename = os.path.join(comments_path, self.article.uuid,
+					str(self.number))
+		try:
+			f = open(filename, 'w')
+			f.write('Author: %s\n' % self.author)
+			f.write('Link: %s\n' % self.link)
+			f.write('\n')
+			f.write(self.raw_content)
+		except:
+			return
+
+
+	def to_html(self):
+		return rst_to_html(self.raw_content)
+
+	def to_vars(self):
+		return {
+			'number': self.number,
+			'author': sanitize(self.author),
+			'link': sanitize(self.link),
+			'date': self.created.isoformat(' '),
+			'created': self.created.isoformat(' '),
+
+			'year': self.created.year,
+			'month': self.created.month,
+			'day': self.created.day,
+			'hour': self.created.hour,
+			'minute': self.created.minute,
+			'second': self.created.second,
+		}
+
+class CommentDB (object):
+	def __init__(self, article):
+		self.path = os.path.join(comments_path, article.uuid)
+		# if comments were enabled after the article was added, we
+		# will need to create the directory
+		if not os.path.exists(self.path):
+			os.mkdir(self.path, 0755)
+
+		self.comments = []
+		self.load(article)
+
+	def load(self, article):
+		try:
+			f = open(os.path.join(self.path, 'db'))
+		except:
+			return
+
+		for l in f:
+			# Each line has the following comma separated format:
+			# number, created (epoch)
+			# Empty lines are meaningful and represent removed
+			# comments (so we can preserve the comment number)
+			l = l.split(',')
+			try:
+				n = int(l[0])
+				d = datetime.datetime.fromtimestamp(float(l[1]))
+			except:
+				# Removed/invalid comment
+				self.comments.append(None)
+				continue
+			self.comments.append(Comment(article, n, d))
+
+	def save(self):
+		old_db = os.path.join(self.path, 'db')
+		new_db = os.path.join(self.path, 'db.tmp')
+		f = open(new_db, 'w')
+		for c in self.comments:
+			s = ''
+			if c is not None:
+				s = ''
+				s += str(c.number) + ', '
+				s += str(time.mktime(c.created.timetuple()))
+			s += '\n'
+			f.write(s)
+		f.close()
+		os.rename(new_db, old_db)
+
+
+class Article (object):
+	def __init__(self, path, created = None, updated = None):
+		self.path = path
+		self.created = created
+		self.updated = updated
+		self.uuid = "%08x" % zlib.crc32(self.path)
+
+		self.loaded = False
+
+		# loaded on demand
+		self._title = 'Removed post'
+		self._author = author
+		self._tags = []
+		self._raw_content = ''
+		self._comments = []
+
+	@property
+	def title(self):
 		if not self.loaded:
 			self.load()
-		# use the name by default
-		return self.attrs.get('title', self.name)
-	title = property(fget = get_title)
+		return self._title
+
+	@property
+	def author(self):
+		if not self.loaded:
+			self.load()
+		return self._author
+
+	@property
+	def tags(self):
+		if not self.loaded:
+			self.load()
+		return self._tags
+
+	@property
+	def raw_content(self):
+		if not self.loaded:
+			self.load()
+		return self._raw_content
+
+	@property
+	def comments(self):
+		if not self.loaded:
+			self.load()
+		return self._comments
+
+	def __cmp__(self, other):
+		if self.path == other.path:
+			return 0
+		if not self.created:
+			return 1
+		if not other.created:
+			return -1
+		if self.created < other.created:
+			return -1
+		return 1
+
+	def title_cmp(self, other):
+		return cmp(self.title, other.title)
+
+
+	def add_comment(self, author, raw_content, link = ''):
+		c = Comment(self, len(self.comments))
+		c.set(author, raw_content, link)
+		self.comments.append(c)
+		return c
+
+
+	def load(self):
+		# XXX this tweak is only needed for old DB format, where
+		# article's paths started with a slash
+		path = self.path
+		if path.startswith('/'):
+			path = path[1:]
+		filename = os.path.join(data_path, path)
+		try:
+			raw = open(filename).readlines()
+		except:
+			return
+
+		count = 0
+		for l in raw:
+			if ':' in l:
+				name, value = l.split(':', 1)
+				if name.lower() == 'title':
+					self._title = value.strip()
+				elif name.lower() == 'author':
+					self._author = value.strip()
+				elif name.lower() == 'tags':
+					ts = value.split(',')
+					ts = [t.strip() for t in ts]
+					self._tags = set(ts)
+			elif l == '\n':
+				# end of header
+				break
+			count += 1
+		self._raw_content = ''.join(raw[count + 1:])
+		db = CommentDB(self)
+		self._comments = db.comments
+		self.loaded = True
+
+	def to_html(self):
+		return rst_to_html(self.raw_content)
+
+	def to_vars(self):
+		return {
+			'arttitle': sanitize(self.title),
+			'author': sanitize(self.author),
+			'date': self.created.isoformat(' '),
+			'uuid': self.uuid,
+			'tags': self.get_tags_links(),
+			'comments': len(self.comments),
+
+			'created': self.created.isoformat(' '),
+			'ciso': self.created.isoformat(),
+			'cyear': self.created.year,
+			'cmonth': self.created.month,
+			'cday': self.created.day,
+			'chour': self.created.hour,
+			'cminute': self.created.minute,
+			'csecond': self.created.second,
+
+			'updated': self.updated.isoformat(' '),
+			'uiso': self.updated.isoformat(),
+			'uyear': self.updated.year,
+			'umonth': self.updated.month,
+			'uday': self.updated.day,
+			'uhour': self.updated.hour,
+			'uminute': self.updated.minute,
+			'usecond': self.updated.second,
+		}
+
+	def get_tags_links(self):
+		l = []
+		tags = list(self.tags)
+		tags.sort()
+		for t in tags:
+			l.append('<a class="tag" href="%s/tag/%s">%s</a>' % \
+				(blog_url, urllib.quote(t), sanitize(t) ))
+		return ', '.join(l)
+
+
+class ArticleDB (object):
+	def __init__(self, dbpath):
+		self.dbpath = dbpath
+		self.articles = []
+		self.uuids = {}
+		self.actyears = set()
+		self.actmonths = set()
+		self.load()
+
+	def get_articles(self, year = 0, month = 0, day = 0, tags = None):
+		l = []
+		for a in self.articles:
+			if year and a.created.year != year: continue
+			if month and a.created.month != month: continue
+			if day and a.created.day != day: continue
+			if tags and not tags.issubset(a.tags): continue
+
+			l.append(a)
+
+		return l
+
+	def get_article(self, uuid):
+		return self.uuids[uuid]
 
 	def load(self):
 		try:
-			if self.preloaded_content:
-				raw = self.preloaded_content
-				raw = [ s + '\n' for s in raw.split('\n') ]
-				self.updated = datetime.datetime.now()
-			else:
-				fd = open(data_path + '/' + self.qname)
-				raw = fd.readlines()
-				stat = os.fstat(fd.fileno())
-				self.updated = datetime.datetime.fromtimestamp(stat.st_mtime)
+			f = open(self.dbpath)
 		except:
-			t = Templates()
-			raw = t.get_default_article_content(self.name)
-			raw = [ s + '\n' for s in raw.split('\n') ]
-			self.updated = datetime.datetime.now()
-
-		hdr_lines = 0
-		if self.has_header:
-			for l in raw:
-				if ':' in l:
-					name, value = l.split(':', 1)
-					name = name.lower().strip()
-					self.attrs[name] = value.strip()
-					hdr_lines += 1
-
-				elif l == '\n' or l == '\r\n':
-					# end of header
-					hdr_lines += 1
-					break
-
-		self._raw_content = ''.join(raw[hdr_lines:])
-		self.loaded = True
-
-		if self.preloaded_title:
-			self.attrs['title'] = self.preloaded_title
-
-	def save(self, newtitle, newcontent, raw = False):
-		fd = open(data_path + '/' + self.qname, 'w+')
-		if raw:
-			fd.write(newcontent)
-		else:
-			fd.write('title: %s\n\n' % newtitle)
-			fd.write(newcontent.rstrip() + '\n')
-		fd.close()
-
-		# invalidate our information
-		self.loaded = False
-
-	def remove(self):
-		try:
-			os.unlink(data_path + '/' + self.qname)
-		except OSError, errno.ENOENT:
-			pass
-
-	def to_html(self):
-		return content2html(self.raw_content)
-
-
-#
-# History backends
-#
-# At the moment we support none, git and darcs
-
-class HistoryError (Exception):
-	pass
-
-class History:
-	def __init__(self):
-		if history == 'auto':
-			if os.path.isdir(data_path + '.git'):
-				self.be = GitBackend(data_path)
-			elif os.path.isdir(data_path + '_darcs'):
-				self.be = DarcsBackend(data_path)
-			else:
-				self.be = NoneBackend(data_path)
-		elif history == 'git':
-			self.be = GitBackend(data_path)
-		elif history == 'darcs':
-			self.be = DarcsBackend(data_path)
-		else:
-			self.be = NoneBackend(data_path)
-
-	def commit(self, msg, author = 'Wikiri <somebody@wikiri>'):
-		self.be.commit(msg, author = author)
-
-	def log(self, fname):
-		# log() yields commits of the form:
-		# {
-		# 	'commit': commit id
-		# 	'author': author of the commit
-		# 	'committer': committer
-		# 	'atime': time of the change itself
-		# 	'ctime': time of the commit
-		# 	'msg': commit msg (one line)
-		# }
-		return self.be.log(file = fname)
-
-	def add(self, *files):
-		return self.be.add(*files)
-
-	def remove(self, *files):
-		return self.be.remove(*files)
-
-	def get_content(self, fname, cid):
-		return self.be.get_content(fname, cid)
-
-	def get_commit(self, cid):
-		return self.be.get_commit(cid)
-
-	def get_diff(self, cid):
-		# get_diff() returns the diff in unified format
-		return self.be.get_diff(cid)
-
-class NoneBackend:
-	def __init__(self, repopath):
-		pass
-
-	def commit(self, *args, **kwargs):
-		pass
-
-	def log(self, *args, **kwargs):
-		return ()
-
-	def add(self, *files):
-		pass
-
-	def remove(self, *files):
-		pass
-
-	def get_content(self, fname, cid):
-		return "Not supported."
-
-	def get_commit(self, cid):
-		return { 'commit': cid }
-
-	def get_diff(self, cid):
-		return ""
-
-class GitBackend:
-	def __init__(self, repopath):
-		self.repo = repopath
-		self.prevdir = None
-
-	def cdrepo(self):
-		self.prevdir = os.getcwd()
-		os.chdir(self.repo)
-
-	def cdback(self):
-		os.chdir(self.prevdir)
-
-	def git(self, *args):
-		# delay the import to avoid the hit on a regular page view
-		import subprocess
-		self.cdrepo()
-		cmd = subprocess.Popen( ['git'] + list(args),
-			stdin = subprocess.PIPE,
-			stdout = subprocess.PIPE,
-			stderr = sys.stderr )
-		self.cdback()
-		return cmd
-
-	def gitq(self, *args):
-		cmd = self.git(*args)
-		stdout, stderr = cmd.communicate()
-		return cmd.returncode
-
-	def commit(self, msg, author = None):
-		if not author:
-			author = "Unknown <unknown@example.com>"
-
-		# see if we have something to commit; if not, just return
-		self.gitq('update-index', '--refresh')
-		r = self.gitq('diff-index', '--exit-code', '--quiet', 'HEAD')
-		if r == 0:
 			return
 
-		r = self.gitq('commit',
-			'-m', msg,
-			'--author', author)
-		if r != 0:
-			raise HistoryError, r
-
-	def log(self, file = None, files = None):
-		if not files:
-			files = []
-		if file:
-			files.append(file)
-
-		cmd = self.git("rev-list",
-			"--all", "--pretty=raw",
-			"HEAD", "--", *files)
-		cmd.stdin.close()
-
-		commit = { 'msg': '' }
-		in_hdr = True
-		l = cmd.stdout.readline()
-		while l:
-			if l != '\n' and not l.startswith(' '):
-				name, value = l[:-1].split(' ', 1)
-				if in_hdr:
-					commit[name] = value
-				else:
-					# the previous commit has ended
-					_add_times(commit)
-					yield commit
-					commit = { 'msg': '' }
-					in_hdr = True
-
-					# continue reusing the line
-					continue
-			else:
-				if in_hdr:
-					in_hdr = False
-				if l.startswith('    '):
-					l = l[4:]
-				commit['msg'] += l
-
-			l = cmd.stdout.readline()
-
-		# the last commit, if there is one
-		if not in_hdr:
-			_add_times(commit)
-			yield commit
-
-		cmd.wait()
-		if cmd.returncode != 0:
-			raise HistoryError, cmd.returncode
-
-	def add(self, *files):
-		r = self.gitq('add', "--", *files)
-		if r != 0:
-			raise HistoryError, r
-
-	def remove(self, *files):
-		r = self.gitq('rm', '-f', '--', *files)
-		if r != 0:
-			raise HistoryError, r
-
-	def get_content(self, fname, commitid):
-		cmd = self.git("show", "%s:%s" % (commitid, fname))
-		content = cmd.stdout.read()
-		cmd.wait()
-		return content
-
-	def get_commit(self, cid):
-		cmd = self.git("rev-list", "-n1", "--pretty=raw", cid)
-		out = cmd.stdout.readlines()
-		cmd.wait()
-		commit = { 'msg': '' }
-		for l in out:
-			if l != '\n' and not l.startswith(' '):
-				name, value = l[:-1].split(' ', 1)
-				commit[name] = value
-			else:
-				commit['msg'] += l
-		_add_times(commit)
-		return commit
-
-	def get_diff(self, cid):
-		cmd = self.git("diff", cid + "^.." + cid)
-		out = cmd.stdout.read()
-		cmd.wait()
-		return out
-
-def _add_times(commit):
-	if 'author' in commit:
-		author, epoch, tz = commit['author'].rsplit(' ', 2)
-		epoch = float(epoch)
-		commit['author'] = author
-		commit['atime'] = datetime.datetime.fromtimestamp(epoch)
-
-	if 'committer' in commit:
-		committer, epoch, tz = commit['committer'].rsplit(' ', 2)
-		epoch = float(epoch)
-		commit['committer'] = committer
-		commit['ctime'] = datetime.datetime.fromtimestamp(epoch)
-
-class DarcsBackend:
-	def __init__(self, repopath):
-		self.repo = repopath
-		self.prevdir = None
-
-	def cdrepo(self):
-		self.prevdir = os.getcwd()
-		os.chdir(self.repo)
-
-	def cdback(self):
-		os.chdir(self.prevdir)
-
-	def darcs(self, *args):
-		# delay the import to avoid the hit on a regular page view
-		import subprocess
-		self.cdrepo()
-		cmd = subprocess.Popen( ['darcs'] + list(args),
-			stdin = subprocess.PIPE,
-			stdout = subprocess.PIPE,
-			stderr = sys.stderr )
-		self.cdback()
-		return cmd
-
-	def darcsq(self, *args):
-		cmd = self.darcs(*args)
-		stdout, stderr = cmd.communicate()
-		return cmd.returncode
-
-	def commit(self, msg, author = None):
-		if not author:
-			author = "Unknown <unknown@example.com>"
-
-		# see if we have something to commit; if not, just return
-		if self.darcsq('whatsnew') != 0:
-			return
-
-		r = self.darcsq('record',
-			'-a',
-			'-m', msg,
-			'-A', author)
-		if r != 0:
-			raise HistoryError, r
-
-	def log(self, file = None, files = None):
-		import xml.dom.minidom as minidom
-
-		if not files:
-			files = []
-		if file:
-			files.append(file)
-
-		cmd = self.darcs("changes",
-			"--xml-output",
-			"--", *files)
-		cmd.stdin.close()
-
-		xml = minidom.parse(cmd.stdout)
-
-		cmd.wait()
-		if cmd.returncode != 0:
-			raise HistoryError, cmd.returncode
-
-		for p in xml.getElementsByTagName('patch'):
-			# ignore patches not directly inside <changelog> (they
-			# can be, for instance, inside <created_as>, which we
-			# want to ignore)
-			if p.parentNode.nodeName != 'changelog':
+		for l in f:
+			# Each line has the following comma separated format:
+			# path (relative to data_path), \
+			#	created (epoch), \
+			# 	updated (epoch)
+			try:
+				l = l.split(',')
+			except:
 				continue
 
-			cid = p.getAttribute("hash")
-			author = p.getAttribute('author')
-			atime = p.getAttribute('date')
-			atime = datetime.datetime.strptime(atime,
-					"%Y%m%d%H%M%S")
-			msg = p.getElementsByTagName('name')[0]
-			msg = msg.childNodes[0].data
-			msg = msg.split('\n')[0].strip()
+			a = Article(l[0],
+				datetime.datetime.fromtimestamp(float(l[1])),
+				datetime.datetime.fromtimestamp(float(l[2])))
+			self.uuids[a.uuid] = a
+			self.actyears.add(a.created.year)
+			self.actmonths.add((a.created.year, a.created.month))
+			self.articles.append(a)
 
-			commit = {
-				'commit': cid.encode('utf8'),
-				'author': author.encode('utf8'),
-				'committer': author.encode('utf8'),
-				'atime': atime,
-				'ctime': atime,
-				'msg': msg.encode('utf8'),
-			}
-			yield commit
+	def save(self):
+		f = open(self.dbpath + '.tmp', 'w')
+		for a in self.articles:
+			s = ''
+			s += a.path + ', '
+			s += str(time.mktime(a.created.timetuple())) + ', '
+			s += str(time.mktime(a.updated.timetuple())) + '\n'
+			f.write(s)
+		f.close()
+		os.rename(self.dbpath + '.tmp', self.dbpath)
 
-	def add(self, *files):
-		r = self.darcsq('add', "--", *files)
-		# 0 means success, 2 means the file was already there (which
-		# is ok because we always add the files)
-		if r != 0 and r != 2:
-			raise HistoryError, r
+	def get_year_links(self):
+		yl = list(self.actyears)
+		yl.sort(reverse = True)
+		return [ '<a href="%s/%d/">%d</a>' % (blog_url, y, y)
+				for y in yl ]
 
-	def remove(self, *files):
-		r = self.darcsq('remove', '--', *files)
-		if r != 0:
-			raise HistoryError, r
-
-	def get_content(self, fname, commitid):
-		cmd = self.darcs("show", "contents",
-			"--match", "hash %s" % commitid,
-			"--", fname)
-		content = cmd.stdout.read()
-		cmd.wait()
-		return content
-
-	def get_commit(self, cid):
-		import xml.dom.minidom as minidom
-
-		cmd = self.darcs("changes",
-			"--xml-output",
-			"--match", "hash %s" % cid)
-		cmd.stdin.close()
-
-		xml = minidom.parse(cmd.stdout)
-
-		cmd.wait()
-		if cmd.returncode != 0:
-			raise HistoryError, cmd.returncode
-
-		try:
-			p = xml.getElementsByTagName('patch')[0]
-		except IndexError:
-			raise HistoryError, "not such patch"
-
-		cid = p.getAttribute("hash")
-		author = p.getAttribute('author')
-		atime = p.getAttribute('date')
-		atime = datetime.datetime.strptime(atime,
-				"%Y%m%d%H%M%S")
-		msg = p.getElementsByTagName('name')[0]
-		msg = msg.childNodes[0].data
-		msg = msg.split('\n')[0].strip()
-
-		commit = {
-			'commit': cid.encode('utf8'),
-			'author': author.encode('utf8'),
-			'committer': author.encode('utf8'),
-			'atime': atime,
-			'ctime': atime,
-			'msg': msg.encode('utf8'),
-		}
-		return commit
-
-	def get_diff(self, cid):
-		# TODO
-		return ""
-
-
+	def get_month_links(self, year):
+		am = [ i[1] for i in self.actmonths if i[0] == year ]
+		ml = []
+		for i in range(1, 13):
+			name = calendar.month_name[i][:3]
+			if i in am:
+				s = '<a href="%s/%d/%d/">%s</a>' % \
+					( blog_url, year, i, name )
+			else:
+				s = name
+			ml.append(s)
+		return ml
 
 #
 # Main
 #
 
-def render_article(art):
-	template = Templates()
-	print 'Content-type: text/html; charset=utf-8\n'
+def render_comments(article, template, form_data):
+	print '<a name="comments" />'
+	for c in article.comments:
+		if c is None:
+			continue
+		print template.get_comment_header(c)
+		print c.to_html()
+		print template.get_comment_footer(c)
+	if not form_data:
+		form_data = CommentFormData()
+	form_data.action = blog_url + '/comment/' + article.uuid + '#comment'
+	captcha = captcha_method(article)
+	print template.get_comment_form(article, form_data, captcha.puzzle)
+
+def render_html(articles, db, actyear = None, show_comments = False,
+		redirect =  None, form_data = None):
+	if redirect:
+		print 'Status: 303 See Other\r\n',
+		print 'Location: %s\r\n' % redirect,
+	print 'Content-type: text/html; charset=utf-8\r\n',
+	print '\r\n',
+	template = Templates(templates_path, db, actyear)
 	print template.get_main_header()
-	print template.get_article_header(art)
-	print art.to_html()
-	print template.get_article_footer(art)
+	for a in articles:
+		print template.get_article_header(a)
+		print a.to_html()
+		print template.get_article_footer(a)
+		if show_comments:
+			render_comments(a, template, form_data)
 	print template.get_main_footer()
 
-def render_edit(art, preview = False, comment = ""):
-	template = Templates()
+def render_artlist(articles, db, actyear = None):
+	template = Templates(templates_path, db, actyear)
 	print 'Content-type: text/html; charset=utf-8\n'
 	print template.get_main_header()
-	if preview:
-		print template.get_article_header(art)
-		print art.to_html()
-		print template.get_article_footer(art)
-	print template.get_edit_page(art, comment)
+	print '<h2>Articles</h2>'
+	for a in articles:
+		print '<li><a href="%(url)s/post/%(uuid)s">%(title)s</a></li>' \
+			% {	'url': blog_url,
+				'uuid': a.uuid,
+				'title': a.title,
+				'author': a.author,
+			}
 	print template.get_main_footer()
 
-def render_removed(artname):
-	template = Templates()
-	print 'Content-type: text/html; charset=utf-8\n'
-	print template.get_main_header()
-	print template.get_removed_page(artname)
-	print template.get_main_footer()
+def render_atom(articles):
+	if len(articles) > 0:
+		updated = articles[0].updated.isoformat()
+	else:
+		updated = datetime.datetime.now().isoformat()
 
-def render_log(artname, log):
-	template = Templates()
-	print 'Content-type: text/html; charset=utf-8\n'
-	print template.get_main_header()
-	print template.get_log_header(artname)
-	for commit in log:
-		print template.get_log_entry(artname, commit)
-	print template.get_log_footer(artname)
-	print template.get_main_footer()
+	print 'Content-type: application/atom+xml; charset=utf-8\n'
+	print """<?xml version="1.0" encoding="utf-8"?>
 
-def render_diff(article, cid, diff):
-	template = Templates()
-	print 'Content-type: text/html; charset=utf-8\n'
-	print template.get_main_header()
-	print template.get_diff_header(article, cid)
-	print diff2html(diff)
-	print template.get_diff_footer(article, cid)
-	print template.get_main_footer()
+<feed xmlns="http://www.w3.org/2005/Atom">
+ <title>%(title)s</title>
+ <link rel="alternate" type="text/html" href="%(url)s"/>
+ <link rel="self" type="application/atom+xml" href="%(url)s/atom"/>
+ <id>%(url)s</id> <!-- TODO: find a better <id>, see RFC 4151 -->
+ <updated>%(updated)sZ</updated>
 
-def render_help():
-	template = Templates()
-	print 'Content-type: text/html; charset=utf-8\n'
-	print template.get_main_header()
-	print template.get_help_page()
-	print template.get_main_footer()
+	""" % {
+		'title': title,
+		'url': full_url,
+		'updated': updated,
+	}
 
-def render_about():
-	template = Templates()
-	print 'Content-type: text/html; charset=utf-8\n'
-	print template.get_main_header()
-	print template.get_about_page()
-	print template.get_main_footer()
+	for a in articles:
+		vars = a.to_vars()
+		vars.update( {
+			'url': full_url,
+			'contents': a.to_html(),
+		} )
+		print """
+  <entry>
+    <title>%(arttitle)s</title>
+    <author><name>%(author)s</name></author>
+    <link href="%(url)s/post/%(uuid)s" />
+    <id>%(url)s/post/%(uuid)s</id>
+    <summary>%(arttitle)s</summary>
+    <published>%(ciso)sZ</published>
+    <updated>%(uiso)sZ</updated>
+    <content type="xhtml">
+      <div xmlns="http://www.w3.org/1999/xhtml">
+%(contents)s
+      </div>
+    </content>
+  </entry>
+		""" % vars
+	print "</feed>"
+
 
 def render_style():
-	print 'Content-type: text/css\n'
+	print 'Content-type: text/css\r\n\r\n',
 	print default_css
-
-def redirect(artname):
-	print 'Status: 303 See Other\r\n',
-	print 'Location: %s/%s\r\n' % (wiki_url, artname),
-	print
 
 def handle_cgi():
 	import cgitb; cgitb.enable()
 
 	form = cgi.FieldStorage()
-
-	edit = False
-	save = False
-	log = False
-	artname = 'index'
-
-	newcontent = form.getfirst("newcontent", '')
-	newtitle = form.getfirst("newtitle", '').strip()
-	preview = form.getfirst("preview", '').strip()
-	comment = form.getfirst("comment", '').strip()
-
-	remoteip = os.environ.get("REMOTE_ADDR", "unknownip")
-	author = "Somebody <%s@wikiri>" % remoteip
+	year = int(form.getfirst("year", 0))
+	month = int(form.getfirst("month", 0))
+	day = int(form.getfirst("day", 0))
+	tags = set(form.getlist("tag"))
+	uuid = None
+	atom = False
+	style = False
+	post = False
+	post_preview = False
+	artlist = False
+	comment = False
 
 	if os.environ.has_key('PATH_INFO'):
 		path_info = os.environ['PATH_INFO']
-		path_info = os.path.normpath(path_info)
+		style = path_info == '/style'
+		atom = path_info == '/atom'
+		tag = path_info.startswith('/tag/')
+		post = path_info.startswith('/post/')
+		post_preview = path_info.startswith('/preview/post/')
+		artlist = path_info.startswith('/list')
+		comment = path_info.startswith('/comment/') and enable_comments
+		if not style and not atom and not post and not post_preview \
+				and not tag and not comment and not artlist:
+			date = path_info.split('/')[1:]
+			try:
+				if len(date) > 1 and date[0]:
+					year = int(date[0])
+				if len(date) > 2 and date[1]:
+					month = int(date[1])
+				if len(date) > 3 and date[2]:
+					day = int(date[2])
+			except ValueError:
+				pass
+		elif post:
+			uuid = path_info.replace('/post/', '')
+			uuid = uuid.replace('/', '')
+		elif post_preview:
+			art_path = path_info.replace('/preview/post/', '')
+			art_path = urllib.unquote_plus(art_path)
+			art_path = os.path.join(data_path, art_path)
+			art_path = os.path.realpath(art_path)
+			common = os.path.commonprefix([data_path, art_path])
+			if common != data_path: # something nasty happened
+				post_preview = False
+			art_path = art_path[len(data_path)+1:]
+		elif tag:
+			t = path_info.replace('/tag/', '')
+			t = t.replace('/', '')
+			t = urllib.unquote_plus(t)
+			tags = set((t,))
+		elif comment:
+			uuid = path_info.replace('/comment/', '')
+			uuid = uuid.replace('#comment', '')
+			uuid = uuid.replace('/', '')
+			author = form.getfirst('comformauthor', '')
+			link = form.getfirst('comformlink', '')
+			captcha = form.getfirst('comformcaptcha', '')
+			body = form.getfirst('comformbody', '')
 
-		edit = path_info.endswith('/edit')
-		save = path_info.endswith('/save')
-		log = path_info.endswith('/log')
-
-		if edit or save or log:
-			artname = path_info[1:].rsplit('/', 1)[0]
-		else:
-			artname = path_info[1:]
-
-		if artname == '' or artname == '/':
-			artname = 'index'
-
-	if save and not os.environ.get('REQUEST_METHOD', 'GET') == 'POST':
-		# only allow saves if the request is a post to prevent people
-		# from accidentally performing a GET .../save, which would
-		# result in an empty save, with the following page removal
-		save = False
-
-	artname = urllib.unquote_plus(artname)
-
-	if artname == 'style':
+	db = ArticleDB(os.path.join(data_path, 'db'))
+	if atom:
+		articles = db.get_articles(tags = tags)
+		articles.sort(reverse = True)
+		render_atom(articles[:10])
+	elif style:
 		render_style()
-	elif artname == 'help':
-		render_help()
-	elif artname == 'about':
-		render_about()
-	elif edit or (save and preview):
-		if preview:
-			art = Article(artname,
-				title = newtitle,
-				content = newcontent,
-				has_header = False)
-			render_edit(art, preview = True, comment = comment)
+	elif post:
+		render_html( [db.get_article(uuid)], db, year, enable_comments )
+	elif post_preview:
+		article = Article(art_path, datetime.datetime.now(),
+					datetime.datetime.now())
+		render_html( [article], db, year, enable_comments )
+	elif artlist:
+		articles = db.get_articles()
+		articles.sort(cmp = Article.title_cmp)
+		render_artlist(articles, db)
+	elif comment and enable_comments:
+		form_data = CommentFormData(author.strip().replace('\n', ' '),
+				link.strip().replace('\n', ' '), captcha,
+				body.replace('\r', ''))
+		article = db.get_article(uuid)
+		captcha = captcha_method(article)
+		redirect = False
+		valid = True
+		if not form_data.author:
+			form_data.author_error = 'please, enter your name'
+			valid = False
+		if form_data.link:
+			link = valid_link(form_data.link)
+			if link:
+				form_data.link = link
+			else:
+				form_data.link_error = 'please, enter a ' \
+						'valid link'
+				valid = False
+		if not captcha.validate(form_data):
+			form_data.captcha_error = captcha.help
+			valid = False
+		if not form_data.body:
+			form_data.body_error = 'please, write a comment'
+			valid = False
 		else:
-			render_edit(Article(artname))
-	elif save:
-		if not comment:
-			comment = "No comment"
-		h = History()
-		a = Article(artname)
-		if newcontent.strip():
-			a.save(newtitle, newcontent)
-			h.add(a.qname)
-			h.commit(msg = comment, author = author)
-			redirect(artname)
-		else:
-			a.remove()
-			h.remove(a.qname)
-			h.commit(msg = comment, author = author)
-			redirect(artname)
-	elif log:
-		a = Article(artname)
-		render_log(a.name, History().log(a.qname))
-	elif artname.startswith("logview/"):
-		unused, cid, artname = artname.split('/', 2)
-		artname = urllib.unquote_plus(artname)
-		oldcontent = History().get_content(Article(artname).qname, cid)
-		render_article(Article(artname, content = oldcontent))
-	elif artname.startswith("restore/"):
-		unused, cid, artname = artname.split('/', 2)
-		artname = urllib.unquote_plus(artname)
-
-		h = History()
-		a = Article(artname)
-		oldcontent = h.get_content(a.qname, cid)
-
-		a.save(None, oldcontent, raw = True)
-		h.add(a.qname)
-		ctime = h.get_commit(cid)['atime'].strftime("%Y-%m-%d %H:%M:%S")
-		h.commit(msg = 'Restored ' + ctime, author = author)
-
-		redirect(artname)
-	elif artname.startswith("diff/"):
-		unused, cid, artname = artname.split('/', 2)
-		artname = urllib.unquote_plus(artname)
-		diff = History().get_diff(cid)
-		render_diff(Article(artname), cid, diff)
+			error = validate_rst(form_data.body, secure=False)
+			if error is not None:
+				(line, desc, ctx) = error
+				at = ''
+				if line:
+					at = ' at line %d' % line
+				form_data.body_error = 'error%s: %s' \
+						% (at, desc)
+				valid = False
+		if valid:
+			c = article.add_comment(form_data.author,
+					form_data.body, form_data.link)
+			c.save()
+			cdb = CommentDB(article)
+			cdb.comments = article.comments
+			cdb.save()
+			redirect = blog_url + '/post/' + uuid + '#comment-' \
+					+ str(c.number)
+		render_html( [article], db, year, enable_comments, redirect,
+				form_data )
 	else:
-		render_article(Article(artname))
+		articles = db.get_articles(year, month, day, tags)
+		articles.sort(reverse = True)
+		if not year and not month and not day and not tags:
+			articles = articles[:10]
+		render_html(articles, db, year)
 
+
+def usage():
+	print 'Usage: %s {add|rm|update} article_path' % sys.argv[0]
 
 def handle_cmd():
-	print "This is a CGI application."
-	print "It only runs inside a web server."
-	return 1
+	if len(sys.argv) != 3:
+		usage()
+		return 1
+
+	cmd = sys.argv[1]
+	art_path = os.path.realpath(sys.argv[2])
+
+	if os.path.commonprefix([data_path, art_path]) != data_path:
+		print "Error: article (%s) must be inside data_path (%s)" % \
+				(art_path, data_path)
+		return 1
+	art_path = art_path[len(data_path)+1:]
+
+	db_filename = os.path.join(data_path, 'db')
+	if not os.path.isfile(db_filename):
+		open(db_filename, 'w').write('')
+	db = ArticleDB(db_filename)
+
+	if cmd == 'add':
+		article = Article(art_path, datetime.datetime.now(),
+					datetime.datetime.now())
+		for a in db.articles:
+			if a == article:
+				print 'Error: article already exists'
+				return 1
+		db.articles.append(article)
+		db.save()
+		if enable_comments:
+			comment_dir = os.path.join(comments_path, article.uuid)
+			try:
+				os.mkdir(comment_dir, 0775)
+			except OSError, e:
+				if e.errno != errno.EEXIST:
+					print "Error: can't create comments " \
+						"directory %s (%s)" \
+							% (comment_dir, e)
+				# otherwise is probably a removed and re-added
+				# article
+	elif cmd == 'rm':
+		article = Article(art_path)
+		for a in db.articles:
+			if a == article:
+				break
+		else:
+			print "Error: no such article"
+			return 1
+		if enable_comments:
+			r = raw_input('Remove comments [y/N]? ')
+		db.articles.remove(a)
+		db.save()
+		if enable_comments and r.lower() == 'y':
+			shutil.rmtree(os.path.join(comments_path, a.uuid))
+	elif cmd == 'update':
+		article = Article(art_path)
+		for a in db.articles:
+			if a == article:
+				break
+		else:
+			print "Error: no such article"
+			return 1
+		a.updated = datetime.datetime.now()
+		db.save()
+	else:
+		usage()
+		return 1
+
+	return 0
 
 
 if os.environ.has_key('GATEWAY_INTERFACE'):
+	i = datetime.datetime.now()
 	handle_cgi()
+	f = datetime.datetime.now()
+	print '<!-- render time: %s -->' % (f-i)
 else:
 	sys.exit(handle_cmd())
 
