@@ -1,25 +1,1296 @@
-#!/usr/bin/python
-import cgi, os, string, cgitb; cgitb.enable();f = cgi.FieldStorage();
-def gc(f):ff = open(f+".pki", "r");a = ff.read();ff.close;a = string.replace(a, """
-""", "<br>");return a;
-def cfe(f):
-  if os.path.exists(f+".pki"):return gc(f)+"""<br><a href="?e="""+f+"""">Edit</a>""";
-   else:return "<a href=\"?c="+f+"\">Create page</a>";
-def wr(f, c):fl = open(f+".pki", "wb");fl.write(c);fl.close();
-def frm(a,c, f):return """<form action=\""""+a+"""\"><textarea name=\"cnt\" cols=\"50\" rows=\"10\">
-"""+c+"""</textarea><input type=hidden name=fl value="""+f+"""><input type=\"submit\" /></form>""";
-def back(h):return "<a href=\"javascript:history.go(-"+h+")\">Go back</a>"
-vl = lambda v: f[v].value
-ky = lambda k: f.has_key(k)
-print "Content-Type: text/html\n\n<html><head><title>Pyki</title></head><body>"
-if ky('e'):print frm('?ed='+vl('e'), string.replace(gc(vl('e')),'<br>',''), vl('e'))
-elif ky('c'):print frm('?cs='+vl('c'), "", vl('c'))
-elif ky('cnt'):wr(vl('fl'), vl('cnt')); print"Done, "+back("2")
+#!/usr/bin/env python
+#coding: utf8
+
+# wikiri - A single-file wiki engine.
+# Alberto Bertogli (albertito@blitiri.com.ar)
+
+#
+# Configuration section
+#
+# You can edit these values, or create a file named "config.py" and put them
+# there to make updating easier. The ones in config.py take precedence.
+#
+
+# Directory where entries are stored
+data_path = "data/"
+
+# Path where templates are stored. Use an empty string for the built-in
+# default templates. If they're not found, the built-in ones will be used.
+templates_path = "templates/"
+
+# URL to the wiki, including the name. Can be a full URL or just the path.
+wiki_url = "/wiki/wikiri.cgi"
+
+# Style sheet (CSS) URL. Can be relative or absolute. To use the built-in
+# default, set it to wiki_url + "/style".
+css_url = wiki_url + "/style"
+
+# Wiki title.
+title = "I like wikis"
+
+# History backend. Can be one of:
+#  - "none" for no history
+#  - "git" to use git (needs git and the data path to be a repository)
+#  - "darcs" to use darcs (needs darcs and the data path to be a repository)
+#  - "auto" to select automatically (looks if the data path is a repository)
+history = "auto"
+
+
+#
+# End of configuration
+# DO *NOT* EDIT ANYTHING PAST HERE
+#
+
+
+import sys
+import os
+import errno
+import datetime
+import urllib
+import cgi
+
+# Load the config file, if there is one
+try:
+	from config import *
+except:
+	pass
+
+
+# Find out our URL, just in case the templates need it (the default templates
+# do not use it at all)
+try:
+	n = os.environ['SERVER_NAME']
+	p = os.environ['SERVER_PORT']
+	s = os.environ['SCRIPT_NAME']
+	if p == '80': p = ''
+	else: p = ':' + p
+	full_url = 'http://%s%s%s' % (n, p, s)
+except KeyError:
+	full_url = 'Not needed'
+
+
+
+#
+# Markup processing
+#
+
+import docutils.parsers.rst
+import docutils.nodes
+from docutils.core import publish_parts
+
+def _wiki_link_role(role, rawtext, text, lineno, inliner,
+		options = {}, content = []):
+
+	ref = wiki_url + '/' + \
+		urllib.quote_plus(text.encode('utf8'), safe = '')
+
+	node = docutils.nodes.reference(rawtext, text, refuri = ref,
+			**options)
+	return [node], []
+
+def content2html(content):
+	settings = {
+		'input_encoding': 'utf8',
+		'output_encoding': 'utf8',
+	}
+
+	docutils.parsers.rst.roles.register_canonical_role('wikilink',
+		_wiki_link_role)
+	docutils.parsers.rst.roles.DEFAULT_INTERPRETED_ROLE = 'wikilink'
+
+	parts = publish_parts(content,
+			settings_overrides = settings,
+			writer_name = "html")
+	return parts['body'].encode('utf8')
+
+def diff2html(diff):
+	from xml.sax.saxutils import escape
+
+	s = '<div class="diff">'
+	for l in diff.split('\n'):
+		l = l.rstrip()
+		if l.startswith("+") and not l.startswith("+++"):
+			c = "add"
+		elif l.startswith("-") and not l.startswith("---"):
+			c = "remove"
+		elif l.startswith(" "):
+			c = "unchanged"
+		elif l.startswith("@@"):
+			c = "position"
+		elif l.startswith("diff"):
+			c = "header"
+		else:
+			c = "other"
+		s += '<span class="%s">' % c + escape(l) + '</span>\n'
+		# note there's no need to put <br/>s because the div.diff has
+		# "white-space: pre" in the css
+	s += '</div>'
+	return s
+
+
+
+#
+# Templates
+#
+
+# Default template
+
+default_article_content = """\
+title: %(artname)s
+
+This page does *not* exist yet.
+"""
+
+default_main_header = """
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<link href="%(css_url)s" rel="stylesheet" type="text/css" />
+<title>%(title)s</title>
+</head>
+
+<body>
+
+<h1><a href="%(url)s">%(title)s</a></h1>
+
+<div class="content">
+"""
+
+default_main_footer = """
+</div><p/>
+</div>
+
+</body>
+</html>
+"""
+
+default_article_header = """
+<div class="article">
+<h2><a href="%(url)s/%(artqname)s">%(arttitle)s</a></h2>
+<span class="artinfo">
+  updated on %(uyear)04d-%(umonth)02d-%(uday)02d
+    %(uhour)02d:%(uminute)02d<br/>
+</span><p/>
+<div class="artbody">
+"""
+
+default_article_footer = """
+<p/>
+</div>
+<hr/><p/>
+<div class="footer">
+  <a href="%(url)s/about">about</a> |
+  <a href="%(url)s/help">help</a> |
+  <a href="%(url)s/%(artqname)s/log">view history</a> |
+  <a href="%(url)s/%(artqname)s/edit">edit this page</a><br/>
+</div>
+</div>
+"""
+
+default_edit_page = """
+<h2>Edit <a href="%(url)s/%(artqname)s">%(artname)s</a></h2>
+<p/>
+
+<div class="editpage">
+<form method="POST" action="save">
+
+<label for="newtitle">Title: </label>
+<input id="newtitle" type="text" name="newtitle"
+  value="%(arttitle)s"/><p/>
+
+<textarea name="newcontent" cols="76" rows="25">
+%(content)s
+</textarea><p/>
+
+<label for="comment">Change summary: </label>
+<input id="comment" type="text" name="comment"
+  size="50" value="%(comment)s"/><p/>
+
+<button name="submit" type="submit" value="submit">Save</button>
+<button name="preview" type="submit" value="preview">Preview</button>
+</form>
+<p/>
+</div>
+
+<div class="quickhelp">
+<h2>Quick help</h2>
+
+<ul>
+  <li>Paragraphs are split by an empty line.</li>
+  <li>Lines that are underlined with dashes ("----") are a title.</li>
+  <li>Lines beginning with an "*" form a list.</li>
+  <li>To create new links, put them between backticks, <tt>`like
+    this`</tt>.</li>
+</ul>
+
+More information:
+<a href="http://docutils.sourceforge.net/docs/user/rst/quickref.html">reST
+quick reference</a>.<p/>
+</div>
+
+</div>
+"""
+
+default_removed_page = """
+<div class="article">
+<h2><a href="%(url)s/%(artqname)s">%(artname)s</a></h2>
+<div class="artbody">
+<p/>
+This page has been successfuly removed.<p/>
+
+</div>
+</div>
+"""
+
+default_diff_header = """
+<h2>Modification to <a href="%(url)s/%(artqname)s">%(arttitle)s</a></h2>
+<p/>
+This page displays the modifications performed by the selected change. Green
+lines are additions, red lines are removals.<p/>
+"""
+
+default_diff_footer = """
+<hr/><p/>
+<div class="footer">
+  <a href="%(url)s/about">about</a> |
+  <a href="%(url)s/help">help</a> |
+  <a href="%(url)s/%(artqname)s/log">view history</a> |
+  <a href="%(url)s/%(artqname)s/edit">edit this page</a><br/>
+</div>
+</div>
+"""
+
+default_help_page = """
+<div class="article">
+<h2>Help</h2>
+<div class="artbody">
+<p/>
+
+This wiki uses <a href="http://docutils.sf.net/rst.html">reStructuredText</a>
+for markup.<br/>
+Here is a quick syntax summary.<p/>
+
+<ul>
+  <li>Paragraphs are split by an empty line.</li>
+  <li>Lines that are underlined with dashes ("----") are a title.</li>
+  <li>Lines beginning with an "*" form a list.</li>
+  <li>To create new links, put them between backticks, <tt>`like
+    this`</tt>.</li>
+</ul>
+
+If you want more information, see the
+<a href="http://docutils.sourceforge.net/docs/user/rst/quickref.html">reST
+quick reference</a>.<p/>
+
+</div>
+</div>
+"""
+
+default_about_page = """
+<div class="article">
+<h2>About</h2>
+<div class="artbody">
+<p/>
+
+This wiki is powered by
+<a href="http://blitiri.com.ar/p/misc.html">wikiri</a>, a single-file
+blog engine written in <a href="http://python.org">Python</a>, and uses
+<a href="http://docutils.sf.net/rst.html">reStructuredText</a>
+for markup.<p/>
+
+If you have any questions or comments, please send an email to
+<a href="mailto:albertito@blitiri.com.ar">Alberto Bertogli</a>.<p/>
+
+</div>
+</div>
+"""
+
+default_log_header = """
+<h2>Change history for <a href="%(url)s/%(artqname)s">%(artname)s</a></h2>
+<p/>
+
+<table class="log">
+"""
+
+default_log_entry = """
+<tr>
+  <td class="date">
+    %(date_y)04d-%(date_m)02d-%(date_d)02d
+    %(date_H)02d:%(date_M)02d:%(date_S)02d
+  </td>
+  <td class="summary">%(summary)s</td>
+  <td class="links">
+    <a href="%(url)s/logview/%(commitid)s/%(artqname)s">view</a> |
+    <a href="%(url)s/restore/%(commitid)s/%(artqname)s">restore</a> |
+    <a href="%(url)s/diff/%(commitid)s/%(artqname)s">diff</a>
+  </td>
+</tr>
+"""
+
+default_log_footer = """
+</table>
+"""
+
+# Default CSS
+default_css = """
+body {
+	font-family: sans-serif;
+}
+
+div.content {
+	width: 60%;
+}
+
+h1 {
+	font-size: x-large;
+	border-bottom: 2px solid #99F;
+	width: 65%;
+	margin-bottom: 1em;
+}
+
+h2 {
+	font-size: large;
+	font-weight: bold;
+	margin-bottom: 1pt;
+	border-bottom: 1px solid #99C;
+}
+
+h1 a, h2 a {
+	text-decoration: none;
+	color: black;
+}
+
+span.artinfo {
+	font-size: x-small;
+}
+
+span.artinfo a {
+	text-decoration: none;
+	color: #339;
+}
+
+span.artinfo a:hover {
+	text-decoration: none;
+	color: blue;
+}
+
+div.artbody {
+	margin-left: 1em;
+}
+
+div.article {
+	margin-bottom: 2em;
+}
+
+hr {
+	/* hack to properly align the hr */
+	text-align: left;
+	margin: 0 auto 0 0;
+
+	height: 2px;
+	border: 0;
+	background-color: #99F;
+	width: 60%;
+}
+
+div.footer {
+	font-size: small;
+}
+
+div.footer a {
+	text-decoration: none;
+}
+
+table.log {
+	border-right: 1px solid #6666cc;
+	border-collapse: collapse;
+	margin-left: 1em;
+}
+
+table.log td {
+	border-left: 1px solid #6666cc;
+	padding-right: 1em;
+	padding-left: 1em;
+}
+
+table.log td.date {
+	white-space: nowrap;
+}
+
+table.log td.summary {
+
+}
+
+table.log td.links {
+	white-space: nowrap;
+	font-size: small;
+}
+
+/* Articles are enclosed in <div class="section"> */
+div.section h1 {
+	font-size: medium;
+	font-weight: bold;
+	width: 100%;
+	margin-bottom: 1pt;
+	border-bottom: 1px dotted #99C;
+}
+
+div.section h2 {
+	font-size: small;
+	font-weight: bold;
+	width: 75%;
+	margin-bottom: 1pt;
+	border-bottom: 1px dotted #DDD;
+}
+
+/* diff */
+div.diff {
+	font-family: monospace;
+	white-space: pre;
+	margin: 0;
+	padding: 0;
+}
+
+div.diff span.add {
+	color: #090;
+}
+
+div.diff span.remove {
+	color: #900;
+}
+
+div.diff span.unchanged {
+}
+
+div.diff span.position {
+	background-color: #E5E5FF;
+}
+
+div.diff span.header {
+	background-color: #CCF;
+	font-weight: bold;
+}
+
+div.diff span.other {
+}
+
+"""
+
+class Templates (object):
+	def __init__(self):
+		self.tpath = templates_path
+		now = datetime.datetime.now()
+
+		self.vars = {
+			'css_url': css_url,
+			'title': title,
+			'url': wiki_url,
+			'fullurl': full_url,
+			'year': now.year,
+			'month': now.month,
+			'day': now.day,
+		}
+
+	def art_vars(self, article):
+		avars = self.vars.copy()
+		avars.update( {
+			'arttitle': article.title,
+			'artname': article.name,
+			'artqname': article.qname,
+			'updated': article.updated.isoformat(' '),
+
+			'uyear': article.updated.year,
+			'umonth': article.updated.month,
+			'uday': article.updated.day,
+			'uhour': article.updated.hour,
+			'uminute': article.updated.minute,
+			'usecond': article.updated.second,
+		} )
+		return avars
+
+	def get_main_header(self):
+		p = self.tpath + '/header.html'
+		if os.path.isfile(p):
+			return open(p).read() % self.vars
+		return default_main_header % self.vars
+
+	def get_default_article_content(self, artname):
+		avars = self.vars.copy()
+		avars.update( {
+			'artname': artname,
+			'artqname': urllib.quote_plus(artname, safe = ''),
+		} )
+		p = self.tpath + '/default_article_content.wiki'
+		if os.path.isfile(p):
+			return open(p).read() % avars
+		return default_article_content % avars
+
+	def get_main_footer(self):
+		p = self.tpath + '/footer.html'
+		if os.path.isfile(p):
+			return open(p).read() % self.vars
+		return default_main_footer % self.vars
+
+	def get_article_header(self, article):
+		avars = self.art_vars(article)
+		p = self.tpath + '/art_header.html'
+		if os.path.isfile(p):
+			return open(p).read() % avars
+		return default_article_header % avars
+
+	def get_article_footer(self, article):
+		avars = self.art_vars(article)
+		p = self.tpath + '/art_footer.html'
+		if os.path.isfile(p):
+			return open(p).read() % avars
+		return default_article_footer % avars
+
+	def get_edit_page(self, article, comment):
+		avars = self.art_vars(article)
+		avars.update( {
+			'content': article.raw_content,
+			'comment': comment,
+		} )
+		p = self.tpath + '/edit_page.html'
+		if os.path.isfile(p):
+			return open(p).read() % avars
+		return default_edit_page % avars
+
+	def get_removed_page(self, artname):
+		avars = self.vars.copy()
+		avars.update( {
+			'artname': artname,
+			'artqname': urllib.quote_plus(artname, safe = ''),
+		} )
+		p = self.tpath + '/removed_page.html'
+		if os.path.isfile(p):
+			return open(p).read() % avars
+		return default_removed_page % avars
+
+	def get_diff_header(self, article, commitid):
+		avars = self.art_vars(article)
+		avars.update( {
+			'commitid': commitid,
+		} )
+		p = self.tpath + '/diff_header.html'
+		if os.path.isfile(p):
+			return open(p).read() % avars
+		return default_diff_header % avars
+
+	def get_diff_footer(self, article, commitid):
+		avars = self.art_vars(article)
+		avars.update( {
+			'commitid': commitid,
+		} )
+		p = self.tpath + '/diff_footer.html'
+		if os.path.isfile(p):
+			return open(p).read() % avars
+		return default_diff_footer % avars
+
+	def get_help_page(self):
+		p = self.tpath + '/help_page.html'
+		if os.path.isfile(p):
+			return open(p).read() % self.vars
+		return default_help_page % self.vars
+
+	def get_about_page(self):
+		p = self.tpath + '/about_page.html'
+		if os.path.isfile(p):
+			return open(p).read() % self.vars
+		return default_about_page % self.vars
+
+	def get_log_header(self, artname):
+		avars = self.vars.copy()
+		avars.update( {
+			'artname': artname,
+			'artqname': urllib.quote_plus(artname, safe = ''),
+		} )
+		p = self.tpath + '/log_header.html'
+		if os.path.isfile(p):
+			return open(p).read() % avars
+		return default_log_header % avars
+
+	def get_log_entry(self, artname, commit):
+		avars = self.vars.copy()
+		avars.update( {
+			'artname': artname,
+			'artqname': urllib.quote_plus(artname, safe = ''),
+			'summary': commit['msg'],
+			'commitid': commit['commit'],
+			'date_y': commit['atime'].year,
+			'date_m': commit['atime'].month,
+			'date_d': commit['atime'].day,
+			'date_H': commit['atime'].hour,
+			'date_M': commit['atime'].minute,
+			'date_S': commit['atime'].second,
+		} )
+		p = self.tpath + '/log_entry.html'
+		if os.path.isfile(p):
+			return open(p).read() % avars
+		return default_log_entry % avars
+
+	def get_log_footer(self, artname):
+		avars = self.vars.copy()
+		avars.update( {
+			'artname': artname,
+			'artqname': urllib.quote_plus(artname, safe = ''),
+		} )
+		p = self.tpath + '/log_footer.html'
+		if os.path.isfile(p):
+			return open(p).read() % avars
+		return default_log_footer % avars
+
+
+
+#
+# Article handling
+#
+
+class Article (object):
+	def __init__(self, name, title = None, content = None,
+			has_header = True):
+		self.name = name
+		self.qname = urllib.quote_plus(name, safe = "")
+		self.updated = None
+
+		self.loaded = False
+
+		self.preloaded_title = title
+		self.preloaded_content = content
+		self.has_header = has_header
+
+		# loaded on demand
+		self.attrs = {}
+		self._raw_content = ''
+
+	def get_raw_content(self):
+		if not self.loaded:
+			self.load()
+		return self._raw_content
+	raw_content = property(fget = get_raw_content)
+
+	def get_title(self):
+		if not self.loaded:
+			self.load()
+		# use the name by default
+		return self.attrs.get('title', self.name)
+	title = property(fget = get_title)
+
+	def load(self):
+		try:
+			if self.preloaded_content:
+				raw = self.preloaded_content
+				raw = [ s + '\n' for s in raw.split('\n') ]
+				self.updated = datetime.datetime.now()
+			else:
+				fd = open(data_path + '/' + self.qname)
+				raw = fd.readlines()
+				stat = os.fstat(fd.fileno())
+				self.updated = datetime.datetime.fromtimestamp(stat.st_mtime)
+		except:
+			t = Templates()
+			raw = t.get_default_article_content(self.name)
+			raw = [ s + '\n' for s in raw.split('\n') ]
+			self.updated = datetime.datetime.now()
+
+		hdr_lines = 0
+		if self.has_header:
+			for l in raw:
+				if ':' in l:
+					name, value = l.split(':', 1)
+					name = name.lower().strip()
+					self.attrs[name] = value.strip()
+					hdr_lines += 1
+
+				elif l == '\n' or l == '\r\n':
+					# end of header
+					hdr_lines += 1
+					break
+
+		self._raw_content = ''.join(raw[hdr_lines:])
+		self.loaded = True
+
+		if self.preloaded_title:
+			self.attrs['title'] = self.preloaded_title
+
+	def save(self, newtitle, newcontent, raw = False):
+		fd = open(data_path + '/' + self.qname, 'w+')
+		if raw:
+			fd.write(newcontent)
+		else:
+			fd.write('title: %s\n\n' % newtitle)
+			fd.write(newcontent.rstrip() + '\n')
+		fd.close()
+
+		# invalidate our information
+		self.loaded = False
+
+	def remove(self):
+		try:
+			os.unlink(data_path + '/' + self.qname)
+		except OSError, errno.ENOENT:
+			pass
+
+	def to_html(self):
+		return content2html(self.raw_content)
+
+
+#
+# History backends
+#
+# At the moment we support none, git and darcs
+
+class HistoryError (Exception):
+	pass
+
+class History:
+	def __init__(self):
+		if history == 'auto':
+			if os.path.isdir(data_path + '.git'):
+				self.be = GitBackend(data_path)
+			elif os.path.isdir(data_path + '_darcs'):
+				self.be = DarcsBackend(data_path)
+			else:
+				self.be = NoneBackend(data_path)
+		elif history == 'git':
+			self.be = GitBackend(data_path)
+		elif history == 'darcs':
+			self.be = DarcsBackend(data_path)
+		else:
+			self.be = NoneBackend(data_path)
+
+	def commit(self, msg, author = 'Wikiri <somebody@wikiri>'):
+		self.be.commit(msg, author = author)
+
+	def log(self, fname):
+		# log() yields commits of the form:
+		# {
+		# 	'commit': commit id
+		# 	'author': author of the commit
+		# 	'committer': committer
+		# 	'atime': time of the change itself
+		# 	'ctime': time of the commit
+		# 	'msg': commit msg (one line)
+		# }
+		return self.be.log(file = fname)
+
+	def add(self, *files):
+		return self.be.add(*files)
+
+	def remove(self, *files):
+		return self.be.remove(*files)
+
+	def get_content(self, fname, cid):
+		return self.be.get_content(fname, cid)
+
+	def get_commit(self, cid):
+		return self.be.get_commit(cid)
+
+	def get_diff(self, cid):
+		# get_diff() returns the diff in unified format
+		return self.be.get_diff(cid)
+
+class NoneBackend:
+	def __init__(self, repopath):
+		pass
+
+	def commit(self, *args, **kwargs):
+		pass
+
+	def log(self, *args, **kwargs):
+		return ()
+
+	def add(self, *files):
+		pass
+
+	def remove(self, *files):
+		pass
+
+	def get_content(self, fname, cid):
+		return "Not supported."
+
+	def get_commit(self, cid):
+		return { 'commit': cid }
+
+	def get_diff(self, cid):
+		return ""
+
+class GitBackend:
+	def __init__(self, repopath):
+		self.repo = repopath
+		self.prevdir = None
+
+	def cdrepo(self):
+		self.prevdir = os.getcwd()
+		os.chdir(self.repo)
+
+	def cdback(self):
+		os.chdir(self.prevdir)
+
+	def git(self, *args):
+		# delay the import to avoid the hit on a regular page view
+		import subprocess
+		self.cdrepo()
+		cmd = subprocess.Popen( ['git'] + list(args),
+			stdin = subprocess.PIPE,
+			stdout = subprocess.PIPE,
+			stderr = sys.stderr )
+		self.cdback()
+		return cmd
+
+	def gitq(self, *args):
+		cmd = self.git(*args)
+		stdout, stderr = cmd.communicate()
+		return cmd.returncode
+
+	def commit(self, msg, author = None):
+		if not author:
+			author = "Unknown <unknown@example.com>"
+
+		# see if we have something to commit; if not, just return
+		self.gitq('update-index', '--refresh')
+		r = self.gitq('diff-index', '--exit-code', '--quiet', 'HEAD')
+		if r == 0:
+			return
+
+		r = self.gitq('commit',
+			'-m', msg,
+			'--author', author)
+		if r != 0:
+			raise HistoryError, r
+
+	def log(self, file = None, files = None):
+		if not files:
+			files = []
+		if file:
+			files.append(file)
+
+		cmd = self.git("rev-list",
+			"--all", "--pretty=raw",
+			"HEAD", "--", *files)
+		cmd.stdin.close()
+
+		commit = { 'msg': '' }
+		in_hdr = True
+		l = cmd.stdout.readline()
+		while l:
+			if l != '\n' and not l.startswith(' '):
+				name, value = l[:-1].split(' ', 1)
+				if in_hdr:
+					commit[name] = value
+				else:
+					# the previous commit has ended
+					_add_times(commit)
+					yield commit
+					commit = { 'msg': '' }
+					in_hdr = True
+
+					# continue reusing the line
+					continue
+			else:
+				if in_hdr:
+					in_hdr = False
+				if l.startswith('    '):
+					l = l[4:]
+				commit['msg'] += l
+
+			l = cmd.stdout.readline()
+
+		# the last commit, if there is one
+		if not in_hdr:
+			_add_times(commit)
+			yield commit
+
+		cmd.wait()
+		if cmd.returncode != 0:
+			raise HistoryError, cmd.returncode
+
+	def add(self, *files):
+		r = self.gitq('add', "--", *files)
+		if r != 0:
+			raise HistoryError, r
+
+	def remove(self, *files):
+		r = self.gitq('rm', '-f', '--', *files)
+		if r != 0:
+			raise HistoryError, r
+
+	def get_content(self, fname, commitid):
+		cmd = self.git("show", "%s:%s" % (commitid, fname))
+		content = cmd.stdout.read()
+		cmd.wait()
+		return content
+
+	def get_commit(self, cid):
+		cmd = self.git("rev-list", "-n1", "--pretty=raw", cid)
+		out = cmd.stdout.readlines()
+		cmd.wait()
+		commit = { 'msg': '' }
+		for l in out:
+			if l != '\n' and not l.startswith(' '):
+				name, value = l[:-1].split(' ', 1)
+				commit[name] = value
+			else:
+				commit['msg'] += l
+		_add_times(commit)
+		return commit
+
+	def get_diff(self, cid):
+		cmd = self.git("diff", cid + "^.." + cid)
+		out = cmd.stdout.read()
+		cmd.wait()
+		return out
+
+def _add_times(commit):
+	if 'author' in commit:
+		author, epoch, tz = commit['author'].rsplit(' ', 2)
+		epoch = float(epoch)
+		commit['author'] = author
+		commit['atime'] = datetime.datetime.fromtimestamp(epoch)
+
+	if 'committer' in commit:
+		committer, epoch, tz = commit['committer'].rsplit(' ', 2)
+		epoch = float(epoch)
+		commit['committer'] = committer
+		commit['ctime'] = datetime.datetime.fromtimestamp(epoch)
+
+class DarcsBackend:
+	def __init__(self, repopath):
+		self.repo = repopath
+		self.prevdir = None
+
+	def cdrepo(self):
+		self.prevdir = os.getcwd()
+		os.chdir(self.repo)
+
+	def cdback(self):
+		os.chdir(self.prevdir)
+
+	def darcs(self, *args):
+		# delay the import to avoid the hit on a regular page view
+		import subprocess
+		self.cdrepo()
+		cmd = subprocess.Popen( ['darcs'] + list(args),
+			stdin = subprocess.PIPE,
+			stdout = subprocess.PIPE,
+			stderr = sys.stderr )
+		self.cdback()
+		return cmd
+
+	def darcsq(self, *args):
+		cmd = self.darcs(*args)
+		stdout, stderr = cmd.communicate()
+		return cmd.returncode
+
+	def commit(self, msg, author = None):
+		if not author:
+			author = "Unknown <unknown@example.com>"
+
+		# see if we have something to commit; if not, just return
+		if self.darcsq('whatsnew') != 0:
+			return
+
+		r = self.darcsq('record',
+			'-a',
+			'-m', msg,
+			'-A', author)
+		if r != 0:
+			raise HistoryError, r
+
+	def log(self, file = None, files = None):
+		import xml.dom.minidom as minidom
+
+		if not files:
+			files = []
+		if file:
+			files.append(file)
+
+		cmd = self.darcs("changes",
+			"--xml-output",
+			"--", *files)
+		cmd.stdin.close()
+
+		xml = minidom.parse(cmd.stdout)
+
+		cmd.wait()
+		if cmd.returncode != 0:
+			raise HistoryError, cmd.returncode
+
+		for p in xml.getElementsByTagName('patch'):
+			# ignore patches not directly inside <changelog> (they
+			# can be, for instance, inside <created_as>, which we
+			# want to ignore)
+			if p.parentNode.nodeName != 'changelog':
+				continue
+
+			cid = p.getAttribute("hash")
+			author = p.getAttribute('author')
+			atime = p.getAttribute('date')
+			atime = datetime.datetime.strptime(atime,
+					"%Y%m%d%H%M%S")
+			msg = p.getElementsByTagName('name')[0]
+			msg = msg.childNodes[0].data
+			msg = msg.split('\n')[0].strip()
+
+			commit = {
+				'commit': cid.encode('utf8'),
+				'author': author.encode('utf8'),
+				'committer': author.encode('utf8'),
+				'atime': atime,
+				'ctime': atime,
+				'msg': msg.encode('utf8'),
+			}
+			yield commit
+
+	def add(self, *files):
+		r = self.darcsq('add', "--", *files)
+		# 0 means success, 2 means the file was already there (which
+		# is ok because we always add the files)
+		if r != 0 and r != 2:
+			raise HistoryError, r
+
+	def remove(self, *files):
+		r = self.darcsq('remove', '--', *files)
+		if r != 0:
+			raise HistoryError, r
+
+	def get_content(self, fname, commitid):
+		cmd = self.darcs("show", "contents",
+			"--match", "hash %s" % commitid,
+			"--", fname)
+		content = cmd.stdout.read()
+		cmd.wait()
+		return content
+
+	def get_commit(self, cid):
+		import xml.dom.minidom as minidom
+
+		cmd = self.darcs("changes",
+			"--xml-output",
+			"--match", "hash %s" % cid)
+		cmd.stdin.close()
+
+		xml = minidom.parse(cmd.stdout)
+
+		cmd.wait()
+		if cmd.returncode != 0:
+			raise HistoryError, cmd.returncode
+
+		try:
+			p = xml.getElementsByTagName('patch')[0]
+		except IndexError:
+			raise HistoryError, "not such patch"
+
+		cid = p.getAttribute("hash")
+		author = p.getAttribute('author')
+		atime = p.getAttribute('date')
+		atime = datetime.datetime.strptime(atime,
+				"%Y%m%d%H%M%S")
+		msg = p.getElementsByTagName('name')[0]
+		msg = msg.childNodes[0].data
+		msg = msg.split('\n')[0].strip()
+
+		commit = {
+			'commit': cid.encode('utf8'),
+			'author': author.encode('utf8'),
+			'committer': author.encode('utf8'),
+			'atime': atime,
+			'ctime': atime,
+			'msg': msg.encode('utf8'),
+		}
+		return commit
+
+	def get_diff(self, cid):
+		# TODO
+		return ""
+
+
+
+#
+# Main
+#
+
+def render_article(art):
+	template = Templates()
+	print 'Content-type: text/html; charset=utf-8\n'
+	print template.get_main_header()
+	print template.get_article_header(art)
+	print art.to_html()
+	print template.get_article_footer(art)
+	print template.get_main_footer()
+
+def render_edit(art, preview = False, comment = ""):
+	template = Templates()
+	print 'Content-type: text/html; charset=utf-8\n'
+	print template.get_main_header()
+	if preview:
+		print template.get_article_header(art)
+		print art.to_html()
+		print template.get_article_footer(art)
+	print template.get_edit_page(art, comment)
+	print template.get_main_footer()
+
+def render_removed(artname):
+	template = Templates()
+	print 'Content-type: text/html; charset=utf-8\n'
+	print template.get_main_header()
+	print template.get_removed_page(artname)
+	print template.get_main_footer()
+
+def render_log(artname, log):
+	template = Templates()
+	print 'Content-type: text/html; charset=utf-8\n'
+	print template.get_main_header()
+	print template.get_log_header(artname)
+	for commit in log:
+		print template.get_log_entry(artname, commit)
+	print template.get_log_footer(artname)
+	print template.get_main_footer()
+
+def render_diff(article, cid, diff):
+	template = Templates()
+	print 'Content-type: text/html; charset=utf-8\n'
+	print template.get_main_header()
+	print template.get_diff_header(article, cid)
+	print diff2html(diff)
+	print template.get_diff_footer(article, cid)
+	print template.get_main_footer()
+
+def render_help():
+	template = Templates()
+	print 'Content-type: text/html; charset=utf-8\n'
+	print template.get_main_header()
+	print template.get_help_page()
+	print template.get_main_footer()
+
+def render_about():
+	template = Templates()
+	print 'Content-type: text/html; charset=utf-8\n'
+	print template.get_main_header()
+	print template.get_about_page()
+	print template.get_main_footer()
+
+def render_style():
+	print 'Content-type: text/css\n'
+	print default_css
+
+def redirect(artname):
+	print 'Status: 303 See Other\r\n',
+	print 'Location: %s/%s\r\n' % (wiki_url, artname),
+	print
+
+def handle_cgi():
+	import cgitb; cgitb.enable()
+
+	form = cgi.FieldStorage()
+
+	edit = False
+	save = False
+	log = False
+	artname = 'index'
+
+	newcontent = form.getfirst("newcontent", '')
+	newtitle = form.getfirst("newtitle", '').strip()
+	preview = form.getfirst("preview", '').strip()
+	comment = form.getfirst("comment", '').strip()
+
+	remoteip = os.environ.get("REMOTE_ADDR", "unknownip")
+	author = "Somebody <%s@wikiri>" % remoteip
+
+	if os.environ.has_key('PATH_INFO'):
+		path_info = os.environ['PATH_INFO']
+		path_info = os.path.normpath(path_info)
+
+		edit = path_info.endswith('/edit')
+		save = path_info.endswith('/save')
+		log = path_info.endswith('/log')
+
+		if edit or save or log:
+			artname = path_info[1:].rsplit('/', 1)[0]
+		else:
+			artname = path_info[1:]
+
+		if artname == '' or artname == '/':
+			artname = 'index'
+
+	if save and not os.environ.get('REQUEST_METHOD', 'GET') == 'POST':
+		# only allow saves if the request is a post to prevent people
+		# from accidentally performing a GET .../save, which would
+		# result in an empty save, with the following page removal
+		save = False
+
+	artname = urllib.unquote_plus(artname)
+
+	if artname == 'style':
+		render_style()
+	elif artname == 'help':
+		render_help()
+	elif artname == 'about':
+		render_about()
+	elif edit or (save and preview):
+		if preview:
+			art = Article(artname,
+				title = newtitle,
+				content = newcontent,
+				has_header = False)
+			render_edit(art, preview = True, comment = comment)
+		else:
+			render_edit(Article(artname))
+	elif save:
+		if not comment:
+			comment = "No comment"
+		h = History()
+		a = Article(artname)
+		if newcontent.strip():
+			a.save(newtitle, newcontent)
+			h.add(a.qname)
+			h.commit(msg = comment, author = author)
+			redirect(artname)
+		else:
+			a.remove()
+			h.remove(a.qname)
+			h.commit(msg = comment, author = author)
+			redirect(artname)
+	elif log:
+		a = Article(artname)
+		render_log(a.name, History().log(a.qname))
+	elif artname.startswith("logview/"):
+		unused, cid, artname = artname.split('/', 2)
+		artname = urllib.unquote_plus(artname)
+		oldcontent = History().get_content(Article(artname).qname, cid)
+		render_article(Article(artname, content = oldcontent))
+	elif artname.startswith("restore/"):
+		unused, cid, artname = artname.split('/', 2)
+		artname = urllib.unquote_plus(artname)
+
+		h = History()
+		a = Article(artname)
+		oldcontent = h.get_content(a.qname, cid)
+
+		a.save(None, oldcontent, raw = True)
+		h.add(a.qname)
+		ctime = h.get_commit(cid)['atime'].strftime("%Y-%m-%d %H:%M:%S")
+		h.commit(msg = 'Restored ' + ctime, author = author)
+
+		redirect(artname)
+	elif artname.startswith("diff/"):
+		unused, cid, artname = artname.split('/', 2)
+		artname = urllib.unquote_plus(artname)
+		diff = History().get_diff(cid)
+		render_diff(Article(artname), cid, diff)
+	else:
+		render_article(Article(artname))
+
+
+def handle_cmd():
+	print "This is a CGI application."
+	print "It only runs inside a web server."
+	return 1
+
+
+if os.environ.has_key('GATEWAY_INTERFACE'):
+	handle_cgi()
 else:
-    if not ky('p'):print "<h1>Index</h1>";print cfe('index')
-  else:print "<h1>"+vl('p')+"</h1>";print cfe(vl('p'))
-print "<br><br><hr>Pages: ";nn = os.listdir(".");
-for n in nn:
- a = string.split(n, '.')
-    if a[1] == 'pki':print "<a href=\"?p="+a[0]+"\">"+a[0]+"</a>"
-print back("1")+"</body></html>"
+	sys.exit(handle_cmd())
+
